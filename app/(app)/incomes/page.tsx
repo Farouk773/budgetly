@@ -39,25 +39,27 @@ export default async function IncomesPage() {
       ) : (
         <ul className="mt-6 flex flex-col gap-3">
           {incomes.map((income) => (
-            <li
-              key={income.id}
-              className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm"
-            >
-              <div>
-                <p className="text-sm font-medium text-zinc-900">
-                  {income.label || INCOME_TYPE_LABELS[income.type]}
-                  <span className="ml-2 text-xs font-normal text-zinc-400">
-                    {INCOME_TYPE_LABELS[income.type]}
-                  </span>
+            <li key={income.id}>
+              <Link
+                href={`/incomes/${income.id}/edit`}
+                className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-colors hover:bg-zinc-50"
+              >
+                <div>
+                  <p className="text-sm font-medium text-zinc-900">
+                    {income.label || INCOME_TYPE_LABELS[income.type]}
+                    <span className="ml-2 text-xs font-normal text-zinc-400">
+                      {INCOME_TYPE_LABELS[income.type]}
+                    </span>
+                  </p>
+                  <p className="text-xs text-zinc-500">
+                    {MONTH_FORMATTER.format(income.periodMonth)}
+                    {income.payslipOriginalName ? " · fiche de paie jointe" : ""}
+                  </p>
+                </div>
+                <p className="text-sm font-semibold text-zinc-900">
+                  {formatCents(income.netAmountCents)}
                 </p>
-                <p className="text-xs text-zinc-500">
-                  {MONTH_FORMATTER.format(income.periodMonth)}
-                  {income.payslipOriginalName ? " · fiche de paie jointe" : ""}
-                </p>
-              </div>
-              <p className="text-sm font-semibold text-zinc-900">
-                {formatCents(income.netAmountCents)}
-              </p>
+              </Link>
             </li>
           ))}
         </ul>

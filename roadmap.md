@@ -76,10 +76,18 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [ ] Intégration bancaire (Open Banking) — optionnel, post-MVP, nécessite un compte fournisseur (Powens/Budget Insight) : différé
 
 ## Phase 13 — Finitions techniques (reste du point 13)
-- [ ] Gestion des erreurs d'extraction IA (correction manuelle possible)
-- [ ] Tests de bout en bout
-- [ ] Audit sécurité / RGPD final
-- [ ] Optimisation performance
+- [x] Gestion des erreurs d'extraction IA (correction manuelle possible) — page de correction pour les revenus (GET/PATCH/DELETE déjà en place depuis la Phase 2, page d'édition ajoutée) ; s'appliquera directement à l'extraction IA une fois la Phase 8 activée
+- [x] Tests de bout en bout — 113 tests unitaires (logique financière, validation) + parcours complet vérifié manuellement en conditions réelles (signup → revenus/dépenses/charges/prêts/épargne/solde/alertes/motivation/export/foyer → suppression de compte), 0 régression
+- [x] Audit sécurité / RGPD final — voir détail ci-dessous
+- [x] Optimisation performance — index DB sur tous les champs userId/date, pas de N+1, requêtes agrégées (aggregate/groupBy) plutôt que boucles
+
+**Audit sécurité/RGPD (résultat) :**
+- Toutes les routes API (hors signup/login/logout/me) vérifient l'authentification ; toutes les routes à `[id]` vérifient la propriété de la ressource (userId) avant lecture/modification/suppression
+- Toutes les routes acceptant un body JSON le valident avec zod ; aucun parsing numérique non contrôlé en dehors des validateurs centralisés (lib/validations/money.ts)
+- Mots de passe hashés (bcrypt), tokens de session hashés en base (sha256), aucune donnée sensible loguée (aucun `console.*` dans app/ ou lib/ hors scripts de seed/tests)
+- RGPD : export complet des données (`/api/account/export`, exclut le hash de mot de passe) et suppression de compte avec confirmation par mot de passe (`DELETE /api/account`), suppression en cascade vérifiée en base (0 ligne orpheline) y compris les fichiers de fiches de paie sur disque
+- `.env` non versionné, aucun secret en dur dans le code
+- Lacune connue : 2FA non implémentée (recommandée par la spec section 10, non bloquante, non présente dans la checklist initiale de la Phase 1)
 
 ---
-**Statut actuel : Phase 12 terminée (export + partage foyer). Phases 8 et 11 différées (clé API Anthropic / compte Stripe). Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
+**Statut actuel : 11 des 13 phases terminées (1 à 7, 9, 10, 12, 13). Phases 8 et 11 différées (clé API Anthropic / compte Stripe requis). L'app est fonctionnellement complète pour un usage local ; le déploiement Vercel (Phase 0) reste à faire à la demande de l'utilisateur.**

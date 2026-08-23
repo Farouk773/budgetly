@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { mkdir, readFile, unlink, writeFile } from "fs/promises";
+import { mkdir, readFile, rm, unlink, writeFile } from "fs/promises";
 import path from "path";
 
 const STORAGE_ROOT = path.join(process.cwd(), "storage", "payslips");
@@ -41,4 +41,9 @@ export async function deletePayslipFile(
 
 export function generateStoredName(mimeType: string): string {
   return `${randomUUID()}.${extensionForMimeType(mimeType)}`;
+}
+
+/** Removes every payslip file for a user (account deletion / RGPD erasure). */
+export async function deleteAllPayslipFilesForUser(userId: string): Promise<void> {
+  await rm(path.join(STORAGE_ROOT, userId), { recursive: true, force: true });
 }
