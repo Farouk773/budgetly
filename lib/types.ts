@@ -72,6 +72,7 @@ export type MonthlyBudget = {
   month: string;
   incomeCents: number;
   fixedChargesCents: number;
+  loanPaymentsCents: number;
   expensesCents: number;
   availableCents: number;
   suggestedSavingsCents: number;
@@ -92,4 +93,22 @@ export type PurchaseSimulation = {
   affordable: boolean;
   balanceAfterCents: number;
   currentBalanceCents: number;
+};
+
+export type Loan = {
+  id: string;
+  name: string;
+  remainingCents: number;
+  monthlyPaymentCents: number;
+  annualRateBps: number;
+  endDate: string;
+  active: boolean;
+  createdAt: string;
+};
+
+export type EarlyRepaymentSimulation = {
+  monthsBefore: number;
+  monthsAfter: number;
+  monthsSaved: number;
+  interestSavedCents: number;
 };

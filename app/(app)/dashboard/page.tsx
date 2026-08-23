@@ -64,6 +64,12 @@ export default async function DashboardPage() {
             </span>
           </div>
           <div className="flex justify-between py-1">
+            <span className="text-zinc-500">Mensualités de prêts</span>
+            <span className="font-medium text-zinc-900">
+              -{formatCents(budget.loanPaymentsCents)}
+            </span>
+          </div>
+          <div className="flex justify-between py-1">
             <span className="text-zinc-500">Dépenses déjà faites</span>
             <span className="font-medium text-zinc-900">
               -{formatCents(budget.expensesCents)}

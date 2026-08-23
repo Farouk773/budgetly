@@ -1,19 +1,22 @@
 import { describe, expect, it } from "vitest";
 import {
   computeMonthlyAvailableCents,
+  computeRemainingMonths,
+  simulateEarlyRepayment,
   simulatePurchase,
   suggestSavingsCents,
 } from "./finance";
 
 describe("computeMonthlyAvailableCents", () => {
-  it("subtracts fixed charges and expenses from income", () => {
+  it("subtracts fixed charges, loan payments and expenses from income", () => {
     expect(
       computeMonthlyAvailableCents({
         incomeCents: 200000,
         fixedChargesCents: 80000,
+        loanPaymentsCents: 20000,
         expensesCents: 30000,
       })
-    ).toBe(90000);
+    ).toBe(70000);
   });
 
   it("returns zero when income exactly covers charges and expenses", () => {
@@ -21,6 +24,7 @@ describe("computeMonthlyAvailableCents", () => {
       computeMonthlyAvailableCents({
         incomeCents: 100000,
         fixedChargesCents: 60000,
+        loanPaymentsCents: 0,
         expensesCents: 40000,
       })
     ).toBe(0);
@@ -31,6 +35,7 @@ describe("computeMonthlyAvailableCents", () => {
       computeMonthlyAvailableCents({
         incomeCents: 50000,
         fixedChargesCents: 60000,
+        loanPaymentsCents: 0,
         expensesCents: 10000,
       })
     ).toBe(-20000);
@@ -41,6 +46,7 @@ describe("computeMonthlyAvailableCents", () => {
       computeMonthlyAvailableCents({
         incomeCents: 0,
         fixedChargesCents: 60000,
+        loanPaymentsCents: 0,
         expensesCents: 0,
       })
     ).toBe(-60000);
@@ -108,5 +114,109 @@ describe("suggestSavingsCents", () => {
 
   it("rounds to the nearest cent", () => {
     expect(suggestSavingsCents(10001)).toBe(2000);
+  });
+});
+
+describe("computeRemainingMonths", () => {
+  it("divides evenly when there is no interest", () => {
+    expect(
+      computeRemainingMonths({
+        remainingCents: 120000,
+        monthlyPaymentCents: 10000,
+        annualRateBps: 0,
+      })
+    ).toBe(12);
+  });
+
+  it("rounds up a partial final month with no interest", () => {
+    expect(
+      computeRemainingMonths({
+        remainingCents: 125000,
+        monthlyPaymentCents: 10000,
+        annualRateBps: 0,
+      })
+    ).toBe(13);
+  });
+
+  it("returns zero for an already-paid-off loan", () => {
+    expect(
+      computeRemainingMonths({
+        remainingCents: 0,
+        monthlyPaymentCents: 10000,
+        annualRateBps: 500,
+      })
+    ).toBe(0);
+  });
+
+  it("returns Infinity when the payment doesn't cover monthly interest", () => {
+    expect(
+      computeRemainingMonths({
+        remainingCents: 1_000_000,
+        monthlyPaymentCents: 100,
+        annualRateBps: 2000,
+      })
+    ).toBe(Infinity);
+  });
+
+  it("matches an independent month-by-month amortization simulation", () => {
+    const remainingCents = 1_000_000;
+    const monthlyPaymentCents = 30000;
+    const annualRateBps = 600;
+    const monthlyRate = annualRateBps / 10_000 / 12;
+
+    const months = computeRemainingMonths({
+      remainingCents,
+      monthlyPaymentCents,
+      annualRateBps,
+    });
+
+    function balanceAfter(n: number): number {
+      let balance = remainingCents;
+      for (let i = 0; i < n; i++) {
+        balance = balance * (1 + monthlyRate) - monthlyPaymentCents;
+      }
+      return balance;
+    }
+
+    expect(balanceAfter(months)).toBeLessThanOrEqual(1);
+    expect(balanceAfter(months - 1)).toBeGreaterThan(0);
+  });
+});
+
+describe("simulateEarlyRepayment", () => {
+  it("saves no interest on a zero-rate loan (just finishes earlier)", () => {
+    const result = simulateEarlyRepayment({
+      remainingCents: 120000,
+      monthlyPaymentCents: 10000,
+      annualRateBps: 0,
+      extraPaymentCents: 20000,
+    });
+    expect(result).toEqual({
+      monthsBefore: 12,
+      monthsAfter: 10,
+      monthsSaved: 2,
+      interestSavedCents: 0,
+    });
+  });
+
+  it("saves both months and interest on an interest-bearing loan", () => {
+    const result = simulateEarlyRepayment({
+      remainingCents: 1_000_000,
+      monthlyPaymentCents: 30000,
+      annualRateBps: 600,
+      extraPaymentCents: 200000,
+    });
+    expect(result.monthsSaved).toBeGreaterThan(0);
+    expect(result.interestSavedCents).toBeGreaterThan(0);
+  });
+
+  it("pays off the loan immediately when the extra payment covers the balance", () => {
+    const result = simulateEarlyRepayment({
+      remainingCents: 50000,
+      monthlyPaymentCents: 10000,
+      annualRateBps: 300,
+      extraPaymentCents: 100000,
+    });
+    expect(result.monthsAfter).toBe(0);
   });
 });

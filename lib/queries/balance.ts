@@ -16,7 +16,7 @@ export function currentMonthValue(): string {
 export async function getMonthlyBudget(userId: string, month: string) {
   const range = monthRange(month);
 
-  const [incomeAgg, expenseAgg, activeFixedCharges] = await Promise.all([
+  const [incomeAgg, expenseAgg, activeFixedCharges, activeLoans] = await Promise.all([
     prisma.income.aggregate({
       where: { userId, periodMonth: range },
       _sum: { netAmountCents: true },
@@ -29,15 +29,21 @@ export async function getMonthlyBudget(userId: string, month: string) {
       where: { userId, active: true },
       _sum: { amountCents: true },
     }),
+    prisma.loan.aggregate({
+      where: { userId, active: true },
+      _sum: { monthlyPaymentCents: true },
+    }),
   ]);
 
   const incomeCents = incomeAgg._sum.netAmountCents ?? 0;
   const expensesCents = expenseAgg._sum.amountCents ?? 0;
   const fixedChargesCents = activeFixedCharges._sum.amountCents ?? 0;
+  const loanPaymentsCents = activeLoans._sum.monthlyPaymentCents ?? 0;
 
   const availableCents = computeMonthlyAvailableCents({
     incomeCents,
     fixedChargesCents,
+    loanPaymentsCents,
     expensesCents,
   });
 
@@ -45,6 +51,7 @@ export async function getMonthlyBudget(userId: string, month: string) {
     month,
     incomeCents,
     fixedChargesCents,
+    loanPaymentsCents,
     expensesCents,
     availableCents,
     suggestedSavingsCents: suggestSavingsCents(availableCents),

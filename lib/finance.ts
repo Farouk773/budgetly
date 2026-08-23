@@ -1,9 +1,15 @@
 export function computeMonthlyAvailableCents(params: {
   incomeCents: number;
   fixedChargesCents: number;
+  loanPaymentsCents: number;
   expensesCents: number;
 }): number {
-  return params.incomeCents - params.fixedChargesCents - params.expensesCents;
+  return (
+    params.incomeCents -
+    params.fixedChargesCents -
+    params.loanPaymentsCents -
+    params.expensesCents
+  );
 }
 
 export function simulatePurchase(params: {
@@ -22,4 +28,67 @@ export function suggestSavingsCents(
 ): number {
   if (availableCents <= 0) return 0;
   return Math.round(availableCents * ratio);
+}
+
+/** Number of months left on a standard amortized loan (equal payments).
+ * Falls back to simple division when the rate is zero. Returns Infinity
+ * if the payment doesn't even cover the monthly interest. */
+export function computeRemainingMonths(params: {
+  remainingCents: number;
+  monthlyPaymentCents: number;
+  annualRateBps: number;
+}): number {
+  const { remainingCents, monthlyPaymentCents, annualRateBps } = params;
+  if (remainingCents <= 0) return 0;
+
+  const monthlyRate = annualRateBps / 10_000 / 12;
+  if (monthlyRate === 0) {
+    return Math.ceil(remainingCents / monthlyPaymentCents);
+  }
+
+  const ratio = 1 - (monthlyRate * remainingCents) / monthlyPaymentCents;
+  if (ratio <= 0) return Infinity;
+
+  return Math.ceil(-Math.log(ratio) / Math.log(1 + monthlyRate));
+}
+
+/** Simulates paying an extra lump sum today against an amortized loan:
+ * how many months earlier it finishes and how much interest that saves,
+ * assuming the same monthly payment continues afterward. */
+export function simulateEarlyRepayment(params: {
+  remainingCents: number;
+  monthlyPaymentCents: number;
+  annualRateBps: number;
+  extraPaymentCents: number;
+}): {
+  monthsBefore: number;
+  monthsAfter: number;
+  monthsSaved: number;
+  interestSavedCents: number;
+} {
+  const { remainingCents, monthlyPaymentCents, annualRateBps, extraPaymentCents } =
+    params;
+
+  const monthsBefore = computeRemainingMonths({
+    remainingCents,
+    monthlyPaymentCents,
+    annualRateBps,
+  });
+  const remainingAfterExtra = Math.max(0, remainingCents - extraPaymentCents);
+  const monthsAfter = computeRemainingMonths({
+    remainingCents: remainingAfterExtra,
+    monthlyPaymentCents,
+    annualRateBps,
+  });
+
+  const totalPaidBefore = monthlyPaymentCents * monthsBefore;
+  const totalPaidAfter = monthlyPaymentCents * monthsAfter + extraPaymentCents;
+  const interestSavedCents = Math.max(0, totalPaidBefore - totalPaidAfter);
+
+  return {
+    monthsBefore,
+    monthsAfter,
+    monthsSaved: monthsBefore - monthsAfter,
+    interestSavedCents: Math.round(interestSavedCents),
+  };
 }

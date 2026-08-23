@@ -27,6 +27,24 @@ model User {
   fixedCharges FixedCharge[]
   expenses     Expense[]
   savingsGoals SavingsGoal[]
+  loans        Loan[]
+}
+
+model Loan {
+  id                  String   @id @default(cuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                String
+  remainingCents      Int
+  monthlyPaymentCents Int
+  // annual interest rate in basis points (350 = 3.50%), for the early-repayment simulator
+  annualRateBps       Int      @default(0)
+  endDate             DateTime
+  active              Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model SavingsGoal {

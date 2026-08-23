@@ -43,9 +43,10 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [x] Suivi de progression
 
 ## Phase 7 — Dettes et prêts (point 5)
-- [ ] Modèle de données : Prêt
-- [ ] Suivi du montant restant / mensualités
-- [ ] Impact affiché sur le budget mensuel
+- [x] Modèle de données : Prêt
+- [x] Suivi du montant restant / mensualités
+- [x] Impact affiché sur le budget mensuel
+- [x] Simulateur de remboursement anticipé (bonus, prévu dans la spec initiale section 5)
 
 ## Phase 8 — Intelligence artificielle (point 6)
 - [ ] Extraction automatique de fiche de paie via API Claude
@@ -79,4 +80,4 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [ ] Optimisation performance
 
 ---
-**Statut actuel : Phase 6 terminée. Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
+**Statut actuel : Phase 7 terminée. Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
