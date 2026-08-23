@@ -48,15 +48,30 @@ model Loan {
 }
 
 model SavingsGoal {
-  id           String    @id @default(cuid())
-  userId       String
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name         String
-  targetCents  Int
-  currentCents Int       @default(0)
-  targetDate   DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id            String               @id @default(cuid())
+  userId        String
+  user          User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  targetCents   Int
+  currentCents  Int                  @default(0)
+  targetDate    DateTime?
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  contributions SavingsContribution[]
+
+  @@index([userId])
+}
+
+// One row per deposit, kept even though SavingsGoal.currentCents already has
+// the running total — this is what lets us compute a real "N months in a
+// row" streak instead of a fabricated one.
+model SavingsContribution {
+  id            String      @id @default(cuid())
+  savingsGoalId String
+  savingsGoal   SavingsGoal @relation(fields: [savingsGoalId], references: [id], onDelete: Cascade)
+  userId        String
+  amountCents   Int
+  createdAt     DateTime    @default(now())
 
   @@index([userId])
 }

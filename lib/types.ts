@@ -112,3 +112,15 @@ export type EarlyRepaymentSimulation = {
   monthsSaved: number;
   interestSavedCents: number;
 };
+
+export type Badge = {
+  id: string;
+  name: string;
+  description: string;
+  achieved: boolean;
+};
+
+export type MotivationSnapshot = {
+  message: string;
+  badges: Badge[];
+};

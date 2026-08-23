@@ -49,14 +49,15 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [x] Simulateur de remboursement anticipé (bonus, prévu dans la spec initiale section 5)
 
 ## Phase 8 — Intelligence artificielle (point 6)
+**Différée — nécessite une clé API Anthropic réelle pour être testée. Reprendre cette phase quand la clé sera fournie.**
 - [ ] Extraction automatique de fiche de paie via API Claude
 - [ ] Catégorisation automatique des dépenses via IA
 - [ ] Chat conversationnel (poser des questions sur son budget)
 - [ ] Conseils personnalisés générés automatiquement
 
 ## Phase 9 — Motivation et gamification (point 8)
-- [ ] Messages de motivation contextuels
-- [ ] Badges/streaks liés à de vrais comportements
+- [x] Messages de motivation contextuels
+- [x] Badges/streaks liés à de vrais comportements
 
 ## Phase 10 — Notifications et alertes (point 9)
 - [ ] Alerte risque de découvert
@@ -80,4 +81,4 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [ ] Optimisation performance
 
 ---
-**Statut actuel : Phase 7 terminée. Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
+**Statut actuel : Phase 9 terminée (Phase 8 différée, en attente de la clé API Anthropic). Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**

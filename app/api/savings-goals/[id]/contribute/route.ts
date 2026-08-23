@@ -25,10 +25,19 @@ export async function POST(
     return NextResponse.json({ error: "Entrée invalide" }, { status: 400 });
   }
 
-  const goal = await prisma.savingsGoal.update({
-    where: { id },
-    data: { currentCents: { increment: parsed.data.amountCents } },
-  });
+  const [goal] = await prisma.$transaction([
+    prisma.savingsGoal.update({
+      where: { id },
+      data: { currentCents: { increment: parsed.data.amountCents } },
+    }),
+    prisma.savingsContribution.create({
+      data: {
+        savingsGoalId: id,
+        userId: user.id,
+        amountCents: parsed.data.amountCents,
+      },
+    }),
+  ]);
 
   return NextResponse.json({ savingsGoal: toSavingsGoalDto(goal) });
 }
