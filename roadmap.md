@@ -7,14 +7,14 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [x] Initialiser Next.js + TypeScript + Tailwind
 - [x] Configurer PostgreSQL + Prisma
 - [x] Structure de dossiers (app/, components/, lib/, prisma/)
-- [ ] Déploiement initial vide sur Vercel (pour valider le pipeline tôt)
+- [ ] Déploiement initial vide sur Vercel (différé — développement en local pour l'instant, hébergement Vercel prévu à la fin)
 - [x] Variables d'environnement (.env) + gestion des secrets (clé API Claude, DB)
 
 ## Phase 1 — Compte utilisateur et sécurité (point 10)
-- [ ] Authentification (email/mot de passe)
-- [ ] Modèle User en base
-- [ ] Sessions sécurisées
-- [ ] Pages login/signup basiques
+- [x] Authentification (email/mot de passe)
+- [x] Modèle User en base
+- [x] Sessions sécurisées
+- [x] Pages login/signup basiques
 
 ## Phase 2 — Gestion des revenus (point 1)
 - [ ] Modèle de données : Salaire/Revenu
@@ -79,4 +79,4 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [ ] Optimisation performance
 
 ---
-**Statut actuel : Phase 0 — presque terminée (déploiement Vercel restant). En attente de validation avant la Phase 1.**
+**Statut actuel : Phase 1 terminée. En attente de validation avant la Phase 2 (Gestion des revenus).**
