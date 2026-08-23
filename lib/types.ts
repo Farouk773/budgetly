@@ -40,3 +40,30 @@ export type Income = {
   payslipOriginalName: string | null;
   createdAt: string;
 };
+
+export type Category = {
+  id: string;
+  name: string;
+  isEssential: boolean;
+};
+
+export type FixedCharge = {
+  id: string;
+  categoryId: string;
+  category: Category;
+  label: string;
+  amountCents: number;
+  dayOfMonth: number;
+  active: boolean;
+  createdAt: string;
+};
+
+export type Expense = {
+  id: string;
+  categoryId: string;
+  category: Category;
+  label: string | null;
+  amountCents: number;
+  date: string;
+  createdAt: string;
+};

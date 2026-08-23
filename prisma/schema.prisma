@@ -13,14 +13,58 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
+  id           String        @id @default(cuid())
+  email        String        @unique
   passwordHash String
   name         String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   sessions     Session[]
   incomes      Income[]
+  fixedCharges FixedCharge[]
+  expenses     Expense[]
+}
+
+// Shared reference data (not user-scoped): the default category taxonomy,
+// seeded once. Manual selection for now; Phase 8 adds AI auto-categorization.
+model Category {
+  id           String        @id @default(cuid())
+  name         String        @unique
+  isEssential  Boolean       @default(true)
+  fixedCharges FixedCharge[]
+  expenses     Expense[]
+}
+
+model FixedCharge {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  label       String
+  amountCents Int
+  dayOfMonth  Int
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  label       String?
+  amountCents Int
+  date        DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([date])
 }
 
 enum IncomeType {

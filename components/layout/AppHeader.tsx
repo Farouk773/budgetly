@@ -9,6 +9,8 @@ export function AppHeader({ user }: { user: AuthUser }) {
         <nav className="flex items-center gap-4 text-sm font-medium text-zinc-700">
           <Link href="/dashboard">Tableau de bord</Link>
           <Link href="/incomes">Revenus</Link>
+          <Link href="/expenses">Dépenses</Link>
+          <Link href="/fixed-charges">Charges fixes</Link>
         </nav>
         <div className="flex items-center gap-3">
           <span className="text-sm text-zinc-500">{user.email}</span>

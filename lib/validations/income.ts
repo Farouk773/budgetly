@@ -1,16 +1,5 @@
 import { z } from "zod";
-
-const centsField = z
-  .string()
-  .regex(/^\d+$/)
-  .transform((v) => parseInt(v, 10))
-  .refine((v) => v >= 0 && v <= 100_000_000, "Montant invalide");
-
-const optionalCentsField = z
-  .string()
-  .optional()
-  .transform((v) => (v === undefined || v === "" ? undefined : v))
-  .pipe(centsField.optional());
+import { centsField, optionalCentsField } from "./money";
 
 export const incomeFormSchema = z.object({
   type: z.enum(["SALARY", "FREELANCE", "OTHER"]),

@@ -23,10 +23,10 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [x] Historique des salaires
 
 ## Phase 3 — Gestion des dépenses (point 2)
-- [ ] Modèle de données : Charge fixe / Dépense
-- [ ] Ajout de charges fixes récurrentes
-- [ ] Ajout de dépenses ponctuelles
-- [ ] Catégories (manuelles pour l'instant, IA plus tard)
+- [x] Modèle de données : Charge fixe / Dépense
+- [x] Ajout de charges fixes récurrentes
+- [x] Ajout de dépenses ponctuelles
+- [x] Catégories (manuelles pour l'instant, IA plus tard)
 
 ## Phase 4 — Solde en temps réel (point 3)
 - [ ] Calcul : revenu − charges − dépenses = reste disponible
@@ -79,4 +79,4 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [ ] Optimisation performance
 
 ---
-**Statut actuel : Phase 2 terminée. Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
+**Statut actuel : Phase 3 terminée. Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
