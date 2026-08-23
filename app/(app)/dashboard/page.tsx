@@ -2,6 +2,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { formatCents } from "@/lib/money";
 import { currentMonthValue, getDeclaredBalance, getMonthlyBudget } from "@/lib/queries/balance";
 import { getSpendingByCategory } from "@/lib/queries/spending";
+import Link from "next/link";
 import { BalanceCard } from "@/components/dashboard/BalanceCard";
 import { PurchaseSimulator } from "@/components/dashboard/PurchaseSimulator";
 import { CategoryBreakdownChart } from "@/components/dashboard/CategoryBreakdownChart";
@@ -69,6 +70,17 @@ export default async function DashboardPage() {
             </span>
           </div>
         </div>
+      )}
+
+      {budget && budget.suggestedSavingsCents > 0 && (
+        <Link
+          href="/savings"
+          className="rounded-lg bg-teal-50 px-3 py-2 text-sm text-teal-800 hover:bg-teal-100"
+        >
+          Tu pourrais mettre{" "}
+          <strong>{formatCents(budget.suggestedSavingsCents)}</strong> de côté
+          ce mois-ci →
+        </Link>
       )}
 
       <CategoryBreakdownChart entries={spendingByCategory} />

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { computeMonthlyAvailableCents } from "@/lib/finance";
+import { computeMonthlyAvailableCents, suggestSavingsCents } from "@/lib/finance";
 
 export function monthRange(month: string): { gte: Date; lt: Date } {
   const gte = new Date(`${month}-01T00:00:00.000Z`);
@@ -35,16 +35,19 @@ export async function getMonthlyBudget(userId: string, month: string) {
   const expensesCents = expenseAgg._sum.amountCents ?? 0;
   const fixedChargesCents = activeFixedCharges._sum.amountCents ?? 0;
 
+  const availableCents = computeMonthlyAvailableCents({
+    incomeCents,
+    fixedChargesCents,
+    expensesCents,
+  });
+
   return {
     month,
     incomeCents,
     fixedChargesCents,
     expensesCents,
-    availableCents: computeMonthlyAvailableCents({
-      incomeCents,
-      fixedChargesCents,
-      expensesCents,
-    }),
+    availableCents,
+    suggestedSavingsCents: suggestSavingsCents(availableCents),
   };
 }
 

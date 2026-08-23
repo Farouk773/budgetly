@@ -38,9 +38,9 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [x] Répartition des dépenses (graphique simple)
 
 ## Phase 6 — Épargne (point 4)
-- [ ] Objectifs d'épargne
-- [ ] Suggestion de montant à épargner
-- [ ] Suivi de progression
+- [x] Objectifs d'épargne
+- [x] Suggestion de montant à épargner
+- [x] Suivi de progression
 
 ## Phase 7 — Dettes et prêts (point 5)
 - [ ] Modèle de données : Prêt
@@ -79,4 +79,4 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [ ] Optimisation performance
 
 ---
-**Statut actuel : Phase 5 terminée. Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
+**Statut actuel : Phase 6 terminée. Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**

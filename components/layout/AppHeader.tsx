@@ -11,6 +11,7 @@ export function AppHeader({ user }: { user: AuthUser }) {
           <Link href="/incomes">Revenus</Link>
           <Link href="/expenses">Dépenses</Link>
           <Link href="/fixed-charges">Charges fixes</Link>
+          <Link href="/savings">Épargne</Link>
         </nav>
         <div className="flex items-center gap-3">
           <span className="text-sm text-zinc-500">{user.email}</span>

@@ -26,6 +26,21 @@ model User {
   incomes      Income[]
   fixedCharges FixedCharge[]
   expenses     Expense[]
+  savingsGoals SavingsGoal[]
+}
+
+model SavingsGoal {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  targetCents  Int
+  currentCents Int       @default(0)
+  targetDate   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([userId])
 }
 
 // Shared reference data (not user-scoped): the default category taxonomy,

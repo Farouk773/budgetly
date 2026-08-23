@@ -74,8 +74,18 @@ export type MonthlyBudget = {
   fixedChargesCents: number;
   expensesCents: number;
   availableCents: number;
+  suggestedSavingsCents: number;
   balanceCents: number | null;
   balanceAsOf: string | null;
+};
+
+export type SavingsGoal = {
+  id: string;
+  name: string;
+  targetCents: number;
+  currentCents: number;
+  targetDate: string | null;
+  createdAt: string;
 };
 
 export type PurchaseSimulation = {

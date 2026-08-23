@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { computeMonthlyAvailableCents, simulatePurchase } from "./finance";
+import {
+  computeMonthlyAvailableCents,
+  simulatePurchase,
+  suggestSavingsCents,
+} from "./finance";
 
 describe("computeMonthlyAvailableCents", () => {
   it("subtracts fixed charges and expenses from income", () => {
@@ -82,5 +86,27 @@ describe("simulatePurchase", () => {
       amountCents: 0,
     });
     expect(result).toEqual({ affordable: true, balanceAfterCents: 10000 });
+  });
+});
+
+describe("suggestSavingsCents", () => {
+  it("suggests a fraction of what's left by default (20%)", () => {
+    expect(suggestSavingsCents(100000)).toBe(20000);
+  });
+
+  it("suggests nothing when there's nothing left", () => {
+    expect(suggestSavingsCents(0)).toBe(0);
+  });
+
+  it("suggests nothing when the month is in deficit", () => {
+    expect(suggestSavingsCents(-50000)).toBe(0);
+  });
+
+  it("supports a custom ratio", () => {
+    expect(suggestSavingsCents(100000, 0.5)).toBe(50000);
+  });
+
+  it("rounds to the nearest cent", () => {
+    expect(suggestSavingsCents(10001)).toBe(2000);
   });
 });
