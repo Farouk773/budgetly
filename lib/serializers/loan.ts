@@ -8,6 +8,7 @@ export function toLoanDto(loan: PrismaLoan): Loan {
     remainingCents: loan.remainingCents,
     monthlyPaymentCents: loan.monthlyPaymentCents,
     annualRateBps: loan.annualRateBps,
+    dueDayOfMonth: loan.dueDayOfMonth,
     endDate: loan.endDate.toISOString(),
     active: loan.active,
     createdAt: loan.createdAt.toISOString(),

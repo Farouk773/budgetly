@@ -11,6 +11,7 @@ export default function NewLoanPage() {
   const [remaining, setRemaining] = useState("");
   const [monthlyPayment, setMonthlyPayment] = useState("");
   const [rate, setRate] = useState("");
+  const [dueDayOfMonth, setDueDayOfMonth] = useState("1");
   const [endDate, setEndDate] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,6 +44,7 @@ export default function NewLoanPage() {
           remainingCents: String(remainingCents),
           monthlyPaymentCents: String(monthlyPaymentCents),
           annualRateBps,
+          dueDayOfMonth: Number(dueDayOfMonth),
           endDate,
         }),
       });
@@ -131,6 +133,25 @@ export default function NewLoanPage() {
             value={rate}
             onChange={(e) => setRate(e.target.value)}
             placeholder="3,50"
+            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor="dueDayOfMonth"
+            className="text-sm font-medium text-zinc-700"
+          >
+            Jour de prélèvement dans le mois
+          </label>
+          <input
+            id="dueDayOfMonth"
+            type="number"
+            min={1}
+            max={31}
+            required
+            value={dueDayOfMonth}
+            onChange={(e) => setDueDayOfMonth(e.target.value)}
             className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
           />
         </div>

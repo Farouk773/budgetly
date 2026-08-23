@@ -101,6 +101,7 @@ export type Loan = {
   remainingCents: number;
   monthlyPaymentCents: number;
   annualRateBps: number;
+  dueDayOfMonth: number;
   endDate: string;
   active: boolean;
   createdAt: string;
@@ -123,4 +124,16 @@ export type Badge = {
 export type MotivationSnapshot = {
   message: string;
   badges: Badge[];
+};
+
+export type UpcomingDue = {
+  label: string;
+  amountCents: number;
+  type: "fixedCharge" | "loan";
+  daysUntilDue: number;
+};
+
+export type AlertsSnapshot = {
+  overdraft: { atRisk: boolean; shortfallCents: number } | null;
+  upcomingDues: UpcomingDue[];
 };

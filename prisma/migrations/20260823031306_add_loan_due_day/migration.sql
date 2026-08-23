@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Loan" ADD COLUMN     "dueDayOfMonth" INTEGER NOT NULL DEFAULT 1;

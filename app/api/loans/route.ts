@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
       remainingCents: parsed.data.remainingCents,
       monthlyPaymentCents: parsed.data.monthlyPaymentCents,
       annualRateBps: parsed.data.annualRateBps,
+      dueDayOfMonth: parsed.data.dueDayOfMonth,
       endDate: new Date(parsed.data.endDate),
     },
   });

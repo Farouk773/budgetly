@@ -38,6 +38,7 @@ export async function PATCH(
       remainingCents: parsed.data.remainingCents,
       monthlyPaymentCents: parsed.data.monthlyPaymentCents,
       annualRateBps: parsed.data.annualRateBps,
+      dueDayOfMonth: parsed.data.dueDayOfMonth,
       endDate: parsed.data.endDate ? new Date(parsed.data.endDate) : undefined,
       active: parsed.data.active,
     },

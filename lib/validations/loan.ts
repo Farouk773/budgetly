@@ -2,6 +2,7 @@ import { z } from "zod";
 import { centsField } from "./money";
 
 const rateBpsField = z.coerce.number().int().min(0).max(10_000); // 0% to 100%
+const dayOfMonthField = z.coerce.number().int().min(1).max(31);
 
 // A payment that doesn't even cover the monthly interest would let the debt
 // grow forever (computeRemainingMonths returns Infinity, which isn't valid
@@ -23,6 +24,7 @@ export const createLoanSchema = z
     remainingCents: centsField,
     monthlyPaymentCents: centsField,
     annualRateBps: rateBpsField.optional().default(0),
+    dueDayOfMonth: dayOfMonthField.optional().default(1),
     endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   })
   .refine(paymentCoversInterest, {
@@ -36,6 +38,7 @@ export const updateLoanSchema = z
     remainingCents: centsField.optional(),
     monthlyPaymentCents: centsField.optional(),
     annualRateBps: rateBpsField.optional(),
+    dueDayOfMonth: dayOfMonthField.optional(),
     endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
     active: z.boolean().optional(),
   })

@@ -60,8 +60,8 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [x] Badges/streaks liés à de vrais comportements
 
 ## Phase 10 — Notifications et alertes (point 9)
-- [ ] Alerte risque de découvert
-- [ ] Rappel d'échéances (loyer, prêts, abonnements)
+- [x] Alerte risque de découvert
+- [x] Rappel d'échéances (loyer, prêts, abonnements) — alertes in-app sur le dashboard ; email/push differé (nécessite un service d'envoi externe)
 
 ## Phase 11 — Monétisation (point 11)
 - [ ] Plan gratuit vs. payant
@@ -81,4 +81,4 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [ ] Optimisation performance
 
 ---
-**Statut actuel : Phase 9 terminée (Phase 8 différée, en attente de la clé API Anthropic). Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
+**Statut actuel : Phase 10 terminée (Phase 8 différée, en attente de la clé API Anthropic). Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**

@@ -39,6 +39,7 @@ model Loan {
   monthlyPaymentCents Int
   // annual interest rate in basis points (350 = 3.50%), for the early-repayment simulator
   annualRateBps       Int      @default(0)
+  dueDayOfMonth       Int      @default(1)
   endDate             DateTime
   active              Boolean  @default(true)
   createdAt           DateTime @default(now())

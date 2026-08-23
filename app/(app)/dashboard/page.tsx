@@ -3,11 +3,13 @@ import { formatCents } from "@/lib/money";
 import { currentMonthValue, getDeclaredBalance, getMonthlyBudget } from "@/lib/queries/balance";
 import { getSpendingByCategory } from "@/lib/queries/spending";
 import { getMotivationSnapshot } from "@/lib/queries/motivation";
+import { getAlertsSnapshot } from "@/lib/queries/alerts";
 import Link from "next/link";
 import { BalanceCard } from "@/components/dashboard/BalanceCard";
 import { PurchaseSimulator } from "@/components/dashboard/PurchaseSimulator";
 import { CategoryBreakdownChart } from "@/components/dashboard/CategoryBreakdownChart";
 import { MotivationCard } from "@/components/dashboard/MotivationCard";
+import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 
 const MONTH_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   month: "long",
@@ -18,14 +20,15 @@ export default async function DashboardPage() {
   const user = await getCurrentUser();
   const month = currentMonthValue();
 
-  const [budget, declared, spendingByCategory, motivation] = user
+  const [budget, declared, spendingByCategory, motivation, alerts] = user
     ? await Promise.all([
         getMonthlyBudget(user.id, month),
         getDeclaredBalance(user.id),
         getSpendingByCategory(user.id, month),
         getMotivationSnapshot(user.id),
+        getAlertsSnapshot(user.id),
       ])
-    : [null, null, [], null];
+    : [null, null, [], null, null];
 
   const isPositive = (budget?.availableCents ?? 0) >= 0;
 
@@ -51,6 +54,8 @@ export default async function DashboardPage() {
           {formatCents(budget?.availableCents ?? 0)}
         </p>
       </div>
+
+      {alerts && <AlertsPanel snapshot={alerts} />}
 
       {motivation && <MotivationCard snapshot={motivation} />}
 
