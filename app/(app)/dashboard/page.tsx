@@ -1,8 +1,10 @@
 import { getCurrentUser } from "@/lib/auth";
 import { formatCents } from "@/lib/money";
 import { currentMonthValue, getDeclaredBalance, getMonthlyBudget } from "@/lib/queries/balance";
+import { getSpendingByCategory } from "@/lib/queries/spending";
 import { BalanceCard } from "@/components/dashboard/BalanceCard";
 import { PurchaseSimulator } from "@/components/dashboard/PurchaseSimulator";
+import { CategoryBreakdownChart } from "@/components/dashboard/CategoryBreakdownChart";
 
 const MONTH_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   month: "long",
@@ -13,9 +15,13 @@ export default async function DashboardPage() {
   const user = await getCurrentUser();
   const month = currentMonthValue();
 
-  const [budget, declared] = user
-    ? await Promise.all([getMonthlyBudget(user.id, month), getDeclaredBalance(user.id)])
-    : [null, null];
+  const [budget, declared, spendingByCategory] = user
+    ? await Promise.all([
+        getMonthlyBudget(user.id, month),
+        getDeclaredBalance(user.id),
+        getSpendingByCategory(user.id, month),
+      ])
+    : [null, null, []];
 
   const isPositive = (budget?.availableCents ?? 0) >= 0;
 
@@ -64,6 +70,8 @@ export default async function DashboardPage() {
           </div>
         </div>
       )}
+
+      <CategoryBreakdownChart entries={spendingByCategory} />
 
       <BalanceCard
         balanceCents={declared?.balanceCents ?? null}

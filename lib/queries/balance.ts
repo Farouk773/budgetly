@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { computeMonthlyAvailableCents } from "@/lib/finance";
 
-function monthRange(month: string): { gte: Date; lt: Date } {
+export function monthRange(month: string): { gte: Date; lt: Date } {
   const gte = new Date(`${month}-01T00:00:00.000Z`);
   const lt = new Date(gte);
   lt.setUTCMonth(lt.getUTCMonth() + 1);

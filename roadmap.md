@@ -34,8 +34,8 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [x] Simulateur "puis-je me permettre cet achat"
 
 ## Phase 5 — Dashboard basique (point 7, version simple)
-- [ ] Vue d'ensemble du mois en cours
-- [ ] Répartition des dépenses (graphique simple)
+- [x] Vue d'ensemble du mois en cours
+- [x] Répartition des dépenses (graphique simple)
 
 ## Phase 6 — Épargne (point 4)
 - [ ] Objectifs d'épargne
@@ -79,4 +79,4 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [ ] Optimisation performance
 
 ---
-**Statut actuel : Phase 4 terminée. Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
+**Statut actuel : Phase 5 terminée. Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
