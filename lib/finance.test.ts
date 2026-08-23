@@ -1,11 +1,51 @@
 import { describe, expect, it } from "vitest";
 import {
+  combineMonthlyBudgets,
   computeMonthlyAvailableCents,
   computeRemainingMonths,
   simulateEarlyRepayment,
   simulatePurchase,
   suggestSavingsCents,
 } from "./finance";
+
+describe("combineMonthlyBudgets", () => {
+  it("sums two people's budgets into a household total", () => {
+    const result = combineMonthlyBudgets([
+      { incomeCents: 200000, fixedChargesCents: 80000, loanPaymentsCents: 0, expensesCents: 30000 },
+      { incomeCents: 150000, fixedChargesCents: 20000, loanPaymentsCents: 15000, expensesCents: 10000 },
+    ]);
+    expect(result).toEqual({
+      incomeCents: 350000,
+      fixedChargesCents: 100000,
+      loanPaymentsCents: 15000,
+      expensesCents: 40000,
+      availableCents: 195000,
+    });
+  });
+
+  it("returns all zeros for an empty household", () => {
+    expect(combineMonthlyBudgets([])).toEqual({
+      incomeCents: 0,
+      fixedChargesCents: 0,
+      loanPaymentsCents: 0,
+      expensesCents: 0,
+      availableCents: 0,
+    });
+  });
+
+  it("passes a single budget through unchanged", () => {
+    const budget = {
+      incomeCents: 100000,
+      fixedChargesCents: 50000,
+      loanPaymentsCents: 0,
+      expensesCents: 20000,
+    };
+    expect(combineMonthlyBudgets([budget])).toEqual({
+      ...budget,
+      availableCents: 30000,
+    });
+  });
+});
 
 describe("computeMonthlyAvailableCents", () => {
   it("subtracts fixed charges, loan payments and expenses from income", () => {

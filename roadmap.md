@@ -71,9 +71,9 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 
 ## Phase 12 — Fonctionnalités additionnelles (point 12)
 - [x] Export PDF/Excel du bilan
-- [ ] Multi-devises (si pertinent)
-- [ ] Partage de budget en couple/famille
-- [ ] Intégration bancaire (Open Banking) — optionnel, post-MVP
+- [~] Multi-devises — non implémenté, la spec le marque "si pertinent" ; aucun signal d'usage hors zone euro pour l'instant, à réévaluer si besoin
+- [x] Partage de budget en couple/famille (invitation par email, vue commune en lecture seule, aucune donnée individuelle n'est mutualisée sans acceptation des deux côtés)
+- [ ] Intégration bancaire (Open Banking) — optionnel, post-MVP, nécessite un compte fournisseur (Powens/Budget Insight) : différé
 
 ## Phase 13 — Finitions techniques (reste du point 13)
 - [ ] Gestion des erreurs d'extraction IA (correction manuelle possible)
@@ -82,4 +82,4 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [ ] Optimisation performance
 
 ---
-**Statut actuel : Phase 10 terminée (Phase 8 différée, en attente de la clé API Anthropic). Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
+**Statut actuel : Phase 12 terminée (export + partage foyer). Phases 8 et 11 différées (clé API Anthropic / compte Stripe). Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**

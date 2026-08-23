@@ -20,6 +20,35 @@ export function simulatePurchase(params: {
   return { affordable: balanceAfterCents >= 0, balanceAfterCents };
 }
 
+/** Sums several people's monthly budgets into one household view (point 12
+ * of the spec: shared couple/family budget). */
+export function combineMonthlyBudgets(
+  budgets: {
+    incomeCents: number;
+    fixedChargesCents: number;
+    loanPaymentsCents: number;
+    expensesCents: number;
+  }[]
+): {
+  incomeCents: number;
+  fixedChargesCents: number;
+  loanPaymentsCents: number;
+  expensesCents: number;
+  availableCents: number;
+} {
+  const totals = budgets.reduce(
+    (acc, b) => ({
+      incomeCents: acc.incomeCents + b.incomeCents,
+      fixedChargesCents: acc.fixedChargesCents + b.fixedChargesCents,
+      loanPaymentsCents: acc.loanPaymentsCents + b.loanPaymentsCents,
+      expensesCents: acc.expensesCents + b.expensesCents,
+    }),
+    { incomeCents: 0, fixedChargesCents: 0, loanPaymentsCents: 0, expensesCents: 0 }
+  );
+
+  return { ...totals, availableCents: computeMonthlyAvailableCents(totals) };
+}
+
 /** Suggests saving a fraction of what's left this month; never suggests
  * saving from a deficit. */
 export function suggestSavingsCents(

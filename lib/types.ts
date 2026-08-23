@@ -137,3 +137,36 @@ export type AlertsSnapshot = {
   overdraft: { atRisk: boolean; shortfallCents: number } | null;
   upcomingDues: UpcomingDue[];
 };
+
+export type PartnerLinkStatus = "PENDING" | "ACCEPTED" | "DECLINED";
+
+export type PartnerLink = {
+  id: string;
+  status: PartnerLinkStatus;
+  direction: "sent" | "received";
+  otherUser: { id: string; email: string; name: string | null };
+  createdAt: string;
+};
+
+export type HouseholdMemberBudget = {
+  userId: string;
+  name: string | null;
+  email: string;
+  incomeCents: number;
+  fixedChargesCents: number;
+  loanPaymentsCents: number;
+  expensesCents: number;
+  availableCents: number;
+};
+
+export type HouseholdSummary = {
+  month: string;
+  members: HouseholdMemberBudget[];
+  combined: {
+    incomeCents: number;
+    fixedChargesCents: number;
+    loanPaymentsCents: number;
+    expensesCents: number;
+    availableCents: number;
+  };
+};

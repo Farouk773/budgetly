@@ -28,6 +28,33 @@ model User {
   expenses     Expense[]
   savingsGoals SavingsGoal[]
   loans        Loan[]
+  sentLinks     PartnerLink[] @relation("RequestedLinks")
+  receivedLinks PartnerLink[] @relation("PartnerLinks")
+}
+
+enum PartnerLinkStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+// A consented, bidirectional link for the "shared household view" (point 12
+// of the spec). Deliberately additive: it never changes ownership on any
+// existing Income/Expense/etc. row — each side's data stays private and
+// isolated exactly as before; a link only grants a read-only, aggregated
+// summary once BOTH users have accepted.
+model PartnerLink {
+  id          String            @id @default(cuid())
+  requesterId String
+  requester   User              @relation("RequestedLinks", fields: [requesterId], references: [id], onDelete: Cascade)
+  partnerId   String
+  partner     User              @relation("PartnerLinks", fields: [partnerId], references: [id], onDelete: Cascade)
+  status      PartnerLinkStatus @default(PENDING)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@unique([requesterId, partnerId])
+  @@index([partnerId])
 }
 
 model Loan {
