@@ -20,6 +20,35 @@ model User {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   sessions     Session[]
+  incomes      Income[]
+}
+
+enum IncomeType {
+  SALARY
+  FREELANCE
+  OTHER
+}
+
+model Income {
+  id                  String     @id @default(cuid())
+  userId              String
+  user                User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type                IncomeType
+  label               String?
+  netAmountCents      Int
+  grossAmountCents    Int?
+  contributionsCents  Int?
+  bonusCents          Int?
+  overtimeCents       Int?
+  periodMonth         DateTime
+  payslipOriginalName String?
+  // random-generated on-disk filename; never derived from user input, to rule out path traversal
+  payslipStoredName   String?
+  payslipMimeType     String?
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+
+  @@index([userId])
 }
 
 model Session {

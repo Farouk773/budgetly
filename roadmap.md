@@ -17,10 +17,10 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [x] Pages login/signup basiques
 
 ## Phase 2 — Gestion des revenus (point 1)
-- [ ] Modèle de données : Salaire/Revenu
-- [ ] Ajout manuel d'un salaire
-- [ ] Upload de fiche de paie (stockage fichier, sans extraction IA pour l'instant)
-- [ ] Historique des salaires
+- [x] Modèle de données : Salaire/Revenu
+- [x] Ajout manuel d'un salaire
+- [x] Upload de fiche de paie (stockage fichier, sans extraction IA pour l'instant)
+- [x] Historique des salaires
 
 ## Phase 3 — Gestion des dépenses (point 2)
 - [ ] Modèle de données : Charge fixe / Dépense
@@ -79,4 +79,4 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [ ] Optimisation performance
 
 ---
-**Statut actuel : Phase 1 terminée. En attente de validation avant la Phase 2 (Gestion des revenus).**
+**Statut actuel : Phase 2 terminée. Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
