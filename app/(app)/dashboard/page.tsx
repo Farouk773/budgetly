@@ -107,6 +107,24 @@ export default async function DashboardPage() {
       />
 
       <PurchaseSimulator hasDeclaredBalance={declared?.balanceCents !== null} />
+
+      <div className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm">
+        <span className="text-sm text-zinc-500">Exporter le bilan de {month}</span>
+        <div className="flex gap-2">
+          <a
+            href={`/api/export/excel?month=${month}`}
+            className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+          >
+            Excel
+          </a>
+          <a
+            href={`/api/export/pdf?month=${month}`}
+            className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+          >
+            PDF
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

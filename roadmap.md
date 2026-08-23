@@ -64,12 +64,13 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [x] Rappel d'échéances (loyer, prêts, abonnements) — alertes in-app sur le dashboard ; email/push differé (nécessite un service d'envoi externe)
 
 ## Phase 11 — Monétisation (point 11)
+**Différée — nécessite un compte Stripe (clés API) pour être testée. Reprendre quand les clés seront fournies.**
 - [ ] Plan gratuit vs. payant
 - [ ] Intégration paiement (Stripe)
 - [ ] Limitation des fonctionnalités IA au plan payant
 
 ## Phase 12 — Fonctionnalités additionnelles (point 12)
-- [ ] Export PDF/Excel du bilan
+- [x] Export PDF/Excel du bilan
 - [ ] Multi-devises (si pertinent)
 - [ ] Partage de budget en couple/famille
 - [ ] Intégration bancaire (Open Banking) — optionnel, post-MVP
