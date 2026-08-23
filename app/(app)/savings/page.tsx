@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCents } from "@/lib/money";
@@ -22,13 +23,14 @@ export default async function SavingsPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-zinc-900">
+        <h1 className="font-heading text-xl font-semibold text-slate-900">
           Objectifs d&apos;épargne
         </h1>
         <Link
           href="/savings/new"
-          className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700"
+          className="flex items-center gap-1.5 rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800"
         >
+          <Plus className="h-4 w-4" />
           Nouvel objectif
         </Link>
       </div>
@@ -41,7 +43,7 @@ export default async function SavingsPage() {
       )}
 
       {goals.length === 0 ? (
-        <p className="mt-8 text-sm text-zinc-500">
+        <p className="mt-8 text-sm text-slate-500">
           Aucun objectif d&apos;épargne pour le moment.
         </p>
       ) : (

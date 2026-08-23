@@ -18,16 +18,16 @@ export default async function HouseholdPage() {
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-10">
-      <h1 className="text-xl font-semibold text-zinc-900">
+      <h1 className="font-heading text-xl font-semibold text-slate-900">
         Budget partagé (couple / famille)
       </h1>
-      <p className="mt-1 text-sm text-zinc-500">
+      <p className="mt-1 text-sm text-slate-500">
         Invite un·e partenaire pour voir une vue commune de vos budgets.
         Chacun garde ses données privées ; seule une synthèse est partagée,
         et seulement une fois l&apos;invitation acceptée des deux côtés.
       </p>
 
-      <div className="mt-6 rounded-xl bg-white p-4 shadow-sm">
+      <div className="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
         <InviteForm />
       </div>
 
@@ -41,38 +41,38 @@ export default async function HouseholdPage() {
 
       {summary.members.length > 1 && (
         <div className="mt-8">
-          <h2 className="text-lg font-semibold text-zinc-900">
+          <h2 className="text-lg font-semibold text-slate-900">
             Vue commune — {summary.month}
           </h2>
 
-          <div className="mt-3 rounded-xl bg-white p-4 shadow-sm">
+          <div className="mt-3 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
             <div className="flex justify-between py-1 text-sm">
-              <span className="text-zinc-500">Revenus cumulés</span>
-              <span className="font-medium text-zinc-900">
+              <span className="text-slate-500">Revenus cumulés</span>
+              <span className="font-medium text-slate-900">
                 {formatCents(summary.combined.incomeCents)}
               </span>
             </div>
             <div className="flex justify-between py-1 text-sm">
-              <span className="text-zinc-500">Charges fixes cumulées</span>
-              <span className="font-medium text-zinc-900">
+              <span className="text-slate-500">Charges fixes cumulées</span>
+              <span className="font-medium text-slate-900">
                 -{formatCents(summary.combined.fixedChargesCents)}
               </span>
             </div>
             <div className="flex justify-between py-1 text-sm">
-              <span className="text-zinc-500">Mensualités de prêts cumulées</span>
-              <span className="font-medium text-zinc-900">
+              <span className="text-slate-500">Mensualités de prêts cumulées</span>
+              <span className="font-medium text-slate-900">
                 -{formatCents(summary.combined.loanPaymentsCents)}
               </span>
             </div>
             <div className="flex justify-between py-1 text-sm">
-              <span className="text-zinc-500">Dépenses cumulées</span>
-              <span className="font-medium text-zinc-900">
+              <span className="text-slate-500">Dépenses cumulées</span>
+              <span className="font-medium text-slate-900">
                 -{formatCents(summary.combined.expensesCents)}
               </span>
             </div>
-            <div className="mt-2 flex justify-between border-t border-zinc-100 pt-2 text-sm">
-              <span className="font-medium text-zinc-700">Disponible du foyer</span>
-              <span className="font-semibold text-zinc-900">
+            <div className="mt-2 flex justify-between border-t border-slate-100 pt-2 text-sm">
+              <span className="font-medium text-slate-700">Disponible du foyer</span>
+              <span className="font-semibold text-slate-900">
                 {formatCents(summary.combined.availableCents)}
               </span>
             </div>
@@ -82,14 +82,14 @@ export default async function HouseholdPage() {
             {summary.members.map((member) => (
               <li
                 key={member.userId}
-                className="flex items-center justify-between rounded-xl bg-white p-4 text-sm shadow-sm"
+                className="flex items-center justify-between rounded-2xl bg-white p-4 text-sm shadow-sm ring-1 ring-slate-100"
               >
-                <span className="text-zinc-700">
+                <span className="text-slate-700">
                   {member.userId === user.id
                     ? "Toi"
                     : member.name || member.email}
                 </span>
-                <span className="font-medium text-zinc-900">
+                <span className="font-medium text-slate-900">
                   {formatCents(member.availableCents)} disponible
                 </span>
               </li>

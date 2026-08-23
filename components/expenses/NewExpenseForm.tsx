@@ -59,14 +59,14 @@ export function NewExpenseForm({ categories }: { categories: Category[] }) {
   return (
     <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <label htmlFor="category" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="category" className="text-sm font-medium text-slate-700">
           Catégorie
         </label>
         <select
           id="category"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         >
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
@@ -77,7 +77,7 @@ export function NewExpenseForm({ categories }: { categories: Category[] }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="label" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="label" className="text-sm font-medium text-slate-700">
           Libellé (optionnel)
         </label>
         <input
@@ -86,12 +86,12 @@ export function NewExpenseForm({ categories }: { categories: Category[] }) {
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           placeholder="Ex : Carrefour, restaurant..."
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="date" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="date" className="text-sm font-medium text-slate-700">
           Date
         </label>
         <input
@@ -100,12 +100,12 @@ export function NewExpenseForm({ categories }: { categories: Category[] }) {
           required
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="amount" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="amount" className="text-sm font-medium text-slate-700">
           Montant (€)
         </label>
         <input
@@ -116,7 +116,7 @@ export function NewExpenseForm({ categories }: { categories: Category[] }) {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           placeholder="45,90"
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
       </div>
 
@@ -129,7 +129,7 @@ export function NewExpenseForm({ categories }: { categories: Category[] }) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="mt-2 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
+        className="mt-2 rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
       >
         {isSubmitting ? "Ajout..." : "Ajouter"}
       </button>

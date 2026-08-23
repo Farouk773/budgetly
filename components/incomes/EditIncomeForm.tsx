@@ -83,14 +83,14 @@ export function EditIncomeForm({ income }: { income: Income }) {
   return (
     <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <label htmlFor="type" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="type" className="text-sm font-medium text-slate-700">
           Type
         </label>
         <select
           id="type"
           value={type}
           onChange={(e) => setType(e.target.value as IncomeType)}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         >
           {Object.entries(INCOME_TYPE_LABELS).map(([value, text]) => (
             <option key={value} value={value}>
@@ -101,7 +101,7 @@ export function EditIncomeForm({ income }: { income: Income }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="label" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="label" className="text-sm font-medium text-slate-700">
           Libellé (optionnel)
         </label>
         <input
@@ -109,12 +109,12 @@ export function EditIncomeForm({ income }: { income: Income }) {
           type="text"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="month" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="month" className="text-sm font-medium text-slate-700">
           Mois concerné
         </label>
         <input
@@ -123,14 +123,14 @@ export function EditIncomeForm({ income }: { income: Income }) {
           required
           value={month}
           onChange={(e) => setMonth(e.target.value)}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
       </div>
 
       <div className="flex flex-col gap-1">
         <label
           htmlFor="netAmount"
-          className="text-sm font-medium text-zinc-700"
+          className="text-sm font-medium text-slate-700"
         >
           Montant net perçu (€)
         </label>
@@ -141,14 +141,14 @@ export function EditIncomeForm({ income }: { income: Income }) {
           required
           value={netAmount}
           onChange={(e) => setNetAmount(e.target.value)}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
       </div>
 
       <div className="flex flex-col gap-1">
         <label
           htmlFor="grossAmount"
-          className="text-sm font-medium text-zinc-700"
+          className="text-sm font-medium text-slate-700"
         >
           Montant brut (optionnel)
         </label>
@@ -158,7 +158,7 @@ export function EditIncomeForm({ income }: { income: Income }) {
           inputMode="decimal"
           value={grossAmount}
           onChange={(e) => setGrossAmount(e.target.value)}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
       </div>
 
@@ -167,13 +167,13 @@ export function EditIncomeForm({ income }: { income: Income }) {
           href={`/api/incomes/${income.id}/payslip`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-zinc-500 underline hover:text-zinc-700"
+          className="text-sm text-slate-500 underline hover:text-slate-700"
         >
           Voir la fiche de paie jointe ({income.payslipOriginalName})
         </a>
       )}
 
-      <p className="text-xs text-zinc-400">
+      <p className="text-xs text-slate-400">
         Montant actuellement enregistré : {formatCents(income.netAmountCents)}
       </p>
 
@@ -187,7 +187,7 @@ export function EditIncomeForm({ income }: { income: Income }) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
+          className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
         >
           {isSubmitting ? "Enregistrement..." : "Enregistrer"}
         </button>
@@ -195,7 +195,7 @@ export function EditIncomeForm({ income }: { income: Income }) {
           type="button"
           onClick={handleDelete}
           disabled={isSubmitting}
-          className="rounded-lg px-3 py-2 text-sm text-zinc-500 hover:bg-zinc-100 disabled:opacity-50"
+          className="rounded-lg px-3 py-2 text-sm text-slate-500 hover:bg-slate-100 disabled:opacity-50"
         >
           Supprimer
         </button>

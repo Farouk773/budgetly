@@ -21,10 +21,10 @@ export default async function EditIncomePage({
 
   return (
     <div className="mx-auto w-full max-w-md px-4 py-10">
-      <h1 className="text-xl font-semibold text-zinc-900">
+      <h1 className="font-heading text-xl font-semibold text-slate-900">
         Corriger ce revenu
       </h1>
-      <p className="mt-1 text-sm text-zinc-500">
+      <p className="mt-1 text-sm text-slate-500">
         Un montant mal renseigné ou mal extrait ? Corrige-le ici.
       </p>
       <EditIncomeForm income={toIncomeDto(income)} />

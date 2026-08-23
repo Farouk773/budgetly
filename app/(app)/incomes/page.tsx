@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCents } from "@/lib/money";
@@ -21,19 +22,20 @@ export default async function IncomesPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-zinc-900">
+        <h1 className="font-heading text-xl font-semibold text-slate-900">
           Historique des revenus
         </h1>
         <Link
           href="/incomes/new"
-          className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700"
+          className="flex items-center gap-1.5 rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800"
         >
+          <Plus className="h-4 w-4" />
           Ajouter un revenu
         </Link>
       </div>
 
       {incomes.length === 0 ? (
-        <p className="mt-8 text-sm text-zinc-500">
+        <p className="mt-8 text-sm text-slate-500">
           Aucun revenu enregistré pour le moment.
         </p>
       ) : (
@@ -42,21 +44,21 @@ export default async function IncomesPage() {
             <li key={income.id}>
               <Link
                 href={`/incomes/${income.id}/edit`}
-                className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-colors hover:bg-zinc-50"
+                className="flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 transition-colors hover:bg-slate-50"
               >
                 <div>
-                  <p className="text-sm font-medium text-zinc-900">
+                  <p className="text-sm font-medium text-slate-900">
                     {income.label || INCOME_TYPE_LABELS[income.type]}
-                    <span className="ml-2 text-xs font-normal text-zinc-400">
+                    <span className="ml-2 text-xs font-normal text-slate-400">
                       {INCOME_TYPE_LABELS[income.type]}
                     </span>
                   </p>
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-slate-500">
                     {MONTH_FORMATTER.format(income.periodMonth)}
                     {income.payslipOriginalName ? " · fiche de paie jointe" : ""}
                   </p>
                 </div>
-                <p className="text-sm font-semibold text-zinc-900">
+                <p className="text-sm font-semibold text-slate-900">
                   {formatCents(income.netAmountCents)}
                 </p>
               </Link>

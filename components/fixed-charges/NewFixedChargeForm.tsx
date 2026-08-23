@@ -60,14 +60,14 @@ export function NewFixedChargeForm({ categories }: { categories: Category[] }) {
   return (
     <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <label htmlFor="category" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="category" className="text-sm font-medium text-slate-700">
           Catégorie
         </label>
         <select
           id="category"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         >
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
@@ -78,7 +78,7 @@ export function NewFixedChargeForm({ categories }: { categories: Category[] }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="label" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="label" className="text-sm font-medium text-slate-700">
           Libellé
         </label>
         <input
@@ -88,14 +88,14 @@ export function NewFixedChargeForm({ categories }: { categories: Category[] }) {
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           placeholder="Ex : Loyer, Internet, Netflix..."
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
       </div>
 
       <div className="flex flex-col gap-1">
         <label
           htmlFor="dayOfMonth"
-          className="text-sm font-medium text-zinc-700"
+          className="text-sm font-medium text-slate-700"
         >
           Jour de prélèvement dans le mois
         </label>
@@ -107,12 +107,12 @@ export function NewFixedChargeForm({ categories }: { categories: Category[] }) {
           required
           value={dayOfMonth}
           onChange={(e) => setDayOfMonth(e.target.value)}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="amount" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="amount" className="text-sm font-medium text-slate-700">
           Montant mensuel (€)
         </label>
         <input
@@ -123,7 +123,7 @@ export function NewFixedChargeForm({ categories }: { categories: Category[] }) {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           placeholder="650,00"
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
       </div>
 
@@ -136,7 +136,7 @@ export function NewFixedChargeForm({ categories }: { categories: Category[] }) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="mt-2 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
+        className="mt-2 rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
       >
         {isSubmitting ? "Ajout..." : "Ajouter"}
       </button>

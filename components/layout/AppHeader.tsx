@@ -1,22 +1,30 @@
 import Link from "next/link";
+import { PiggyBank } from "lucide-react";
 import type { AuthUser } from "@/lib/types";
 import { LogoutButton } from "@/components/auth/LogoutButton";
+import { DesktopNav } from "@/components/layout/DesktopNav";
 
 export function AppHeader({ user }: { user: AuthUser }) {
   return (
-    <header className="border-b border-zinc-200 bg-white">
-      <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-2 px-4 py-3">
-        <nav className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium text-zinc-700">
-          <Link href="/dashboard">Tableau de bord</Link>
-          <Link href="/incomes">Revenus</Link>
-          <Link href="/expenses">Dépenses</Link>
-          <Link href="/fixed-charges">Charges fixes</Link>
-          <Link href="/savings">Épargne</Link>
-          <Link href="/loans">Prêts</Link>
-          <Link href="/household">Foyer</Link>
-        </nav>
+    <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 font-heading text-lg font-semibold text-slate-900"
+        >
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-teal-700 text-white">
+            <PiggyBank className="h-4.5 w-4.5" />
+          </span>
+          <span className="hidden sm:inline">Budgetly</span>
+        </Link>
+
+        <DesktopNav />
+
         <div className="flex items-center gap-3">
-          <Link href="/account" className="text-sm text-zinc-500 hover:text-zinc-700">
+          <Link
+            href="/account"
+            className="hidden text-sm text-slate-500 hover:text-slate-700 sm:inline"
+          >
             {user.email}
           </Link>
           <LogoutButton />

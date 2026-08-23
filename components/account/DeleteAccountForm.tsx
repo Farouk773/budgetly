@@ -51,7 +51,7 @@ export function DeleteAccountForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-      <p className="text-sm text-zinc-700">
+      <p className="text-sm text-slate-700">
         Cette action est <strong>définitive</strong> : toutes tes données
         (revenus, dépenses, prêts, épargne, fiches de paie) seront supprimées
         sans possibilité de récupération. Confirme avec ton mot de passe.
@@ -62,7 +62,7 @@ export function DeleteAccountForm() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Mot de passe"
-        className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+        className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
       />
       {error && <p className="text-sm text-amber-800">{error}</p>}
       <div className="flex gap-2">
@@ -76,7 +76,7 @@ export function DeleteAccountForm() {
         <button
           type="button"
           onClick={() => setIsConfirming(false)}
-          className="rounded-lg px-3 py-2 text-sm text-zinc-500 hover:bg-zinc-100"
+          className="rounded-lg px-3 py-2 text-sm text-slate-500 hover:bg-slate-100"
         >
           Annuler
         </button>

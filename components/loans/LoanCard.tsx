@@ -94,9 +94,9 @@ export function LoanCard({ loan }: { loan: Loan }) {
   }
 
   return (
-    <li className="rounded-xl bg-white p-4 shadow-sm">
+    <li className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-zinc-900">
+        <p className="text-sm font-medium text-slate-900">
           {loan.name}
           {!loan.active && (
             <span className="ml-2 text-xs font-normal text-emerald-600">
@@ -108,13 +108,13 @@ export function LoanCard({ loan }: { loan: Loan }) {
           type="button"
           onClick={handleDelete}
           disabled={isSubmitting}
-          className="text-xs text-zinc-400 hover:text-zinc-600"
+          className="text-xs text-slate-400 hover:text-slate-600"
         >
           Supprimer
         </button>
       </div>
 
-      <div className="mt-1 text-xs text-zinc-500">
+      <div className="mt-1 text-xs text-slate-500">
         Restant dû : <strong>{formatCents(loan.remainingCents)}</strong> ·
         Mensualité : {formatCents(loan.monthlyPaymentCents)} · Taux :{" "}
         {(loan.annualRateBps / 100).toFixed(2)}% · Échéance :{" "}
@@ -130,12 +130,12 @@ export function LoanCard({ loan }: { loan: Loan }) {
               value={paymentAmount}
               onChange={(e) => setPaymentAmount(e.target.value)}
               placeholder="Enregistrer un paiement (€)"
-              className="flex-1 rounded-lg border border-zinc-300 px-3 py-1.5 text-sm focus:border-zinc-500 focus:outline-none"
+              className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
             />
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
+              className="rounded-lg bg-teal-700 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
             >
               Payer
             </button>
@@ -148,12 +148,12 @@ export function LoanCard({ loan }: { loan: Loan }) {
               value={extraAmount}
               onChange={(e) => setExtraAmount(e.target.value)}
               placeholder="Simuler un remboursement anticipé (€)"
-              className="flex-1 rounded-lg border border-zinc-300 px-3 py-1.5 text-sm focus:border-zinc-500 focus:outline-none"
+              className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
             />
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50"
+              className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
             >
               Simuler
             </button>

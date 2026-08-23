@@ -1,3 +1,4 @@
+import { AlertTriangle, CalendarClock } from "lucide-react";
 import { formatCents } from "@/lib/money";
 import type { AlertsSnapshot } from "@/lib/types";
 
@@ -21,33 +22,37 @@ export function AlertsPanel({ snapshot }: { snapshot: AlertsSnapshot }) {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       {hasOverdraftWarning && snapshot.overdraft && (
-        <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
-          Risque de découvert : il te manque{" "}
-          <strong>{formatCents(snapshot.overdraft.shortfallCents)}</strong>{" "}
-          pour couvrir tes charges fixes et prêts de ce mois-ci.
+        <p className="flex items-start gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>
+            Risque de découvert : il te manque{" "}
+            <strong>{formatCents(snapshot.overdraft.shortfallCents)}</strong>{" "}
+            pour couvrir tes charges fixes et prêts de ce mois-ci.
+          </span>
         </p>
       )}
 
       {hasUpcomingDues && (
-        <div className="rounded-xl bg-white p-4 shadow-sm">
-          <p className="text-sm font-medium text-zinc-700">
+        <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+          <p className="flex items-center gap-2 font-heading text-sm font-semibold text-slate-700">
+            <CalendarClock className="h-4 w-4 text-teal-600" />
             Échéances à venir
           </p>
-          <ul className="mt-2 flex flex-col gap-1">
+          <ul className="mt-3 flex flex-col divide-y divide-slate-100 text-sm">
             {snapshot.upcomingDues.map((due, index) => (
               <li
                 key={`${due.type}-${due.label}-${index}`}
-                className="flex items-center justify-between text-sm"
+                className="flex items-center justify-between py-2"
               >
-                <span className="text-zinc-600">
+                <span className="text-slate-600">
                   {due.label}{" "}
-                  <span className="text-xs text-zinc-400">
+                  <span className="text-xs text-slate-400">
                     ({DUE_LABEL[due.type]})
                   </span>
                 </span>
-                <span className="text-zinc-900">
+                <span className="text-slate-900">
                   {formatCents(due.amountCents)} · {formatDueIn(due.daysUntilDue)}
                 </span>
               </li>

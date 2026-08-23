@@ -45,12 +45,12 @@ export function InviteForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email de ton/ta partenaire"
-          className="flex-1 rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
         <button
           type="submit"
           disabled={isSubmitting}
-          className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
+          className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
         >
           Inviter
         </button>

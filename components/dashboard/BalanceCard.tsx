@@ -64,9 +64,9 @@ export function BalanceCard({
     return (
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 rounded-xl bg-white p-4 shadow-sm"
+        className="flex flex-col gap-2 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100"
       >
-        <label htmlFor="balance" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="balance" className="text-sm font-medium text-slate-700">
           Solde total actuel (tous comptes, €)
         </label>
         <input
@@ -77,14 +77,14 @@ export function BalanceCard({
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="1200,00"
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
         {error && <p className="text-sm text-amber-800">{error}</p>}
         <div className="flex gap-2">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
+            className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
           >
             {isSubmitting ? "..." : "Enregistrer"}
           </button>
@@ -92,7 +92,7 @@ export function BalanceCard({
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="rounded-lg px-3 py-2 text-sm text-zinc-500 hover:bg-zinc-100"
+              className="rounded-lg px-3 py-2 text-sm text-slate-500 hover:bg-slate-100"
             >
               Annuler
             </button>
@@ -103,14 +103,14 @@ export function BalanceCard({
   }
 
   return (
-    <div className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm">
+    <div className="flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
       <div>
-        <p className="text-sm text-zinc-500">Solde total actuel</p>
-        <p className="text-lg font-semibold text-zinc-900">
+        <p className="text-sm text-slate-500">Solde total actuel</p>
+        <p className="text-lg font-semibold text-slate-900">
           {formatCents(balanceCents ?? 0)}
         </p>
         {balanceAsOf && (
-          <p className="text-xs text-zinc-400">
+          <p className="text-xs text-slate-400">
             Mis à jour le {DATE_FORMATTER.format(new Date(balanceAsOf))}
           </p>
         )}
@@ -118,7 +118,7 @@ export function BalanceCard({
       <button
         type="button"
         onClick={() => setIsEditing(true)}
-        className="rounded-lg px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100"
+        className="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
       >
         Modifier
       </button>

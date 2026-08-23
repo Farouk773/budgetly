@@ -48,13 +48,13 @@ export function PurchaseSimulator({
   }
 
   return (
-    <div className="rounded-xl bg-white p-4 shadow-sm">
-      <p className="text-sm font-medium text-zinc-700">
+    <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+      <p className="text-sm font-medium text-slate-700">
         Puis-je me permettre cette dépense ?
       </p>
 
       {!hasDeclaredBalance ? (
-        <p className="mt-2 text-sm text-zinc-500">
+        <p className="mt-2 text-sm text-slate-500">
           Renseigne d&apos;abord ton solde actuel ci-dessus.
         </p>
       ) : (
@@ -65,12 +65,12 @@ export function PurchaseSimulator({
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="Montant en €"
-            className="flex-1 rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none"
+            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
           />
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
+            className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
           >
             Vérifier
           </button>

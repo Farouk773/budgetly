@@ -66,27 +66,27 @@ export function SavingsGoalCard({ goal }: { goal: SavingsGoal }) {
   }
 
   return (
-    <li className="rounded-xl bg-white p-4 shadow-sm">
+    <li className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-zinc-900">{goal.name}</p>
+        <p className="text-sm font-medium text-slate-900">{goal.name}</p>
         <button
           type="button"
           onClick={handleDelete}
           disabled={isSubmitting}
-          className="text-xs text-zinc-400 hover:text-zinc-600"
+          className="text-xs text-slate-400 hover:text-slate-600"
         >
           Supprimer
         </button>
       </div>
 
-      <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-zinc-100">
+      <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-100">
         <div
           className="h-full rounded-full bg-teal-600"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      <div className="mt-1 flex items-center justify-between text-xs text-zinc-500">
+      <div className="mt-1 flex items-center justify-between text-xs text-slate-500">
         <span>
           {formatCents(goal.currentCents)} / {formatCents(goal.targetCents)} (
           {progress}%)
@@ -103,12 +103,12 @@ export function SavingsGoalCard({ goal }: { goal: SavingsGoal }) {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           placeholder="Ajouter un montant (€)"
-          className="flex-1 rounded-lg border border-zinc-300 px-3 py-1.5 text-sm focus:border-zinc-500 focus:outline-none"
+          className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
         <button
           type="submit"
           disabled={isSubmitting}
-          className="rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
+          className="rounded-lg bg-teal-700 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
         >
           Ajouter
         </button>
