@@ -11,3 +11,14 @@ export const optionalCentsField = z
   .optional()
   .transform((v) => (v === undefined || v === "" ? undefined : v))
   .pipe(centsField.optional());
+
+// Allows a leading minus sign, for values that can legitimately go negative
+// (e.g. a declared bank balance while overdrawn).
+export const signedCentsField = z
+  .string()
+  .regex(/^-?\d+$/)
+  .transform((v) => parseInt(v, 10))
+  .refine(
+    (v) => v >= -100_000_000 && v <= 100_000_000,
+    "Montant invalide"
+  );

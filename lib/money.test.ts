@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatCents, parseEurosToCents } from "./money";
+import { formatCents, parseEurosToCents, parseSignedEurosToCents } from "./money";
 
 // Intl.NumberFormat("fr-FR") inserts non-breaking space variants (U+00A0,
 // U+202F) around the currency sign and as a thousands separator; normalize
@@ -49,5 +49,19 @@ describe("parseEurosToCents", () => {
 
   it("rejects a negative amount", () => {
     expect(parseEurosToCents("-100")).toBeNull();
+  });
+});
+
+describe("parseSignedEurosToCents", () => {
+  it("parses a positive amount", () => {
+    expect(parseSignedEurosToCents("1200")).toBe(120000);
+  });
+
+  it("parses a negative amount (overdrawn balance)", () => {
+    expect(parseSignedEurosToCents("-50,25")).toBe(-5025);
+  });
+
+  it("rejects non-numeric input", () => {
+    expect(parseSignedEurosToCents("-abc")).toBeNull();
   });
 });

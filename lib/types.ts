@@ -67,3 +67,19 @@ export type Expense = {
   date: string;
   createdAt: string;
 };
+
+export type MonthlyBudget = {
+  month: string;
+  incomeCents: number;
+  fixedChargesCents: number;
+  expensesCents: number;
+  availableCents: number;
+  balanceCents: number | null;
+  balanceAsOf: string | null;
+};
+
+export type PurchaseSimulation = {
+  affordable: boolean;
+  balanceAfterCents: number;
+  currentBalanceCents: number;
+};

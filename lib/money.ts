@@ -15,3 +15,13 @@ export function parseEurosToCents(input: string): number | null {
   }
   return Math.round(parseFloat(normalized) * 100);
 }
+
+/** Same as parseEurosToCents but allows a leading minus (e.g. an overdrawn declared balance). */
+export function parseSignedEurosToCents(input: string): number | null {
+  const trimmed = input.trim();
+  const isNegative = trimmed.startsWith("-");
+  const magnitude = parseEurosToCents(
+    isNegative ? trimmed.slice(1) : trimmed
+  );
+  return magnitude === null ? null : isNegative ? -magnitude : magnitude;
+}

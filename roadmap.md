@@ -29,9 +29,9 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [x] Catégories (manuelles pour l'instant, IA plus tard)
 
 ## Phase 4 — Solde en temps réel (point 3)
-- [ ] Calcul : revenu − charges − dépenses = reste disponible
-- [ ] Affichage du solde total actuel
-- [ ] Simulateur "puis-je me permettre cet achat"
+- [x] Calcul : revenu − charges − dépenses = reste disponible
+- [x] Affichage du solde total actuel
+- [x] Simulateur "puis-je me permettre cet achat"
 
 ## Phase 5 — Dashboard basique (point 7, version simple)
 - [ ] Vue d'ensemble du mois en cours
@@ -79,4 +79,4 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 - [ ] Optimisation performance
 
 ---
-**Statut actuel : Phase 3 terminée. Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
+**Statut actuel : Phase 4 terminée. Accord global reçu pour enchaîner toutes les phases restantes sans validation intermédiaire.**
