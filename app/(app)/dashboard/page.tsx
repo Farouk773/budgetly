@@ -1,46 +1,67 @@
 import { getCurrentUser } from "@/lib/auth";
 import { formatCents } from "@/lib/money";
-import { currentMonthValue, getDeclaredBalance, getMonthlyBudget } from "@/lib/queries/balance";
+import { currentMonthValue, getDeclaredBalance, getMonthlyBudget, monthRange } from "@/lib/queries/balance";
 import { getSpendingByCategory } from "@/lib/queries/spending";
 import { getMotivationSnapshot } from "@/lib/queries/motivation";
 import { getAlertsSnapshot } from "@/lib/queries/alerts";
-import Link from "next/link";
+import { toIncomeDto } from "@/lib/serializers/income";
+import { prisma } from "@/lib/prisma";
 import { FileSpreadsheet, FileText, TrendingDown, TrendingUp } from "lucide-react";
 import { BalanceCard } from "@/components/dashboard/BalanceCard";
 import { PurchaseSimulator } from "@/components/dashboard/PurchaseSimulator";
 import { CategoryBreakdownChart } from "@/components/dashboard/CategoryBreakdownChart";
 import { MotivationCard } from "@/components/dashboard/MotivationCard";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
+import { MonthNavigator } from "@/components/dashboard/MonthNavigator";
+import { QuickIncomeCard } from "@/components/dashboard/QuickIncomeCard";
 
 const MONTH_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   month: "long",
   year: "numeric",
 });
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ month?: string }>;
+}) {
   const user = await getCurrentUser();
-  const month = currentMonthValue();
+  const { month: monthParam } = await searchParams;
+  const currentMonth = currentMonthValue();
+  const month =
+    monthParam && /^\d{4}-\d{2}$/.test(monthParam) ? monthParam : currentMonth;
+  const isCurrentMonth = month === currentMonth;
 
-  const [budget, declared, spendingByCategory, motivation, alerts] = user
-    ? await Promise.all([
-        getMonthlyBudget(user.id, month),
-        getDeclaredBalance(user.id),
-        getSpendingByCategory(user.id, month),
-        getMotivationSnapshot(user.id),
-        getAlertsSnapshot(user.id),
-      ])
-    : [null, null, [], null, null];
+  const [budget, declared, spendingByCategory, motivation, alerts, monthIncomes] =
+    user
+      ? await Promise.all([
+          getMonthlyBudget(user.id, month),
+          getDeclaredBalance(user.id),
+          getSpendingByCategory(user.id, month),
+          isCurrentMonth ? getMotivationSnapshot(user.id) : Promise.resolve(null),
+          isCurrentMonth ? getAlertsSnapshot(user.id) : Promise.resolve(null),
+          prisma.income.findMany({
+            where: { userId: user.id, periodMonth: monthRange(month) },
+            orderBy: { createdAt: "asc" },
+          }),
+        ])
+      : [null, null, [], null, null, []];
 
   const isPositive = (budget?.availableCents ?? 0) >= 0;
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:py-10">
-      <h1 className="font-heading text-2xl font-semibold text-slate-900">
-        Bienvenue{user?.name ? `, ${user.name}` : ""}
-      </h1>
-      <p className="mt-1 text-sm text-slate-500">
-        Voici où en est ton budget en {MONTH_FORMATTER.format(new Date())}.
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="font-heading text-2xl font-semibold text-slate-900">
+            Bienvenue{user?.name ? `, ${user.name}` : ""}
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Voici où en est ton budget en {MONTH_FORMATTER.format(new Date(`${month}-01T00:00:00.000Z`))}.
+          </p>
+        </div>
+        <MonthNavigator month={month} isCurrentMonth={isCurrentMonth} />
+      </div>
 
       <div className="mt-6 grid gap-5 lg:grid-cols-3">
         <div className="flex flex-col gap-5 lg:col-span-2">
@@ -65,7 +86,7 @@ export default async function DashboardPage() {
               ) : (
                 <TrendingDown className="h-4 w-4" />
               )}
-              Il te reste ce mois-ci
+              {isCurrentMonth ? "Il te reste ce mois-ci" : "Disponible ce mois-là"}
             </div>
             <p className="relative mt-2 font-heading text-5xl font-bold tracking-tight text-white">
               {formatCents(budget?.availableCents ?? 0)}
@@ -81,6 +102,10 @@ export default async function DashboardPage() {
               <p className="font-heading text-sm font-semibold text-slate-700">
                 Détail du mois
               </p>
+              <p className="mt-1 text-xs text-slate-400">
+                Les charges fixes et mensualités de prêts restent constantes
+                d&apos;un mois à l&apos;autre ; revenus et dépenses varient.
+              </p>
               <div className="mt-3 flex flex-col divide-y divide-slate-100 text-sm">
                 <div className="flex justify-between py-2">
                   <span className="text-slate-500">Revenus du mois</span>
@@ -89,13 +114,19 @@ export default async function DashboardPage() {
                   </span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-slate-500">Charges fixes actives</span>
+                  <span className="text-slate-500">
+                    Charges fixes actives{" "}
+                    <span className="text-xs text-slate-400">(constant)</span>
+                  </span>
                   <span className="font-medium text-slate-900">
                     -{formatCents(budget.fixedChargesCents)}
                   </span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-slate-500">Mensualités de prêts</span>
+                  <span className="text-slate-500">
+                    Mensualités de prêts{" "}
+                    <span className="text-xs text-slate-400">(constant)</span>
+                  </span>
                   <span className="font-medium text-slate-900">
                     -{formatCents(budget.loanPaymentsCents)}
                   </span>
@@ -110,34 +141,38 @@ export default async function DashboardPage() {
             </div>
           )}
 
-          {budget && budget.suggestedSavingsCents > 0 && (
-            <Link
+          {isCurrentMonth && budget && budget.suggestedSavingsCents > 0 && (
+            <a
               href="/savings"
               className="rounded-xl bg-teal-50 px-4 py-3 text-sm text-teal-800 transition-colors hover:bg-teal-100"
             >
               Tu pourrais mettre{" "}
               <strong>{formatCents(budget.suggestedSavingsCents)}</strong> de
               côté ce mois-ci →
-            </Link>
+            </a>
           )}
 
           <CategoryBreakdownChart entries={spendingByCategory} />
         </div>
 
         <div className="flex flex-col gap-5">
+          <QuickIncomeCard month={month} incomes={monthIncomes.map(toIncomeDto)} />
+
           <BalanceCard
             balanceCents={declared?.balanceCents ?? null}
             balanceAsOf={declared?.balanceAsOf ?? null}
           />
 
-          <PurchaseSimulator hasDeclaredBalance={declared?.balanceCents !== null} />
+          {isCurrentMonth && (
+            <PurchaseSimulator hasDeclaredBalance={declared?.balanceCents !== null} />
+          )}
 
           <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
             <p className="font-heading text-sm font-semibold text-slate-700">
               Exporter le bilan
             </p>
             <p className="mt-1 text-xs text-slate-500">
-              Bilan de {MONTH_FORMATTER.format(new Date())}
+              Bilan de {MONTH_FORMATTER.format(new Date(`${month}-01T00:00:00.000Z`))}
             </p>
             <div className="mt-3 flex gap-2">
               <a
