@@ -4,11 +4,7 @@ import { useState } from "react";
 import { formatCents, parseEurosToCents } from "@/lib/money";
 import type { ApiError, PurchaseSimulation } from "@/lib/types";
 
-export function PurchaseSimulator({
-  hasDeclaredBalance,
-}: {
-  hasDeclaredBalance: boolean;
-}) {
+export function PurchaseSimulator() {
   const [amount, setAmount] = useState("");
   const [result, setResult] = useState<PurchaseSimulation | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -53,29 +49,23 @@ export function PurchaseSimulator({
         Puis-je me permettre cette dépense ?
       </p>
 
-      {!hasDeclaredBalance ? (
-        <p className="mt-2 text-sm text-slate-500">
-          Renseigne d&apos;abord ton solde actuel ci-dessus.
-        </p>
-      ) : (
-        <form onSubmit={handleSubmit} className="mt-2 flex gap-2">
-          <input
-            type="text"
-            inputMode="decimal"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="Montant en €"
-            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
-          />
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
-          >
-            Vérifier
-          </button>
-        </form>
-      )}
+      <form onSubmit={handleSubmit} className="mt-2 flex gap-2">
+        <input
+          type="text"
+          inputMode="decimal"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          placeholder="Montant en €"
+          className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
+        />
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
+        >
+          Vérifier
+        </button>
+      </form>
 
       {error && <p className="mt-2 text-sm text-amber-800">{error}</p>}
 

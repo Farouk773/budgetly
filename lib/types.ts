@@ -134,7 +134,7 @@ export type UpcomingDue = {
 };
 
 export type AlertsSnapshot = {
-  overdraft: { atRisk: boolean; shortfallCents: number } | null;
+  overdraft: { atRisk: boolean; shortfallCents: number };
   upcomingDues: UpcomingDue[];
 };
 

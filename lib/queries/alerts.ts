@@ -4,7 +4,7 @@ import {
   daysUntilDue,
   UPCOMING_DUE_WINDOW_DAYS,
 } from "@/lib/alerts";
-import { getMonthlyBudget, currentMonthValue } from "@/lib/queries/balance";
+import { getMonthlyBudget, getRunningBalance, currentMonthValue } from "@/lib/queries/balance";
 
 export type UpcomingDue = {
   label: string;
@@ -15,15 +15,13 @@ export type UpcomingDue = {
 
 export async function getAlertsSnapshot(userId: string) {
   const today = new Date();
+  const month = currentMonthValue();
 
-  const [user, fixedCharges, loans, budget] = await Promise.all([
-    prisma.user.findUniqueOrThrow({
-      where: { id: userId },
-      select: { balanceCents: true },
-    }),
+  const [running, fixedCharges, loans, budget] = await Promise.all([
+    getRunningBalance(userId, month),
     prisma.fixedCharge.findMany({ where: { userId, active: true } }),
     prisma.loan.findMany({ where: { userId, active: true } }),
-    getMonthlyBudget(userId, currentMonthValue()),
+    getMonthlyBudget(userId, month),
   ]);
 
   const upcomingDues: UpcomingDue[] = [
@@ -43,13 +41,10 @@ export async function getAlertsSnapshot(userId: string) {
     .filter((d) => d.daysUntilDue <= UPCOMING_DUE_WINDOW_DAYS)
     .sort((a, b) => a.daysUntilDue - b.daysUntilDue);
 
-  const overdraft =
-    user.balanceCents === null
-      ? null
-      : computeOverdraftRisk({
-          balanceCents: user.balanceCents,
-          upcomingCommittedCents: budget.fixedChargesCents + budget.loanPaymentsCents,
-        });
+  const overdraft = computeOverdraftRisk({
+    balanceCents: running.startingBalanceCents,
+    upcomingCommittedCents: budget.fixedChargesCents + budget.loanPaymentsCents,
+  });
 
   return { overdraft, upcomingDues };
 }

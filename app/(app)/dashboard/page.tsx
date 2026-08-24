@@ -1,6 +1,11 @@
 import { getCurrentUser } from "@/lib/auth";
 import { formatCents } from "@/lib/money";
-import { currentMonthValue, getDeclaredBalance, getMonthlyBudget, monthRange } from "@/lib/queries/balance";
+import {
+  currentMonthValue,
+  getMonthlyBudget,
+  getRunningBalance,
+  monthRange,
+} from "@/lib/queries/balance";
 import { getSpendingByCategory } from "@/lib/queries/spending";
 import { getMotivationSnapshot } from "@/lib/queries/motivation";
 import { getAlertsSnapshot } from "@/lib/queries/alerts";
@@ -42,11 +47,11 @@ export default async function DashboardPage({
     monthParam && /^\d{4}-\d{2}$/.test(monthParam) ? monthParam : currentMonth;
   const isCurrentMonth = month === currentMonth;
 
-  const [budget, declared, spendingByCategory, motivation, alerts, monthIncomes] =
+  const [budget, running, spendingByCategory, motivation, alerts, monthIncomes] =
     user
       ? await Promise.all([
           getMonthlyBudget(user.id, month),
-          getDeclaredBalance(user.id),
+          getRunningBalance(user.id, month),
           getSpendingByCategory(user.id, month),
           isCurrentMonth ? getMotivationSnapshot(user.id) : Promise.resolve(null),
           isCurrentMonth ? getAlertsSnapshot(user.id) : Promise.resolve(null),
@@ -57,11 +62,13 @@ export default async function DashboardPage({
         ])
       : [null, null, [], null, null, []];
 
-  const isPositive = (budget?.availableCents ?? 0) >= 0;
+  const isMonthPositive = (budget?.availableCents ?? 0) >= 0;
+  const totalCents = running?.startingBalanceCents ?? 0;
+  const isTotalPositive = totalCents >= 0;
   const projectedCents =
-    budget && declared?.balanceCents !== null && declared?.balanceCents !== undefined
+    budget && running
       ? projectEndOfMonthCents({
-          balanceCents: declared.balanceCents,
+          balanceCents: running.startingBalanceCents,
           monthlyAvailableCents: budget.availableCents,
         })
       : null;
@@ -80,37 +87,43 @@ export default async function DashboardPage({
         <MonthNavigator month={month} isCurrentMonth={isCurrentMonth} />
       </div>
 
+      <div
+        className={`relative mt-6 overflow-hidden rounded-3xl p-7 text-center shadow-lg sm:p-8 ${
+          isTotalPositive
+            ? "bg-gradient-to-br from-emerald-600 to-teal-700 shadow-emerald-900/10"
+            : "bg-gradient-to-br from-amber-500 to-amber-600 shadow-amber-900/10"
+        }`}
+      >
+        <div
+          className="pointer-events-none absolute inset-0 opacity-10"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 85% 15%, white 1px, transparent 1px)",
+            backgroundSize: "24px 24px",
+          }}
+        />
+        <p className="relative text-sm font-medium text-white/85">
+          {isCurrentMonth ? "Ton solde total" : `Ton solde total début ${MONTH_FORMATTER.format(new Date(`${month}-01T00:00:00.000Z`))}`}
+        </p>
+        <p className="relative mt-2 font-heading text-5xl font-bold tracking-tight text-white">
+          {formatCents(totalCents)}
+        </p>
+        {budget && (
+          <div className="relative mt-3 flex items-center justify-center gap-1.5 text-sm font-medium text-white/90">
+            {isMonthPositive ? (
+              <TrendingUp className="h-4 w-4" />
+            ) : (
+              <TrendingDown className="h-4 w-4" />
+            )}
+            {isMonthPositive ? "+" : ""}
+            {formatCents(budget.availableCents)} ce mois-ci
+          </div>
+        )}
+      </div>
+
       <div className="mt-6 grid gap-5 lg:grid-cols-3">
         <div className="flex flex-col gap-3 lg:col-span-2">
           <SectionLabel>Revenus et dépenses de ce mois-ci</SectionLabel>
-
-          <div
-            className={`relative overflow-hidden rounded-3xl p-7 text-center shadow-lg sm:p-8 ${
-              isPositive
-                ? "bg-gradient-to-br from-emerald-600 to-teal-700 shadow-emerald-900/10"
-                : "bg-gradient-to-br from-amber-500 to-amber-600 shadow-amber-900/10"
-            }`}
-          >
-            <div
-              className="pointer-events-none absolute inset-0 opacity-10"
-              style={{
-                backgroundImage:
-                  "radial-gradient(circle at 85% 15%, white 1px, transparent 1px)",
-                backgroundSize: "24px 24px",
-              }}
-            />
-            <div className="relative flex items-center justify-center gap-2 text-sm font-medium text-white/85">
-              {isPositive ? (
-                <TrendingUp className="h-4 w-4" />
-              ) : (
-                <TrendingDown className="h-4 w-4" />
-              )}
-              {isCurrentMonth ? "Il te reste ce mois-ci" : "Disponible ce mois-là"}
-            </div>
-            <p className="relative mt-2 font-heading text-5xl font-bold tracking-tight text-white">
-              {formatCents(budget?.availableCents ?? 0)}
-            </p>
-          </div>
 
           {alerts && <AlertsPanel snapshot={alerts} />}
 
@@ -156,6 +169,18 @@ export default async function DashboardPage({
                     -{formatCents(budget.expensesCents)}
                   </span>
                 </div>
+                <div className="flex justify-between pt-2 text-sm">
+                  <span className="font-medium text-slate-700">
+                    = Variation de {isCurrentMonth ? "ce mois-ci" : "ce mois-là"}
+                  </span>
+                  <span
+                    className={`font-heading text-base font-semibold ${
+                      isMonthPositive ? "text-emerald-700" : "text-amber-700"
+                    }`}
+                  >
+                    {formatCents(budget.availableCents)}
+                  </span>
+                </div>
               </div>
             </div>
           )}
@@ -177,25 +202,27 @@ export default async function DashboardPage({
         </div>
 
         <div className="flex flex-col gap-3">
-          <SectionLabel>Ton solde bancaire</SectionLabel>
+          <SectionLabel>Ton solde</SectionLabel>
 
-          <BalanceCard
-            balanceCents={declared?.balanceCents ?? null}
-            balanceAsOf={declared?.balanceAsOf ?? null}
-            isCurrentMonth={isCurrentMonth}
-          />
+          {running && (
+            <BalanceCard
+              displayedCents={running.startingBalanceCents}
+              balanceAsOf={running.declaredAsOf}
+              isDeclared={running.isDeclared}
+              isExactAnchor={month === running.anchorMonth}
+              canEdit={isCurrentMonth}
+            />
+          )}
 
-          {isCurrentMonth && projectedCents !== null && (
+          {isCurrentMonth && projectedCents !== null && running && (
             <ProjectionCard
-              balanceCents={declared!.balanceCents!}
+              balanceCents={running.startingBalanceCents}
               monthlyAvailableCents={budget!.availableCents}
               projectedCents={projectedCents}
             />
           )}
 
-          {isCurrentMonth && (
-            <PurchaseSimulator hasDeclaredBalance={declared?.balanceCents !== null} />
-          )}
+          {isCurrentMonth && <PurchaseSimulator />}
 
           <div className="mt-2 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
             <p className="font-heading text-sm font-semibold text-slate-700">

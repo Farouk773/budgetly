@@ -13,18 +13,22 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
 });
 
 export function BalanceCard({
-  balanceCents,
+  displayedCents,
   balanceAsOf,
-  isCurrentMonth = true,
+  isDeclared,
+  isExactAnchor,
+  canEdit,
 }: {
-  balanceCents: number | null;
+  displayedCents: number;
   balanceAsOf: string | null;
-  isCurrentMonth?: boolean;
+  isDeclared: boolean;
+  isExactAnchor: boolean;
+  canEdit: boolean;
 }) {
   const router = useRouter();
-  const [isEditing, setIsEditing] = useState(balanceCents === null);
+  const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(
-    balanceCents !== null ? (balanceCents / 100).toFixed(2).replace(".", ",") : ""
+    (displayedCents / 100).toFixed(2).replace(".", ",")
   );
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,8 +73,13 @@ export function BalanceCard({
         className="flex flex-col gap-2 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100"
       >
         <label htmlFor="balance" className="text-sm font-medium text-slate-700">
-          Solde total actuel (tous comptes, €)
+          Corriger le solde total (€)
         </label>
+        <p className="text-xs text-slate-400">
+          Utile si le montant réel sur tes comptes/cash diffère de
+          l&apos;estimation ci-dessous (dépense en cash non enregistrée,
+          etc.).
+        </p>
         <input
           id="balance"
           type="text"
@@ -90,15 +99,13 @@ export function BalanceCard({
           >
             {isSubmitting ? "..." : "Enregistrer"}
           </button>
-          {balanceCents !== null && (
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              className="rounded-lg px-3 py-2 text-sm text-slate-500 hover:bg-slate-100"
-            >
-              Annuler
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setIsEditing(false)}
+            className="rounded-lg px-3 py-2 text-sm text-slate-500 hover:bg-slate-100"
+          >
+            Annuler
+          </button>
         </div>
       </form>
     );
@@ -107,28 +114,36 @@ export function BalanceCard({
   return (
     <div className="flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
       <div>
-        <p className="text-sm text-slate-500">Solde total actuel</p>
+        <p className="text-sm text-slate-500">Solde total</p>
         <p className="text-lg font-semibold text-slate-900">
-          {formatCents(balanceCents ?? 0)}
+          {formatCents(displayedCents)}
         </p>
-        {balanceAsOf && (
+        {!isDeclared && (
           <p className="text-xs text-slate-400">
-            Mis à jour le {DATE_FORMATTER.format(new Date(balanceAsOf))}
+            Calculé à partir de tes revenus et dépenses enregistrés
           </p>
         )}
-        {!isCurrentMonth && (
-          <p className="mt-1 text-xs italic text-slate-400">
-            Indépendant du mois affiché — c&apos;est ton solde d&apos;aujourd&apos;hui
+        {isDeclared && isExactAnchor && balanceAsOf && (
+          <p className="text-xs text-slate-400">
+            Corrigé le {DATE_FORMATTER.format(new Date(balanceAsOf))}
+          </p>
+        )}
+        {isDeclared && !isExactAnchor && balanceAsOf && (
+          <p className="text-xs text-slate-400">
+            Calculé depuis ta dernière correction du{" "}
+            {DATE_FORMATTER.format(new Date(balanceAsOf))}
           </p>
         )}
       </div>
-      <button
-        type="button"
-        onClick={() => setIsEditing(true)}
-        className="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-      >
-        Modifier
-      </button>
+      {canEdit && (
+        <button
+          type="button"
+          onClick={() => setIsEditing(true)}
+          className="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+        >
+          Corriger
+        </button>
+      )}
     </div>
   );
 }
