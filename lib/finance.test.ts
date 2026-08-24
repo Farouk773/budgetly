@@ -3,10 +3,31 @@ import {
   combineMonthlyBudgets,
   computeMonthlyAvailableCents,
   computeRemainingMonths,
+  projectEndOfMonthCents,
   simulateEarlyRepayment,
   simulatePurchase,
   suggestSavingsCents,
 } from "./finance";
+
+describe("projectEndOfMonthCents", () => {
+  it("adds a positive monthly balance to today's balance", () => {
+    expect(
+      projectEndOfMonthCents({ balanceCents: 320000, monthlyAvailableCents: 177701 })
+    ).toBe(497701);
+  });
+
+  it("subtracts a monthly deficit from today's balance", () => {
+    expect(
+      projectEndOfMonthCents({ balanceCents: 100000, monthlyAvailableCents: -30000 })
+    ).toBe(70000);
+  });
+
+  it("can project a negative outcome when the deficit exceeds the balance", () => {
+    expect(
+      projectEndOfMonthCents({ balanceCents: 5000, monthlyAvailableCents: -20000 })
+    ).toBe(-15000);
+  });
+});
 
 describe("combineMonthlyBudgets", () => {
   it("sums two people's budgets into a household total", () => {

@@ -12,6 +12,18 @@ export function computeMonthlyAvailableCents(params: {
   );
 }
 
+/** Projected end-of-month total: today's declared bank balance plus what's
+ * left to earn/spend this month, assuming the rest of the month follows the
+ * current trend. Kept separate from the balance itself so the UI never
+ * conflates "what's in the bank today" with "what the month's flow adds up
+ * to" — two numbers users must be able to tell apart. */
+export function projectEndOfMonthCents(params: {
+  balanceCents: number;
+  monthlyAvailableCents: number;
+}): number {
+  return params.balanceCents + params.monthlyAvailableCents;
+}
+
 export function simulatePurchase(params: {
   currentBalanceCents: number;
   amountCents: number;
