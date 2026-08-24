@@ -68,6 +68,8 @@ export type Expense = {
   createdAt: string;
 };
 
+export type BalanceSource = "BANK" | "CASH" | "MIXED";
+
 export type MonthlyBudget = {
   month: string;
   incomeCents: number;

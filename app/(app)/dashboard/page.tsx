@@ -14,7 +14,6 @@ import { projectEndOfMonthCents } from "@/lib/finance";
 import { prisma } from "@/lib/prisma";
 import { FileSpreadsheet, FileText, TrendingDown, TrendingUp } from "lucide-react";
 import { BalanceCard } from "@/components/dashboard/BalanceCard";
-import { ProjectionCard } from "@/components/dashboard/ProjectionCard";
 import { PurchaseSimulator } from "@/components/dashboard/PurchaseSimulator";
 import { CategoryBreakdownChart } from "@/components/dashboard/CategoryBreakdownChart";
 import { MotivationCard } from "@/components/dashboard/MotivationCard";
@@ -33,6 +32,12 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
       {children}
     </p>
   );
+}
+
+function heroLabel(month: string, currentMonth: string): string {
+  if (month === currentMonth) return "Ce qu'il te reste à la fin de ce mois-ci";
+  if (month < currentMonth) return "Ce qu'il te restait à la fin de ce mois-là";
+  return "Ce qu'il te resterait à la fin de ce mois-là";
 }
 
 export default async function DashboardPage({
@@ -63,15 +68,14 @@ export default async function DashboardPage({
       : [null, null, [], null, null, []];
 
   const isMonthPositive = (budget?.availableCents ?? 0) >= 0;
-  const totalCents = running?.startingBalanceCents ?? 0;
-  const isTotalPositive = totalCents >= 0;
   const projectedCents =
     budget && running
       ? projectEndOfMonthCents({
           balanceCents: running.startingBalanceCents,
           monthlyAvailableCents: budget.availableCents,
         })
-      : null;
+      : 0;
+  const isProjectedPositive = projectedCents >= 0;
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:py-10">
@@ -89,7 +93,7 @@ export default async function DashboardPage({
 
       <div
         className={`relative mt-6 overflow-hidden rounded-3xl p-7 text-center shadow-lg sm:p-8 ${
-          isTotalPositive
+          isProjectedPositive
             ? "bg-gradient-to-br from-emerald-600 to-teal-700 shadow-emerald-900/10"
             : "bg-gradient-to-br from-amber-500 to-amber-600 shadow-amber-900/10"
         }`}
@@ -103,21 +107,22 @@ export default async function DashboardPage({
           }}
         />
         <p className="relative text-sm font-medium text-white/85">
-          {isCurrentMonth ? "Ton solde total" : `Ton solde total début ${MONTH_FORMATTER.format(new Date(`${month}-01T00:00:00.000Z`))}`}
+          {heroLabel(month, currentMonth)}
         </p>
         <p className="relative mt-2 font-heading text-5xl font-bold tracking-tight text-white">
-          {formatCents(totalCents)}
+          {formatCents(projectedCents)}
         </p>
-        {budget && (
-          <div className="relative mt-3 flex items-center justify-center gap-1.5 text-sm font-medium text-white/90">
+        {budget && running && (
+          <p className="relative mt-3 flex items-center justify-center gap-1.5 text-sm text-white/90">
+            {formatCents(running.startingBalanceCents)} au départ
             {isMonthPositive ? (
               <TrendingUp className="h-4 w-4" />
             ) : (
               <TrendingDown className="h-4 w-4" />
             )}
             {isMonthPositive ? "+" : ""}
-            {formatCents(budget.availableCents)} ce mois-ci
-          </div>
+            {formatCents(budget.availableCents)} ce mois-{isCurrentMonth ? "ci" : "là"}
+          </p>
         )}
       </div>
 
@@ -128,6 +133,8 @@ export default async function DashboardPage({
           {alerts && <AlertsPanel snapshot={alerts} />}
 
           {motivation && <MotivationCard snapshot={motivation} />}
+
+          <QuickIncomeCard month={month} incomes={monthIncomes.map(toIncomeDto)} />
 
           {budget && (
             <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
@@ -185,8 +192,6 @@ export default async function DashboardPage({
             </div>
           )}
 
-          <QuickIncomeCard month={month} incomes={monthIncomes.map(toIncomeDto)} />
-
           {isCurrentMonth && budget && budget.suggestedSavingsCents > 0 && (
             <a
               href="/savings"
@@ -208,17 +213,10 @@ export default async function DashboardPage({
             <BalanceCard
               displayedCents={running.startingBalanceCents}
               balanceAsOf={running.declaredAsOf}
+              balanceSource={running.balanceSource}
               isDeclared={running.isDeclared}
               isExactAnchor={month === running.anchorMonth}
               canEdit={isCurrentMonth}
-            />
-          )}
-
-          {isCurrentMonth && projectedCents !== null && running && (
-            <ProjectionCard
-              balanceCents={running.startingBalanceCents}
-              monthlyAvailableCents={budget!.availableCents}
-              projectedCents={projectedCents}
             />
           )}
 

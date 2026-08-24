@@ -18,8 +18,9 @@ model User {
   passwordHash String
   name         String?
   // manually declared total balance (all accounts/cash) until Open Banking (Phase 12)
-  balanceCents Int?
-  balanceAsOf  DateTime?
+  balanceCents  Int?
+  balanceAsOf   DateTime?
+  balanceSource BalanceSource?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   sessions     Session[]
@@ -30,6 +31,12 @@ model User {
   loans        Loan[]
   sentLinks     PartnerLink[] @relation("RequestedLinks")
   receivedLinks PartnerLink[] @relation("PartnerLinks")
+}
+
+enum BalanceSource {
+  BANK
+  CASH
+  MIXED
 }
 
 enum PartnerLinkStatus {

@@ -87,16 +87,23 @@ export async function getDeclaredBalance(userId: string) {
 export async function getRunningBalance(userId: string, targetMonth: string) {
   const user = await prisma.user.findUniqueOrThrow({
     where: { id: userId },
-    select: { balanceCents: true, balanceAsOf: true, createdAt: true },
+    select: { balanceCents: true, balanceAsOf: true, balanceSource: true, createdAt: true },
   });
 
   const isDeclared = user.balanceCents !== null;
   const declaredAsOf = user.balanceAsOf ? user.balanceAsOf.toISOString() : null;
+  const balanceSource = user.balanceSource;
   const anchorMonth = toMonthString(user.balanceAsOf ?? user.createdAt);
   const anchorCents = user.balanceCents ?? 0;
 
   if (targetMonth <= anchorMonth) {
-    return { startingBalanceCents: anchorCents, anchorMonth, isDeclared, declaredAsOf };
+    return {
+      startingBalanceCents: anchorCents,
+      anchorMonth,
+      isDeclared,
+      declaredAsOf,
+      balanceSource,
+    };
   }
 
   const months: string[] = [];
@@ -111,5 +118,5 @@ export async function getRunningBalance(userId: string, targetMonth: string) {
     anchorCents
   );
 
-  return { startingBalanceCents, anchorMonth, isDeclared, declaredAsOf };
+  return { startingBalanceCents, anchorMonth, isDeclared, declaredAsOf, balanceSource };
 }

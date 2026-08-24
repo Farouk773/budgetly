@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Landmark, Wallet } from "lucide-react";
 import { formatCents, parseSignedEurosToCents } from "@/lib/money";
-import type { ApiError } from "@/lib/types";
+import type { ApiError, BalanceSource } from "@/lib/types";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   day: "2-digit",
@@ -12,15 +13,23 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   minute: "2-digit",
 });
 
+const SOURCE_LABELS: Record<BalanceSource, { label: string; Icon: typeof Landmark }> = {
+  BANK: { label: "Compte bancaire", Icon: Landmark },
+  CASH: { label: "Cash", Icon: Wallet },
+  MIXED: { label: "Compte + cash", Icon: Landmark },
+};
+
 export function BalanceCard({
   displayedCents,
   balanceAsOf,
+  balanceSource,
   isDeclared,
   isExactAnchor,
   canEdit,
 }: {
   displayedCents: number;
   balanceAsOf: string | null;
+  balanceSource: BalanceSource | null;
   isDeclared: boolean;
   isExactAnchor: boolean;
   canEdit: boolean;
@@ -30,6 +39,7 @@ export function BalanceCard({
   const [value, setValue] = useState(
     (displayedCents / 100).toFixed(2).replace(".", ",")
   );
+  const [source, setSource] = useState<BalanceSource>(balanceSource ?? "BANK");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -48,7 +58,7 @@ export function BalanceCard({
       const res = await fetch("/api/balance", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ balanceCents: String(cents) }),
+        body: JSON.stringify({ balanceCents: String(cents), balanceSource: source }),
       });
 
       if (!res.ok) {
@@ -90,6 +100,21 @@ export function BalanceCard({
           placeholder="1200,00"
           className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
         />
+
+        <label htmlFor="source" className="mt-1 text-sm font-medium text-slate-700">
+          Ce montant, c&apos;est...
+        </label>
+        <select
+          id="source"
+          value={source}
+          onChange={(e) => setSource(e.target.value as BalanceSource)}
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
+        >
+          <option value="BANK">Un compte bancaire</option>
+          <option value="CASH">Du cash</option>
+          <option value="MIXED">Les deux combinés</option>
+        </select>
+
         {error && <p className="text-sm text-amber-800">{error}</p>}
         <div className="flex gap-2">
           <button
@@ -111,16 +136,27 @@ export function BalanceCard({
     );
   }
 
+  const sourceInfo = balanceSource ? SOURCE_LABELS[balanceSource] : null;
+
   return (
     <div className="flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
       <div>
-        <p className="text-sm text-slate-500">Solde total</p>
+        <div className="flex items-center gap-1.5">
+          <p className="text-sm text-slate-500">Solde de départ</p>
+          {sourceInfo && (
+            <span className="flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+              <sourceInfo.Icon className="h-3 w-3" />
+              {sourceInfo.label}
+            </span>
+          )}
+        </div>
         <p className="text-lg font-semibold text-slate-900">
           {formatCents(displayedCents)}
         </p>
         {!isDeclared && (
           <p className="text-xs text-slate-400">
-            Calculé à partir de tes revenus et dépenses enregistrés
+            Calculé à partir de tes revenus et dépenses enregistrés — précise
+            si c&apos;est un compte bancaire ou du cash en corrigeant
           </p>
         )}
         {isDeclared && isExactAnchor && balanceAsOf && (

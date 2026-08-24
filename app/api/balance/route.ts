@@ -39,11 +39,16 @@ export async function PATCH(request: NextRequest) {
   const now = new Date();
   await prisma.user.update({
     where: { id: user.id },
-    data: { balanceCents: parsed.data.balanceCents, balanceAsOf: now },
+    data: {
+      balanceCents: parsed.data.balanceCents,
+      balanceAsOf: now,
+      balanceSource: parsed.data.balanceSource,
+    },
   });
 
   return NextResponse.json({
     balanceCents: parsed.data.balanceCents,
     balanceAsOf: now.toISOString(),
+    balanceSource: parsed.data.balanceSource ?? null,
   });
 }
