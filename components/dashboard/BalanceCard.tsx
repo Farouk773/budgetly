@@ -15,9 +15,11 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
 export function BalanceCard({
   balanceCents,
   balanceAsOf,
+  isCurrentMonth = true,
 }: {
   balanceCents: number | null;
   balanceAsOf: string | null;
+  isCurrentMonth?: boolean;
 }) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(balanceCents === null);
@@ -112,6 +114,11 @@ export function BalanceCard({
         {balanceAsOf && (
           <p className="text-xs text-slate-400">
             Mis à jour le {DATE_FORMATTER.format(new Date(balanceAsOf))}
+          </p>
+        )}
+        {!isCurrentMonth && (
+          <p className="mt-1 text-xs italic text-slate-400">
+            Indépendant du mois affiché — c&apos;est ton solde d&apos;aujourd&apos;hui
           </p>
         )}
       </div>

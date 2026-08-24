@@ -161,6 +161,7 @@ export default async function DashboardPage({
           <BalanceCard
             balanceCents={declared?.balanceCents ?? null}
             balanceAsOf={declared?.balanceAsOf ?? null}
+            isCurrentMonth={isCurrentMonth}
           />
 
           {isCurrentMonth && (
