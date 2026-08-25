@@ -15,10 +15,8 @@ export function AppHeader({ user }: { user: AuthUser }) {
           <span className="bg-brand-gradient flex h-8 w-8 items-center justify-center rounded-xl text-white shadow-sm shadow-indigo-900/20">
             <PiggyBank className="h-4.5 w-4.5" />
           </span>
-          <span className="hidden sm:inline">Budgetly</span>
+          Budgetly
         </Link>
-
-        <DesktopNav />
 
         <div className="flex items-center gap-3">
           <Link
@@ -28,6 +26,12 @@ export function AppHeader({ user }: { user: AuthUser }) {
             {user.email}
           </Link>
           <LogoutButton />
+        </div>
+      </div>
+
+      <div className="hidden border-t border-slate-100 md:block dark:border-white/5">
+        <div className="mx-auto max-w-5xl px-4">
+          <DesktopNav />
         </div>
       </div>
     </header>
