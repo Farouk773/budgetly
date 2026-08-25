@@ -23,19 +23,19 @@ export function MonthNavigator({
       <Link
         href={`/dashboard?month=${previous}`}
         aria-label="Mois précédent"
-        className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors hover:bg-slate-50"
+        className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors hover:bg-slate-50 dark:border-white/10 dark:text-slate-400 dark:hover:bg-white/5"
       >
         <ChevronLeft className="h-4 w-4" />
       </Link>
 
-      <span className="min-w-[9rem] text-center text-sm font-medium capitalize text-slate-700">
+      <span className="min-w-[9rem] text-center text-sm font-medium capitalize text-slate-700 dark:text-slate-200">
         {label}
       </span>
 
       <Link
         href={`/dashboard?month=${next}`}
         aria-label="Mois suivant"
-        className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors hover:bg-slate-50"
+        className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors hover:bg-slate-50 dark:border-white/10 dark:text-slate-400 dark:hover:bg-white/5"
       >
         <ChevronRight className="h-4 w-4" />
       </Link>
@@ -43,7 +43,7 @@ export function MonthNavigator({
       {!isCurrentMonth && (
         <Link
           href="/dashboard"
-          className="ml-1 text-xs font-medium text-teal-700 hover:text-teal-800"
+          className="ml-1 text-xs font-medium text-indigo-600 transition-colors hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
         >
           Revenir à ce mois-ci
         </Link>

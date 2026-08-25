@@ -28,7 +28,7 @@ const MONTH_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="px-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
+    <p className="px-1 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
       {children}
     </p>
   );
@@ -81,23 +81,17 @@ export default async function DashboardPage({
     <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:py-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-heading text-2xl font-semibold text-slate-900">
+          <h1 className="font-heading text-2xl font-semibold text-slate-900 dark:text-slate-100">
             Bienvenue{user?.name ? `, ${user.name}` : ""}
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Voici où en est ton budget en {MONTH_FORMATTER.format(new Date(`${month}-01T00:00:00.000Z`))}.
           </p>
         </div>
         <MonthNavigator month={month} isCurrentMonth={isCurrentMonth} />
       </div>
 
-      <div
-        className={`relative mt-6 overflow-hidden rounded-3xl p-7 text-center shadow-lg sm:p-8 ${
-          isProjectedPositive
-            ? "bg-gradient-to-br from-emerald-600 to-teal-700 shadow-emerald-900/10"
-            : "bg-gradient-to-br from-amber-500 to-amber-600 shadow-amber-900/10"
-        }`}
-      >
+      <div className="card-elevated bg-brand-gradient mt-6 p-7 text-center transition-shadow duration-300 sm:p-8">
         <div
           className="pointer-events-none absolute inset-0 opacity-10"
           style={{
@@ -106,22 +100,32 @@ export default async function DashboardPage({
             backgroundSize: "24px 24px",
           }}
         />
+        <div
+          className="pointer-events-none absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-white/10 blur-2xl"
+          aria-hidden
+        />
         <p className="relative text-sm font-medium text-white/85">
           {heroLabel(month, currentMonth)}
         </p>
-        <p className="relative mt-2 font-heading text-5xl font-bold tracking-tight text-white">
+        <p className="relative mt-2 font-heading text-5xl font-bold tracking-tight text-white drop-shadow-sm">
           {formatCents(projectedCents)}
         </p>
         {budget && running && (
-          <p className="relative mt-3 flex items-center justify-center gap-1.5 text-sm text-white/90">
-            {formatCents(running.startingBalanceCents)} au départ
-            {isMonthPositive ? (
-              <TrendingUp className="h-4 w-4" />
-            ) : (
-              <TrendingDown className="h-4 w-4" />
-            )}
-            {isMonthPositive ? "+" : ""}
-            {formatCents(budget.availableCents)} ce mois-{isCurrentMonth ? "ci" : "là"}
+          <p className="relative mt-4 flex items-center justify-center">
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-white ring-1 ring-inset ring-white/25 ${
+                isMonthPositive ? "bg-emerald-500/25" : "bg-amber-500/30"
+              }`}
+            >
+              {formatCents(running.startingBalanceCents)} au départ
+              {isMonthPositive ? (
+                <TrendingUp className="h-3.5 w-3.5" />
+              ) : (
+                <TrendingDown className="h-3.5 w-3.5" />
+              )}
+              {isMonthPositive ? "+" : ""}
+              {formatCents(budget.availableCents)} ce mois-{isCurrentMonth ? "ci" : "là"}
+            </span>
           </p>
         )}
       </div>
@@ -137,52 +141,54 @@ export default async function DashboardPage({
           <QuickIncomeCard month={month} incomes={monthIncomes.map(toIncomeDto)} />
 
           {budget && (
-            <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
-              <p className="font-heading text-sm font-semibold text-slate-700">
+            <div className="card-surface p-5">
+              <p className="font-heading text-sm font-semibold text-slate-700 dark:text-slate-200">
                 Détail du mois
               </p>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
                 Les charges fixes et mensualités de prêts restent constantes
                 d&apos;un mois à l&apos;autre ; revenus et dépenses varient.
               </p>
-              <div className="mt-3 flex flex-col divide-y divide-slate-100 text-sm">
+              <div className="mt-3 flex flex-col divide-y divide-slate-100 text-sm dark:divide-white/10">
                 <div className="flex justify-between py-2">
-                  <span className="text-slate-500">Revenus du mois</span>
-                  <span className="font-medium text-slate-900">
+                  <span className="text-slate-500 dark:text-slate-400">Revenus du mois</span>
+                  <span className="font-medium text-slate-900 dark:text-slate-100">
                     {formatCents(budget.incomeCents)}
                   </span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-slate-500">
+                  <span className="text-slate-500 dark:text-slate-400">
                     Charges fixes actives{" "}
-                    <span className="text-xs text-slate-400">(constant)</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500">(constant)</span>
                   </span>
-                  <span className="font-medium text-slate-900">
+                  <span className="font-medium text-slate-900 dark:text-slate-100">
                     -{formatCents(budget.fixedChargesCents)}
                   </span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-slate-500">
+                  <span className="text-slate-500 dark:text-slate-400">
                     Mensualités de prêts{" "}
-                    <span className="text-xs text-slate-400">(constant)</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500">(constant)</span>
                   </span>
-                  <span className="font-medium text-slate-900">
+                  <span className="font-medium text-slate-900 dark:text-slate-100">
                     -{formatCents(budget.loanPaymentsCents)}
                   </span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-slate-500">Dépenses déjà faites</span>
-                  <span className="font-medium text-slate-900">
+                  <span className="text-slate-500 dark:text-slate-400">Dépenses déjà faites</span>
+                  <span className="font-medium text-slate-900 dark:text-slate-100">
                     -{formatCents(budget.expensesCents)}
                   </span>
                 </div>
                 <div className="flex justify-between pt-2 text-sm">
-                  <span className="font-medium text-slate-700">
+                  <span className="font-medium text-slate-700 dark:text-slate-200">
                     = Variation de {isCurrentMonth ? "ce mois-ci" : "ce mois-là"}
                   </span>
                   <span
                     className={`font-heading text-base font-semibold ${
-                      isMonthPositive ? "text-emerald-700" : "text-amber-700"
+                      isMonthPositive
+                        ? "text-emerald-700 dark:text-emerald-400"
+                        : "text-amber-700 dark:text-amber-400"
                     }`}
                   >
                     {formatCents(budget.availableCents)}
@@ -195,7 +201,7 @@ export default async function DashboardPage({
           {isCurrentMonth && budget && budget.suggestedSavingsCents > 0 && (
             <a
               href="/savings"
-              className="rounded-xl bg-teal-50 px-4 py-3 text-sm text-teal-800 transition-colors hover:bg-teal-100"
+              className="rounded-xl bg-indigo-50 px-4 py-3 text-sm text-indigo-800 transition-colors hover:bg-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-300 dark:hover:bg-indigo-500/15"
             >
               Tu pourrais mettre{" "}
               <strong>{formatCents(budget.suggestedSavingsCents)}</strong> de
@@ -222,24 +228,24 @@ export default async function DashboardPage({
 
           {isCurrentMonth && <PurchaseSimulator />}
 
-          <div className="mt-2 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
-            <p className="font-heading text-sm font-semibold text-slate-700">
+          <div className="card-surface mt-2 p-5">
+            <p className="font-heading text-sm font-semibold text-slate-700 dark:text-slate-200">
               Exporter le bilan
             </p>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               Bilan de {MONTH_FORMATTER.format(new Date(`${month}-01T00:00:00.000Z`))}
             </p>
             <div className="mt-3 flex gap-2">
               <a
                 href={`/api/export/excel?month=${month}`}
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5"
               >
                 <FileSpreadsheet className="h-4 w-4" />
                 Excel
               </a>
               <a
                 href={`/api/export/pdf?month=${month}`}
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5"
               >
                 <FileText className="h-4 w-4" />
                 PDF

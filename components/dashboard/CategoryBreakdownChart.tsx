@@ -5,13 +5,13 @@ import { formatCents } from "@/backend/money";
 import type { CategoryBreakdownEntry } from "@/backend/queries/spending";
 
 const COLORS = [
-  "#0d9488",
-  "#2563eb",
   "#7c3aed",
+  "#2563eb",
+  "#0891b2",
   "#d97706",
   "#db2777",
   "#65a30d",
-  "#0891b2",
+  "#4f46e5",
   "#64748b",
 ];
 
@@ -22,11 +22,11 @@ export function CategoryBreakdownChart({
 }) {
   if (entries.length === 0) {
     return (
-      <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
-        <p className="text-sm font-medium text-slate-700">
+      <div className="card-surface p-5">
+        <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
           Répartition par catégorie
         </p>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
           Pas encore de dépenses ce mois-ci.
         </p>
       </div>
@@ -36,8 +36,8 @@ export function CategoryBreakdownChart({
   const total = entries.reduce((sum, e) => sum + e.amountCents, 0);
 
   return (
-    <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
-      <p className="text-sm font-medium text-slate-700">
+    <div className="card-surface p-5">
+      <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
         Répartition par catégorie
       </p>
       <div className="mt-2 h-56 w-full">
@@ -65,16 +65,16 @@ export function CategoryBreakdownChart({
             key={entry.categoryId}
             className="flex items-center justify-between text-sm"
           >
-            <span className="flex items-center gap-2 text-slate-600">
+            <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
               <span
                 className="h-2 w-2 rounded-full"
                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
               />
               {entry.categoryName}
             </span>
-            <span className="text-slate-900">
+            <span className="text-slate-900 dark:text-slate-100">
               {formatCents(entry.amountCents)}{" "}
-              <span className="text-slate-400">
+              <span className="text-slate-400 dark:text-slate-500">
                 ({Math.round((entry.amountCents / total) * 100)}%)
               </span>
             </span>

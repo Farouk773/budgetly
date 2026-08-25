@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Landmark, Wallet } from "lucide-react";
 import { formatCents, parseSignedEurosToCents } from "@/backend/money";
 import type { ApiError, BalanceSource } from "@/backend/types";
+import { Button } from "@/components/ui/Button";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   day: "2-digit",
@@ -80,12 +81,12 @@ export function BalanceCard({
     return (
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100"
+        className="card-elevated flex animate-scale-in flex-col gap-2 p-5"
       >
-        <label htmlFor="balance" className="text-sm font-medium text-slate-700">
+        <label htmlFor="balance" className="text-sm font-medium text-slate-700 dark:text-slate-200">
           Corriger le solde total (€)
         </label>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-400 dark:text-slate-500">
           Utile si le montant réel sur tes comptes/cash diffère de
           l&apos;estimation ci-dessous (dépense en cash non enregistrée,
           etc.).
@@ -98,39 +99,38 @@ export function BalanceCard({
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="1200,00"
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
+          className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
         />
 
-        <label htmlFor="source" className="mt-1 text-sm font-medium text-slate-700">
+        <label htmlFor="source" className="mt-1 text-sm font-medium text-slate-700 dark:text-slate-200">
           Ce montant, c&apos;est...
         </label>
         <select
           id="source"
           value={source}
           onChange={(e) => setSource(e.target.value as BalanceSource)}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
+          className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:bg-[#131a2e] dark:focus:ring-indigo-500/20"
         >
           <option value="BANK">Un compte bancaire</option>
           <option value="CASH">Du cash</option>
           <option value="MIXED">Les deux combinés</option>
         </select>
 
-        {error && <p className="text-sm text-amber-800">{error}</p>}
-        <div className="flex gap-2">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
-          >
+        {error && (
+          <p className="animate-fade-in text-sm text-amber-800 dark:text-amber-400">{error}</p>
+        )}
+        <div className="mt-1 flex gap-2">
+          <Button type="submit" disabled={isSubmitting} className="flex-1">
             {isSubmitting ? "..." : "Enregistrer"}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="secondary"
             onClick={() => setIsEditing(false)}
-            className="rounded-lg px-3 py-2 text-sm text-slate-500 hover:bg-slate-100"
+            className="flex-1"
           >
             Annuler
-          </button>
+          </Button>
         </div>
       </form>
     );
@@ -139,46 +139,42 @@ export function BalanceCard({
   const sourceInfo = balanceSource ? SOURCE_LABELS[balanceSource] : null;
 
   return (
-    <div className="flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+    <div className="card-elevated flex items-center justify-between p-5">
       <div>
         <div className="flex items-center gap-1.5">
-          <p className="text-sm text-slate-500">Solde de départ</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Solde de départ</p>
           {sourceInfo && (
-            <span className="flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+            <span className="flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-white/10 dark:text-slate-300">
               <sourceInfo.Icon className="h-3 w-3" />
               {sourceInfo.label}
             </span>
           )}
         </div>
-        <p className="text-lg font-semibold text-slate-900">
+        <p className="text-brand-gradient text-lg font-semibold">
           {formatCents(displayedCents)}
         </p>
         {!isDeclared && (
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 dark:text-slate-500">
             Calculé à partir de tes revenus et dépenses enregistrés — précise
             si c&apos;est un compte bancaire ou du cash en corrigeant
           </p>
         )}
         {isDeclared && isExactAnchor && balanceAsOf && (
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 dark:text-slate-500">
             Corrigé le {DATE_FORMATTER.format(new Date(balanceAsOf))}
           </p>
         )}
         {isDeclared && !isExactAnchor && balanceAsOf && (
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 dark:text-slate-500">
             Calculé depuis ta dernière correction du{" "}
             {DATE_FORMATTER.format(new Date(balanceAsOf))}
           </p>
         )}
       </div>
       {canEdit && (
-        <button
-          type="button"
-          onClick={() => setIsEditing(true)}
-          className="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-        >
+        <Button type="button" variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
           Corriger
-        </button>
+        </Button>
       )}
     </div>
   );

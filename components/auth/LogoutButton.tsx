@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
 
 export function LogoutButton() {
   const router = useRouter();
@@ -15,13 +16,8 @@ export function LogoutButton() {
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleLogout}
-      disabled={isSubmitting}
-      className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 disabled:opacity-50"
-    >
+    <Button type="button" variant="secondary" size="sm" onClick={handleLogout} disabled={isSubmitting}>
       {isSubmitting ? "..." : "Se déconnecter"}
-    </button>
+    </Button>
   );
 }

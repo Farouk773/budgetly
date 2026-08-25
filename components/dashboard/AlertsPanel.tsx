@@ -24,7 +24,7 @@ export function AlertsPanel({ snapshot }: { snapshot: AlertsSnapshot }) {
   return (
     <div className="flex flex-col gap-3">
       {hasOverdraftWarning && snapshot.overdraft && (
-        <p className="flex items-start gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <p className="animate-fade-in flex items-start gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <span>
             Risque de découvert : il te manque{" "}
@@ -35,24 +35,24 @@ export function AlertsPanel({ snapshot }: { snapshot: AlertsSnapshot }) {
       )}
 
       {hasUpcomingDues && (
-        <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
-          <p className="flex items-center gap-2 font-heading text-sm font-semibold text-slate-700">
-            <CalendarClock className="h-4 w-4 text-teal-600" />
+        <div className="card-surface p-5">
+          <p className="flex items-center gap-2 font-heading text-sm font-semibold text-slate-700 dark:text-slate-200">
+            <CalendarClock className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
             Échéances à venir
           </p>
-          <ul className="mt-3 flex flex-col divide-y divide-slate-100 text-sm">
+          <ul className="mt-3 flex flex-col divide-y divide-slate-100 text-sm dark:divide-white/10">
             {snapshot.upcomingDues.map((due, index) => (
               <li
                 key={`${due.type}-${due.label}-${index}`}
                 className="flex items-center justify-between py-2"
               >
-                <span className="text-slate-600">
+                <span className="text-slate-600 dark:text-slate-400">
                   {due.label}{" "}
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-slate-400 dark:text-slate-500">
                     ({DUE_LABEL[due.type]})
                   </span>
                 </span>
-                <span className="text-slate-900">
+                <span className="text-slate-900 dark:text-slate-100">
                   {formatCents(due.amountCents)} · {formatDueIn(due.daysUntilDue)}
                 </span>
               </li>
