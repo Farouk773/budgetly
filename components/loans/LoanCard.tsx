@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatCents, parseEurosToCents } from "@/lib/money";
-import type { ApiError, EarlyRepaymentSimulation, Loan } from "@/lib/types";
+import { formatCents, parseEurosToCents } from "@/backend/money";
+import type { ApiError, EarlyRepaymentSimulation, Loan } from "@/backend/types";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   month: "short",

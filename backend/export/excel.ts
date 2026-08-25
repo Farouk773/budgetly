@@ -1,6 +1,6 @@
 import ExcelJS from "exceljs";
-import { formatCents } from "@/lib/money";
-import type { MonthlyReportData } from "@/lib/queries/report";
+import { formatCents } from "@/backend/money";
+import type { MonthlyReportData } from "@/backend/queries/report";
 
 export async function buildMonthlyExcelReport(
   data: MonthlyReportData

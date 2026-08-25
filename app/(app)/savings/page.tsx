@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { Plus, Wallet } from "lucide-react";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { formatCents } from "@/lib/money";
-import { currentMonthValue, getMonthlyBudget, getRunningBalance } from "@/lib/queries/balance";
-import { toSavingsGoalDto } from "@/lib/serializers/savingsGoal";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { formatCents } from "@/backend/money";
+import { currentMonthValue, getMonthlyBudget, getRunningBalance } from "@/backend/queries/balance";
+import { toSavingsGoalDto } from "@/backend/serializers/savingsGoal";
 import { SavingsGoalCard } from "@/components/savings/SavingsGoalCard";
 
 export default async function SavingsPage() {

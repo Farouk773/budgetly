@@ -1,7 +1,7 @@
-import { getCurrentUser } from "@/lib/auth";
-import { formatCents } from "@/lib/money";
-import { getPartnerLinks, getHouseholdSummary } from "@/lib/queries/household";
-import { toPartnerLinkDto } from "@/lib/serializers/household";
+import { getCurrentUser } from "@/backend/auth";
+import { formatCents } from "@/backend/money";
+import { getPartnerLinks, getHouseholdSummary } from "@/backend/queries/household";
+import { toPartnerLinkDto } from "@/backend/serializers/household";
 import { InviteForm } from "@/components/household/InviteForm";
 import { LinkRow } from "@/components/household/LinkRow";
 

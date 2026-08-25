@@ -1,8 +1,8 @@
 "use client";
 
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { formatCents } from "@/lib/money";
-import type { CategoryBreakdownEntry } from "@/lib/queries/spending";
+import { formatCents } from "@/backend/money";
+import type { CategoryBreakdownEntry } from "@/backend/queries/spending";
 
 const COLORS = [
   "#0d9488",

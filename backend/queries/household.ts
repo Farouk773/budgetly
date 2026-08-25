@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/prisma";
-import { combineMonthlyBudgets } from "@/lib/finance";
-import { currentMonthValue, getMonthlyBudget } from "@/lib/queries/balance";
+import { prisma } from "@/backend/prisma";
+import { combineMonthlyBudgets } from "@/backend/finance";
+import { currentMonthValue, getMonthlyBudget } from "@/backend/queries/balance";
 
 export async function getPartnerLinks(userId: string) {
   return prisma.partnerLink.findMany({

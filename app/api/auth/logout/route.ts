@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { invalidateSession, SESSION_COOKIE_NAME } from "@/lib/auth";
+import { invalidateSession, SESSION_COOKIE_NAME } from "@/backend/auth";
 
 export async function POST(request: NextRequest) {
   const rawToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;

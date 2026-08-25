@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/backend/prisma";
 import { NewFixedChargeForm } from "@/components/fixed-charges/NewFixedChargeForm";
 
 export default async function NewFixedChargePage() {

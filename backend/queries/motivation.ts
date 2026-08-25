@@ -1,11 +1,11 @@
-import { prisma } from "@/lib/prisma";
-import { shiftMonth } from "@/lib/dateUtils";
+import { prisma } from "@/backend/prisma";
+import { shiftMonth } from "@/backend/dateUtils";
 import {
   computeSavingsStreakMonths,
   evaluateBadges,
   generateMotivationMessage,
-} from "@/lib/motivation";
-import { currentMonthValue, getMonthlyBudget } from "@/lib/queries/balance";
+} from "@/backend/motivation";
+import { currentMonthValue, getMonthlyBudget } from "@/backend/queries/balance";
 
 export async function getMotivationSnapshot(userId: string) {
   const currentMonth = currentMonthValue();

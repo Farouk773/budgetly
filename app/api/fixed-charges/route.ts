@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { toFixedChargeDto } from "@/lib/serializers/fixedCharge";
-import { fixedChargeInputSchema } from "@/lib/validations/fixedCharge";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { toFixedChargeDto } from "@/backend/serializers/fixedCharge";
+import { fixedChargeInputSchema } from "@/backend/validations/fixedCharge";
 
 export async function GET() {
   const user = await getCurrentUser();

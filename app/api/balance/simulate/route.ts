@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { simulatePurchase } from "@/lib/finance";
-import { currentMonthValue, getRunningBalance } from "@/lib/queries/balance";
-import { simulatePurchaseSchema } from "@/lib/validations/balance";
+import { getCurrentUser } from "@/backend/auth";
+import { simulatePurchase } from "@/backend/finance";
+import { currentMonthValue, getRunningBalance } from "@/backend/queries/balance";
+import { simulatePurchaseSchema } from "@/backend/validations/balance";
 
 export async function POST(request: NextRequest) {
   const user = await getCurrentUser();

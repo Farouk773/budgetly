@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { parseEurosToCents } from "@/lib/money";
-import type { ApiError, Category } from "@/lib/types";
+import { parseEurosToCents } from "@/backend/money";
+import type { ApiError, Category } from "@/backend/types";
 
 function todayValue(): string {
   return new Date().toISOString().slice(0, 10);

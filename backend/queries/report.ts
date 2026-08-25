@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import { getMonthlyBudget, monthRange } from "@/lib/queries/balance";
+import { prisma } from "@/backend/prisma";
+import { getMonthlyBudget, monthRange } from "@/backend/queries/balance";
 
 export async function getMonthlyReportData(userId: string, month: string) {
   const range = monthRange(month);

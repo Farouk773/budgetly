@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { getAlertsSnapshot } from "@/lib/queries/alerts";
+import { getCurrentUser } from "@/backend/auth";
+import { getAlertsSnapshot } from "@/backend/queries/alerts";
 
 export async function GET() {
   const user = await getCurrentUser();

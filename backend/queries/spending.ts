@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import { monthRange } from "@/lib/queries/balance";
+import { prisma } from "@/backend/prisma";
+import { monthRange } from "@/backend/queries/balance";
 
 export type CategoryBreakdownEntry = {
   categoryId: string;

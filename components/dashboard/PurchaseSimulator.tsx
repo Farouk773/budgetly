@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { formatCents, parseEurosToCents } from "@/lib/money";
-import type { ApiError, PurchaseSimulation } from "@/lib/types";
+import { formatCents, parseEurosToCents } from "@/backend/money";
+import type { ApiError, PurchaseSimulation } from "@/backend/types";
 
 export function PurchaseSimulator() {
   const [amount, setAmount] = useState("");

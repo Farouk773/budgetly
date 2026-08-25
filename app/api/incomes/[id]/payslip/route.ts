@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { readPayslipFile } from "@/lib/storage";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { readPayslipFile } from "@/backend/storage";
 
 export async function GET(
   request: NextRequest,

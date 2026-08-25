@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { simulateEarlyRepayment } from "@/lib/finance";
-import { prisma } from "@/lib/prisma";
-import { earlyRepaymentSimulationSchema } from "@/lib/validations/loan";
+import { getCurrentUser } from "@/backend/auth";
+import { simulateEarlyRepayment } from "@/backend/finance";
+import { prisma } from "@/backend/prisma";
+import { earlyRepaymentSimulationSchema } from "@/backend/validations/loan";
 
 export async function POST(
   request: NextRequest,

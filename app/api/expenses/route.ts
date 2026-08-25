@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { toExpenseDto } from "@/lib/serializers/expense";
-import { expenseInputSchema } from "@/lib/validations/expense";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { toExpenseDto } from "@/backend/serializers/expense";
+import { expenseInputSchema } from "@/backend/validations/expense";
 
 function parseMonthRange(month: string | null) {
   if (!month || !/^\d{4}-\d{2}$/.test(month)) return null;

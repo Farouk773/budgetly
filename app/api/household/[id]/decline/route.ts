@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { toPartnerLinkDto } from "@/lib/serializers/household";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { toPartnerLinkDto } from "@/backend/serializers/household";
 
 export async function POST(
   request: NextRequest,

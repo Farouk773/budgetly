@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { ApiError } from "@/lib/types";
+import type { ApiError } from "@/backend/types";
 
 export function InviteForm() {
   const router = useRouter();

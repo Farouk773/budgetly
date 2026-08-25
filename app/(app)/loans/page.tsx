@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { formatCents } from "@/lib/money";
-import { toLoanDto } from "@/lib/serializers/loan";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { formatCents } from "@/backend/money";
+import { toLoanDto } from "@/backend/serializers/loan";
 import { LoanCard } from "@/components/loans/LoanCard";
 
 export default async function LoansPage() {

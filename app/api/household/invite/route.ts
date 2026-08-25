@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { toPartnerLinkDto } from "@/lib/serializers/household";
-import { inviteSchema } from "@/lib/validations/household";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { toPartnerLinkDto } from "@/backend/serializers/household";
+import { inviteSchema } from "@/backend/validations/household";
 
 export async function POST(request: NextRequest) {
   const user = await getCurrentUser();

@@ -1,6 +1,6 @@
 import { AlertTriangle, CalendarClock } from "lucide-react";
-import { formatCents } from "@/lib/money";
-import type { AlertsSnapshot } from "@/lib/types";
+import { formatCents } from "@/backend/money";
+import type { AlertsSnapshot } from "@/backend/types";
 
 const DUE_LABEL: Record<AlertsSnapshot["upcomingDues"][number]["type"], string> = {
   fixedCharge: "Charge fixe",

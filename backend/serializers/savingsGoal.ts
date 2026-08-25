@@ -1,5 +1,5 @@
-import type { SavingsGoal as PrismaSavingsGoal } from "@/lib/generated/prisma/client";
-import type { SavingsGoal } from "@/lib/types";
+import type { SavingsGoal as PrismaSavingsGoal } from "@/backend/generated/prisma/client";
+import type { SavingsGoal } from "@/backend/types";
 
 export function toSavingsGoalDto(goal: PrismaSavingsGoal): SavingsGoal {
   return {

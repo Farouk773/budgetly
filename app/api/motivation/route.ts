@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { getMotivationSnapshot } from "@/lib/queries/motivation";
+import { getCurrentUser } from "@/backend/auth";
+import { getMotivationSnapshot } from "@/backend/queries/motivation";
 
 export async function GET() {
   const user = await getCurrentUser();

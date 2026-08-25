@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { toSavingsGoalDto } from "@/lib/serializers/savingsGoal";
-import { contributeSchema } from "@/lib/validations/savingsGoal";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { toSavingsGoalDto } from "@/backend/serializers/savingsGoal";
+import { contributeSchema } from "@/backend/validations/savingsGoal";
 
 export async function POST(
   request: NextRequest,

@@ -1,8 +1,8 @@
 import type {
   Category as PrismaCategory,
   FixedCharge as PrismaFixedCharge,
-} from "@/lib/generated/prisma/client";
-import type { FixedCharge } from "@/lib/types";
+} from "@/backend/generated/prisma/client";
+import type { FixedCharge } from "@/backend/types";
 
 export function toFixedChargeDto(
   fixedCharge: PrismaFixedCharge & { category: PrismaCategory }

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { parseEurosToCents } from "@/lib/money";
-import type { ApiError } from "@/lib/types";
+import { parseEurosToCents } from "@/backend/money";
+import type { ApiError } from "@/backend/types";
 
 export default function NewLoanPage() {
   const router = useRouter();

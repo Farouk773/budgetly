@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser, SESSION_COOKIE_NAME, verifyPassword } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { deleteAllPayslipFilesForUser } from "@/lib/storage";
-import { deleteAccountSchema } from "@/lib/validations/account";
+import { getCurrentUser, SESSION_COOKIE_NAME, verifyPassword } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { deleteAllPayslipFilesForUser } from "@/backend/storage";
+import { deleteAccountSchema } from "@/backend/validations/account";
 
 export async function DELETE(request: NextRequest) {
   const user = await getCurrentUser();

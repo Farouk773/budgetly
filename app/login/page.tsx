@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { PiggyBank, ShieldCheck, TrendingUp } from "lucide-react";
-import type { ApiError } from "@/lib/types";
+import type { ApiError } from "@/backend/types";
 
 export default function LoginPage() {
   const router = useRouter();

@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Landmark, Wallet } from "lucide-react";
-import { formatCents, parseSignedEurosToCents } from "@/lib/money";
-import type { ApiError, BalanceSource } from "@/lib/types";
+import { formatCents, parseSignedEurosToCents } from "@/backend/money";
+import type { ApiError, BalanceSource } from "@/backend/types";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   day: "2-digit",

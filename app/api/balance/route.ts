@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { currentMonthValue, getDeclaredBalance, getMonthlyBudget } from "@/lib/queries/balance";
-import { updateBalanceSchema } from "@/lib/validations/balance";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { currentMonthValue, getDeclaredBalance, getMonthlyBudget } from "@/backend/queries/balance";
+import { updateBalanceSchema } from "@/backend/validations/balance";
 
 export async function GET(request: NextRequest) {
   const user = await getCurrentUser();

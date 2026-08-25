@@ -1,5 +1,5 @@
-import type { Loan as PrismaLoan } from "@/lib/generated/prisma/client";
-import type { Loan } from "@/lib/types";
+import type { Loan as PrismaLoan } from "@/backend/generated/prisma/client";
+import type { Loan } from "@/backend/types";
 
 export function toLoanDto(loan: PrismaLoan): Loan {
   return {

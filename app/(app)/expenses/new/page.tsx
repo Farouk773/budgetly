@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/backend/prisma";
 import { NewExpenseForm } from "@/components/expenses/NewExpenseForm";
 
 export default async function NewExpensePage() {

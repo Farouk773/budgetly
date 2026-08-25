@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser } from "@/backend/auth";
 
 export default async function Home() {
   const user = await getCurrentUser();

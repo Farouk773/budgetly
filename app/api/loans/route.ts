@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { toLoanDto } from "@/lib/serializers/loan";
-import { createLoanSchema } from "@/lib/validations/loan";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { toLoanDto } from "@/backend/serializers/loan";
+import { createLoanSchema } from "@/backend/validations/loan";
 
 export async function GET() {
   const user = await getCurrentUser();

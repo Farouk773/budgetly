@@ -1,4 +1,4 @@
-import { prisma } from "../lib/prisma";
+import { prisma } from "../backend/prisma";
 
 const DEFAULT_CATEGORIES: { name: string; isEssential: boolean }[] = [
   { name: "Logement", isEssential: true },

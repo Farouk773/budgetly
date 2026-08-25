@@ -1,5 +1,5 @@
 import { Award, Sparkle } from "lucide-react";
-import type { MotivationSnapshot } from "@/lib/types";
+import type { MotivationSnapshot } from "@/backend/types";
 
 export function MotivationCard({ snapshot }: { snapshot: MotivationSnapshot }) {
   const achievedBadges = snapshot.badges.filter((b) => b.achieved);

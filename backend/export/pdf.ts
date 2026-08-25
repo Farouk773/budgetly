@@ -1,6 +1,6 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
-import { formatCents } from "@/lib/money";
-import type { MonthlyReportData } from "@/lib/queries/report";
+import { formatCents } from "@/backend/money";
+import type { MonthlyReportData } from "@/backend/queries/report";
 
 const PAGE_WIDTH = 595.28; // A4 in points
 const PAGE_HEIGHT = 841.89;

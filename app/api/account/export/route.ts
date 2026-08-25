@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
 
 // RGPD data-portability export: every record the user owns, in one file.
 // Deliberately excludes passwordHash and raw session tokens.

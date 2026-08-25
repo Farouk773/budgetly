@@ -1,8 +1,8 @@
 import type {
   PartnerLink as PrismaPartnerLink,
   User as PrismaUser,
-} from "@/lib/generated/prisma/client";
-import type { PartnerLink } from "@/lib/types";
+} from "@/backend/generated/prisma/client";
+import type { PartnerLink } from "@/backend/types";
 
 export function toPartnerLinkDto(
   link: PrismaPartnerLink & { requester: PrismaUser; partner: PrismaUser },

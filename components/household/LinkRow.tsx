@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { PartnerLink } from "@/lib/types";
+import type { PartnerLink } from "@/backend/types";
 
 const STATUS_LABELS: Record<PartnerLink["status"], string> = {
   PENDING: "En attente",

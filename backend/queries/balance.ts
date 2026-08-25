@@ -1,10 +1,10 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/backend/prisma";
 import {
   computeMonthlyAvailableCents,
   projectEndOfMonthCents,
   suggestSavingsCents,
-} from "@/lib/finance";
-import { shiftMonth, toMonthString } from "@/lib/dateUtils";
+} from "@/backend/finance";
+import { shiftMonth, toMonthString } from "@/backend/dateUtils";
 
 export function monthRange(month: string): { gte: Date; lt: Date } {
   const gte = new Date(`${month}-01T00:00:00.000Z`);

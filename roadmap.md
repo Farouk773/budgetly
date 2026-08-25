@@ -6,7 +6,7 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 ## Phase 0 — Setup technique (base du point 13)
 - [x] Initialiser Next.js + TypeScript + Tailwind
 - [x] Configurer PostgreSQL + Prisma
-- [x] Structure de dossiers (app/, components/, lib/, prisma/)
+- [x] Structure de dossiers (app/, components/, backend/, prisma/) — `lib/` renommé en `backend/` pour plus de clarté
 - [ ] Déploiement initial vide sur Vercel (différé — développement en local pour l'instant, hébergement Vercel prévu à la fin)
 - [x] Variables d'environnement (.env) + gestion des secrets (clé API Claude, DB)
 
@@ -83,8 +83,8 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 
 **Audit sécurité/RGPD (résultat) :**
 - Toutes les routes API (hors signup/login/logout/me) vérifient l'authentification ; toutes les routes à `[id]` vérifient la propriété de la ressource (userId) avant lecture/modification/suppression
-- Toutes les routes acceptant un body JSON le valident avec zod ; aucun parsing numérique non contrôlé en dehors des validateurs centralisés (lib/validations/money.ts)
-- Mots de passe hashés (bcrypt), tokens de session hashés en base (sha256), aucune donnée sensible loguée (aucun `console.*` dans app/ ou lib/ hors scripts de seed/tests)
+- Toutes les routes acceptant un body JSON le valident avec zod ; aucun parsing numérique non contrôlé en dehors des validateurs centralisés (backend/validations/money.ts)
+- Mots de passe hashés (bcrypt), tokens de session hashés en base (sha256), aucune donnée sensible loguée (aucun `console.*` dans app/ ou backend/ hors scripts de seed/tests)
 - RGPD : export complet des données (`/api/account/export`, exclut le hash de mot de passe) et suppression de compte avec confirmation par mot de passe (`DELETE /api/account`), suppression en cascade vérifiée en base (0 ligne orpheline) y compris les fichiers de fiches de paie sur disque
 - `.env` non versionné, aucun secret en dur dans le code
 - Lacune connue : 2FA non implémentée (recommandée par la spec section 10, non bloquante, non présente dans la checklist initiale de la Phase 1)

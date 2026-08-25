@@ -1,10 +1,10 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/backend/prisma";
 import {
   computeOverdraftRisk,
   daysUntilDue,
   UPCOMING_DUE_WINDOW_DAYS,
-} from "@/lib/alerts";
-import { getMonthlyBudget, getRunningBalance, currentMonthValue } from "@/lib/queries/balance";
+} from "@/backend/alerts";
+import { getMonthlyBudget, getRunningBalance, currentMonthValue } from "@/backend/queries/balance";
 
 export type UpcomingDue = {
   label: string;

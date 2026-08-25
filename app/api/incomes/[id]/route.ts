@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { toIncomeDto } from "@/lib/serializers/income";
-import { deletePayslipFile } from "@/lib/storage";
-import { incomeFormSchema } from "@/lib/validations/income";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { toIncomeDto } from "@/backend/serializers/income";
+import { deletePayslipFile } from "@/backend/storage";
+import { incomeFormSchema } from "@/backend/validations/income";
 
 async function getOwnedIncome(userId: string, id: string) {
   const income = await prisma.income.findUnique({ where: { id } });

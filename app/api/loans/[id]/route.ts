@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { toLoanDto } from "@/lib/serializers/loan";
-import { updateLoanSchema } from "@/lib/validations/loan";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { toLoanDto } from "@/backend/serializers/loan";
+import { updateLoanSchema } from "@/backend/validations/loan";
 
 async function getOwnedLoan(userId: string, id: string) {
   const loan = await prisma.loan.findUnique({ where: { id } });

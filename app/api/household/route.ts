@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { toPartnerLinkDto } from "@/lib/serializers/household";
-import { getPartnerLinks } from "@/lib/queries/household";
+import { getCurrentUser } from "@/backend/auth";
+import { toPartnerLinkDto } from "@/backend/serializers/household";
+import { getPartnerLinks } from "@/backend/queries/household";
 
 export async function GET() {
   const user = await getCurrentUser();

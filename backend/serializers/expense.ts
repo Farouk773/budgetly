@@ -1,8 +1,8 @@
 import type {
   Category as PrismaCategory,
   Expense as PrismaExpense,
-} from "@/lib/generated/prisma/client";
-import type { Expense } from "@/lib/types";
+} from "@/backend/generated/prisma/client";
+import type { Expense } from "@/backend/types";
 
 export function toExpenseDto(
   expense: PrismaExpense & { category: PrismaCategory }

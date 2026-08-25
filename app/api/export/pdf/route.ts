@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { buildMonthlyPdfReport } from "@/lib/export/pdf";
-import { currentMonthValue } from "@/lib/queries/balance";
-import { getMonthlyReportData } from "@/lib/queries/report";
+import { getCurrentUser } from "@/backend/auth";
+import { buildMonthlyPdfReport } from "@/backend/export/pdf";
+import { currentMonthValue } from "@/backend/queries/balance";
+import { getMonthlyReportData } from "@/backend/queries/report";
 
 export async function GET(request: NextRequest) {
   const user = await getCurrentUser();

@@ -1,5 +1,5 @@
-import type { Income as PrismaIncome } from "@/lib/generated/prisma/client";
-import type { Income } from "@/lib/types";
+import type { Income as PrismaIncome } from "@/backend/generated/prisma/client";
+import type { Income } from "@/backend/types";
 
 export function toIncomeDto(income: PrismaIncome): Income {
   return {

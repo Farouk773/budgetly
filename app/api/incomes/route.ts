@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { toIncomeDto } from "@/lib/serializers/income";
-import { generateStoredName, savePayslipFile } from "@/lib/storage";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { toIncomeDto } from "@/backend/serializers/income";
+import { generateStoredName, savePayslipFile } from "@/backend/storage";
 import {
   ALLOWED_PAYSLIP_MIME_TYPES,
   incomeFormSchema,
   MAX_PAYSLIP_SIZE_BYTES,
-} from "@/lib/validations/income";
+} from "@/backend/validations/income";
 
 export async function GET() {
   const user = await getCurrentUser();

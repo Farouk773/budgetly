@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PiggyBank } from "lucide-react";
-import type { AuthUser } from "@/lib/types";
+import type { AuthUser } from "@/backend/types";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { DesktopNav } from "@/components/layout/DesktopNav";
 

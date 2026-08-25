@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { parseEurosToCents } from "@/lib/money";
-import type { ApiError, IncomeType } from "@/lib/types";
-import { INCOME_TYPE_LABELS } from "@/lib/types";
+import { parseEurosToCents } from "@/backend/money";
+import type { ApiError, IncomeType } from "@/backend/types";
+import { INCOME_TYPE_LABELS } from "@/backend/types";
 
 function currentMonthValue(): string {
   const now = new Date();

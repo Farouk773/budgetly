@@ -1,17 +1,17 @@
-import { getCurrentUser } from "@/lib/auth";
-import { formatCents } from "@/lib/money";
+import { getCurrentUser } from "@/backend/auth";
+import { formatCents } from "@/backend/money";
 import {
   currentMonthValue,
   getMonthlyBudget,
   getRunningBalance,
   monthRange,
-} from "@/lib/queries/balance";
-import { getSpendingByCategory } from "@/lib/queries/spending";
-import { getMotivationSnapshot } from "@/lib/queries/motivation";
-import { getAlertsSnapshot } from "@/lib/queries/alerts";
-import { toIncomeDto } from "@/lib/serializers/income";
-import { projectEndOfMonthCents } from "@/lib/finance";
-import { prisma } from "@/lib/prisma";
+} from "@/backend/queries/balance";
+import { getSpendingByCategory } from "@/backend/queries/spending";
+import { getMotivationSnapshot } from "@/backend/queries/motivation";
+import { getAlertsSnapshot } from "@/backend/queries/alerts";
+import { toIncomeDto } from "@/backend/serializers/income";
+import { projectEndOfMonthCents } from "@/backend/finance";
+import { prisma } from "@/backend/prisma";
 import { FileSpreadsheet, FileText, TrendingDown, TrendingUp } from "lucide-react";
 import { BalanceCard } from "@/components/dashboard/BalanceCard";
 import { PurchaseSimulator } from "@/components/dashboard/PurchaseSimulator";

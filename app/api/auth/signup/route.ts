@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Prisma } from "@/lib/generated/prisma/client";
-import { prisma } from "@/lib/prisma";
-import { createSession, hashPassword, SESSION_COOKIE_NAME } from "@/lib/auth";
-import { signupSchema } from "@/lib/validations/auth";
-import type { AuthUser } from "@/lib/types";
+import { Prisma } from "@/backend/generated/prisma/client";
+import { prisma } from "@/backend/prisma";
+import { createSession, hashPassword, SESSION_COOKIE_NAME } from "@/backend/auth";
+import { signupSchema } from "@/backend/validations/auth";
+import type { AuthUser } from "@/backend/types";
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);

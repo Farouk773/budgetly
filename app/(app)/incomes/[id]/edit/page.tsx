@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { toIncomeDto } from "@/lib/serializers/income";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { toIncomeDto } from "@/backend/serializers/income";
 import { EditIncomeForm } from "@/components/incomes/EditIncomeForm";
 
 export default async function EditIncomePage({

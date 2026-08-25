@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser } from "@/backend/auth";
 import { DeleteAccountForm } from "@/components/account/DeleteAccountForm";
 
 export default async function AccountPage() {

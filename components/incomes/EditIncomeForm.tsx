@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatCents, parseEurosToCents } from "@/lib/money";
-import type { ApiError, Income, IncomeType } from "@/lib/types";
-import { INCOME_TYPE_LABELS } from "@/lib/types";
+import { formatCents, parseEurosToCents } from "@/backend/money";
+import type { ApiError, Income, IncomeType } from "@/backend/types";
+import { INCOME_TYPE_LABELS } from "@/backend/types";
 
 export function EditIncomeForm({ income }: { income: Income }) {
   const router = useRouter();

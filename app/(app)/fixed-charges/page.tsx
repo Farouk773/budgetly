@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { formatCents } from "@/lib/money";
+import { getCurrentUser } from "@/backend/auth";
+import { prisma } from "@/backend/prisma";
+import { formatCents } from "@/backend/money";
 
 export default async function FixedChargesPage() {
   const user = await getCurrentUser();

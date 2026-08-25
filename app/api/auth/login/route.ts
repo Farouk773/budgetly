@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { createSession, verifyPassword, SESSION_COOKIE_NAME } from "@/lib/auth";
-import { loginSchema } from "@/lib/validations/auth";
-import type { AuthUser } from "@/lib/types";
+import { prisma } from "@/backend/prisma";
+import { createSession, verifyPassword, SESSION_COOKIE_NAME } from "@/backend/auth";
+import { loginSchema } from "@/backend/validations/auth";
+import type { AuthUser } from "@/backend/types";
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
