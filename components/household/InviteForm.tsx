@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ApiError } from "@/backend/types";
+import { Button } from "@/components/ui/Button";
 
 export function InviteForm() {
   const router = useRouter();
@@ -45,17 +46,15 @@ export function InviteForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email de ton/ta partenaire"
-          className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
+          className="flex-1 rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
         />
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
-        >
+        <Button type="submit" disabled={isSubmitting}>
           Inviter
-        </button>
+        </Button>
       </div>
-      {error && <p className="mt-2 text-sm text-amber-800">{error}</p>}
+      {error && (
+        <p className="animate-fade-in mt-2 text-sm text-amber-800 dark:text-amber-400">{error}</p>
+      )}
     </form>
   );
 }

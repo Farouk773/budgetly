@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { PiggyBank, ShieldCheck, Sparkles } from "lucide-react";
 import type { ApiError } from "@/backend/types";
+import { Button } from "@/components/ui/Button";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -43,8 +44,8 @@ export default function SignupPage() {
 
   return (
     <div className="flex flex-1 items-center justify-center px-4 py-10">
-      <div className="grid w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-200/60 md:grid-cols-2">
-        <div className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-teal-700 to-teal-900 p-10 text-white md:flex">
+      <div className="card-elevated grid w-full max-w-4xl md:grid-cols-2">
+        <div className="bg-brand-gradient relative hidden flex-col justify-between overflow-hidden p-10 text-white md:flex">
           <div
             className="pointer-events-none absolute inset-0 opacity-20"
             style={{
@@ -63,7 +64,7 @@ export default function SignupPage() {
             <h2 className="font-heading text-2xl font-semibold leading-snug">
               Commence à suivre ton budget en quelques secondes.
             </h2>
-            <ul className="mt-6 flex flex-col gap-3 text-sm text-teal-50">
+            <ul className="mt-6 flex flex-col gap-3 text-sm text-white/90">
               <li className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 shrink-0" />
                 Gratuit pour le suivi manuel
@@ -74,22 +75,22 @@ export default function SignupPage() {
               </li>
             </ul>
           </div>
-          <p className="relative text-xs text-teal-100/80">
+          <p className="relative text-xs text-white/70">
             © {new Date().getFullYear()} Budgetly
           </p>
         </div>
 
-        <div className="p-8 sm:p-10">
-          <h1 className="font-heading text-xl font-semibold text-slate-900">
+        <div className="bg-surface p-8 sm:p-10">
+          <h1 className="font-heading text-xl font-semibold text-slate-900 dark:text-slate-100">
             Créer un compte
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Commence à suivre ton budget en quelques secondes.
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
             <div className="flex flex-col gap-1">
-              <label htmlFor="name" className="text-sm font-medium text-slate-700">
+              <label htmlFor="name" className="text-sm font-medium text-slate-700 dark:text-slate-200">
                 Nom (optionnel)
               </label>
               <input
@@ -98,12 +99,12 @@ export default function SignupPage() {
                 autoComplete="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
+                className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label htmlFor="email" className="text-sm font-medium text-slate-700">
+              <label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-200">
                 Email
               </label>
               <input
@@ -113,14 +114,14 @@ export default function SignupPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
+                className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
               />
             </div>
 
             <div className="flex flex-col gap-1">
               <label
                 htmlFor="password"
-                className="text-sm font-medium text-slate-700"
+                className="text-sm font-medium text-slate-700 dark:text-slate-200"
               >
                 Mot de passe
               </label>
@@ -132,29 +133,25 @@ export default function SignupPage() {
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
+                className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
               />
-              <span className="text-xs text-slate-400">Au moins 8 caractères</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">Au moins 8 caractères</span>
             </div>
 
             {error && (
-              <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+              <p className="animate-fade-in rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
                 {error}
               </p>
             )}
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="mt-2 rounded-lg bg-teal-700 px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
-            >
+            <Button type="submit" disabled={isSubmitting} className="mt-2 w-full py-2.5">
               {isSubmitting ? "Création..." : "Créer mon compte"}
-            </button>
+            </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-slate-500">
+          <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
             Déjà un compte ?{" "}
-            <Link href="/login" className="font-medium text-teal-700 hover:text-teal-800">
+            <Link href="/login" className="font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
               Se connecter
             </Link>
           </p>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ApiError } from "@/backend/types";
+import { Button } from "@/components/ui/Button";
 
 export function DeleteAccountForm() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export function DeleteAccountForm() {
       <button
         type="button"
         onClick={() => setIsConfirming(true)}
-        className="rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
+        className="rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-50 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10"
       >
         Supprimer mon compte
       </button>
@@ -50,8 +51,8 @@ export function DeleteAccountForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-      <p className="text-sm text-slate-700">
+    <form onSubmit={handleSubmit} className="animate-scale-in flex flex-col gap-2">
+      <p className="text-sm text-slate-700 dark:text-slate-200">
         Cette action est <strong>définitive</strong> : toutes tes données
         (revenus, dépenses, prêts, épargne, fiches de paie) seront supprimées
         sans possibilité de récupération. Confirme avec ton mot de passe.
@@ -62,24 +63,18 @@ export function DeleteAccountForm() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Mot de passe"
-        className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
+        className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
       />
-      {error && <p className="text-sm text-amber-800">{error}</p>}
+      {error && (
+        <p className="animate-fade-in text-sm text-amber-800 dark:text-amber-400">{error}</p>
+      )}
       <div className="flex gap-2">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
-        >
+        <Button type="submit" variant="danger" disabled={isSubmitting}>
           {isSubmitting ? "Suppression..." : "Confirmer la suppression"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setIsConfirming(false)}
-          className="rounded-lg px-3 py-2 text-sm text-slate-500 hover:bg-slate-100"
-        >
+        </Button>
+        <Button type="button" variant="secondary" onClick={() => setIsConfirming(false)}>
           Annuler
-        </button>
+        </Button>
       </div>
     </form>
   );

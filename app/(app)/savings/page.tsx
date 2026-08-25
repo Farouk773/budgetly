@@ -25,12 +25,12 @@ export default async function SavingsPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-10">
       <div className="flex items-center justify-between">
-        <h1 className="font-heading text-xl font-semibold text-slate-900">
+        <h1 className="font-heading text-xl font-semibold text-slate-900 dark:text-slate-100">
           Objectifs d&apos;épargne
         </h1>
         <Link
           href="/savings/new"
-          className="flex items-center gap-1.5 rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800"
+          className="btn-base bg-brand-gradient flex items-center gap-1.5 px-3 py-2 text-sm text-white shadow-md shadow-indigo-900/15 hover:brightness-110"
         >
           <Plus className="h-4 w-4" />
           Nouvel objectif
@@ -38,18 +38,18 @@ export default async function SavingsPage() {
       </div>
 
       {running && (
-        <div className="mt-4 flex items-center gap-3 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
+        <div className="card-elevated mt-4 flex items-center gap-3 p-5">
+          <span className="bg-brand-gradient flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white">
             <Wallet className="h-5 w-5" />
           </span>
           <div>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               Argent disponible au total, tout compris
             </p>
-            <p className="text-xl font-semibold text-slate-900">
+            <p className="text-brand-gradient text-xl font-semibold">
               {formatCents(running.startingBalanceCents)}
             </p>
-            <p className="mt-0.5 text-xs text-slate-400">
+            <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">
               Tu peux épargner plus que la suggestion ci-dessous si ce total
               te le permet — c&apos;est juste une suggestion, pas une limite.
             </p>
@@ -58,14 +58,14 @@ export default async function SavingsPage() {
       )}
 
       {budget && budget.suggestedSavingsCents > 0 && (
-        <p className="mt-3 rounded-lg bg-teal-50 px-3 py-2 text-sm text-teal-800">
+        <p className="mt-3 rounded-lg bg-indigo-50 px-3 py-2 text-sm text-indigo-800 dark:bg-indigo-500/10 dark:text-indigo-300">
           Vu ce qu&apos;il te reste ce mois-ci, tu pourrais mettre de côté
           environ <strong>{formatCents(budget.suggestedSavingsCents)}</strong>.
         </p>
       )}
 
       {goals.length === 0 ? (
-        <p className="mt-8 text-sm text-slate-500">
+        <p className="mt-8 text-sm text-slate-500 dark:text-slate-400">
           Aucun objectif d&apos;épargne pour le moment.
         </p>
       ) : (

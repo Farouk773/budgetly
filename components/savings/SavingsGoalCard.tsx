@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatCents, parseEurosToCents } from "@/backend/money";
 import type { ApiError, SavingsGoal } from "@/backend/types";
+import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   day: "2-digit",
@@ -16,6 +18,7 @@ export function SavingsGoalCard({ goal }: { goal: SavingsGoal }) {
   const [amount, setAmount] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
   const progress = Math.min(
     100,
@@ -66,27 +69,27 @@ export function SavingsGoalCard({ goal }: { goal: SavingsGoal }) {
   }
 
   return (
-    <li className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+    <li className="card-surface p-5">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-slate-900">{goal.name}</p>
+        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{goal.name}</p>
         <button
           type="button"
-          onClick={handleDelete}
+          onClick={() => setIsConfirmingDelete(true)}
           disabled={isSubmitting}
-          className="text-xs text-slate-400 hover:text-slate-600"
+          className="text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
         >
           Supprimer
         </button>
       </div>
 
-      <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+      <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-white/10">
         <div
-          className="h-full rounded-full bg-teal-600"
+          className="bg-brand-gradient h-full rounded-full transition-[width] duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      <div className="mt-1 flex items-center justify-between text-xs text-slate-500">
+      <div className="mt-1 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
         <span>
           {formatCents(goal.currentCents)} / {formatCents(goal.targetCents)} (
           {progress}%)
@@ -103,17 +106,25 @@ export function SavingsGoalCard({ goal }: { goal: SavingsGoal }) {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           placeholder="Ajouter un montant (€)"
-          className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
+          className="flex-1 rounded-lg border border-slate-300 bg-transparent px-3 py-1.5 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
         />
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="rounded-lg bg-teal-700 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
-        >
+        <Button type="submit" size="sm" disabled={isSubmitting}>
           Ajouter
-        </button>
+        </Button>
       </form>
-      {error && <p className="mt-1 text-xs text-amber-800">{error}</p>}
+      {error && (
+        <p className="animate-fade-in mt-1 text-xs text-amber-800 dark:text-amber-400">{error}</p>
+      )}
+
+      <ConfirmDialog
+        open={isConfirmingDelete}
+        title="Supprimer cet objectif ?"
+        description="Cette action est définitive et ne peut pas être annulée."
+        confirmLabel="Supprimer"
+        isSubmitting={isSubmitting}
+        onConfirm={handleDelete}
+        onCancel={() => setIsConfirmingDelete(false)}
+      />
     </li>
   );
 }

@@ -21,12 +21,12 @@ export default async function FixedChargesPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-10">
       <div className="flex items-center justify-between">
-        <h1 className="font-heading text-xl font-semibold text-slate-900">
+        <h1 className="font-heading text-xl font-semibold text-slate-900 dark:text-slate-100">
           Charges fixes récurrentes
         </h1>
         <Link
           href="/fixed-charges/new"
-          className="flex items-center gap-1.5 rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800"
+          className="btn-base bg-brand-gradient flex items-center gap-1.5 px-3 py-2 text-sm text-white shadow-md shadow-indigo-900/15 hover:brightness-110"
         >
           <Plus className="h-4 w-4" />
           Ajouter une charge
@@ -34,14 +34,14 @@ export default async function FixedChargesPage() {
       </div>
 
       {fixedCharges.length === 0 ? (
-        <p className="mt-8 text-sm text-slate-500">
+        <p className="mt-8 text-sm text-slate-500 dark:text-slate-400">
           Aucune charge fixe enregistrée pour le moment.
         </p>
       ) : (
         <>
-          <p className="mt-6 text-sm text-slate-500">
+          <p className="mt-6 text-sm text-slate-500 dark:text-slate-400">
             Total mensuel des charges actives :{" "}
-            <span className="font-semibold text-slate-900">
+            <span className="font-semibold text-slate-900 dark:text-slate-100">
               {formatCents(monthlyTotalCents)}
             </span>
           </p>
@@ -49,23 +49,23 @@ export default async function FixedChargesPage() {
             {fixedCharges.map((charge) => (
               <li
                 key={charge.id}
-                className={`flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100 ${
+                className={`card-surface flex items-center justify-between p-5 ${
                   charge.active ? "" : "opacity-50"
                 }`}
               >
                 <div>
-                  <p className="text-sm font-medium text-slate-900">
+                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
                     {charge.label}
-                    <span className="ml-2 text-xs font-normal text-slate-400">
+                    <span className="ml-2 text-xs font-normal text-slate-400 dark:text-slate-500">
                       {charge.category.name}
                     </span>
                   </p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     Prélevé le {charge.dayOfMonth} du mois
                     {charge.active ? "" : " · inactive"}
                   </p>
                 </div>
-                <p className="text-sm font-semibold text-slate-900">
+                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                   {formatCents(charge.amountCents)}
                 </p>
               </li>

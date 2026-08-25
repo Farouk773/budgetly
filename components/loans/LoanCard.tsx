@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatCents, parseEurosToCents } from "@/backend/money";
 import type { ApiError, EarlyRepaymentSimulation, Loan } from "@/backend/types";
+import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   month: "short",
@@ -19,6 +21,7 @@ export function LoanCard({ loan }: { loan: Loan }) {
   );
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
   async function handlePayment(e: React.FormEvent) {
     e.preventDefault();
@@ -94,27 +97,27 @@ export function LoanCard({ loan }: { loan: Loan }) {
   }
 
   return (
-    <li className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+    <li className="card-surface p-5">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-slate-900">
+        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
           {loan.name}
           {!loan.active && (
-            <span className="ml-2 text-xs font-normal text-emerald-600">
+            <span className="ml-2 text-xs font-normal text-emerald-600 dark:text-emerald-400">
               Remboursé
             </span>
           )}
         </p>
         <button
           type="button"
-          onClick={handleDelete}
+          onClick={() => setIsConfirmingDelete(true)}
           disabled={isSubmitting}
-          className="text-xs text-slate-400 hover:text-slate-600"
+          className="text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
         >
           Supprimer
         </button>
       </div>
 
-      <div className="mt-1 text-xs text-slate-500">
+      <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
         Restant dû : <strong>{formatCents(loan.remainingCents)}</strong> ·
         Mensualité : {formatCents(loan.monthlyPaymentCents)} · Taux :{" "}
         {(loan.annualRateBps / 100).toFixed(2)}% · Échéance :{" "}
@@ -130,15 +133,11 @@ export function LoanCard({ loan }: { loan: Loan }) {
               value={paymentAmount}
               onChange={(e) => setPaymentAmount(e.target.value)}
               placeholder="Enregistrer un paiement (€)"
-              className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
+              className="flex-1 rounded-lg border border-slate-300 bg-transparent px-3 py-1.5 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
             />
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="rounded-lg bg-teal-700 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
-            >
+            <Button type="submit" size="sm" disabled={isSubmitting}>
               Payer
-            </button>
+            </Button>
           </form>
 
           <form onSubmit={handleSimulate} className="mt-2 flex gap-2">
@@ -148,27 +147,35 @@ export function LoanCard({ loan }: { loan: Loan }) {
               value={extraAmount}
               onChange={(e) => setExtraAmount(e.target.value)}
               placeholder="Simuler un remboursement anticipé (€)"
-              className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
+              className="flex-1 rounded-lg border border-slate-300 bg-transparent px-3 py-1.5 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
             />
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
-            >
+            <Button type="submit" variant="secondary" size="sm" disabled={isSubmitting}>
               Simuler
-            </button>
+            </Button>
           </form>
         </>
       )}
 
-      {error && <p className="mt-2 text-xs text-amber-800">{error}</p>}
+      {error && (
+        <p className="animate-fade-in mt-2 text-xs text-amber-800 dark:text-amber-400">{error}</p>
+      )}
 
       {simulation && (
-        <p className="mt-2 rounded-lg bg-teal-50 px-3 py-2 text-sm text-teal-800">
+        <p className="animate-fade-in mt-2 rounded-lg bg-indigo-50 px-3 py-2 text-sm text-indigo-800 dark:bg-indigo-500/10 dark:text-indigo-300">
           Tu finirais {simulation.monthsSaved} mois plus tôt et économiserais{" "}
           {formatCents(simulation.interestSavedCents)} d&apos;intérêts.
         </p>
       )}
+
+      <ConfirmDialog
+        open={isConfirmingDelete}
+        title="Supprimer ce prêt ?"
+        description="Cette action est définitive et ne peut pas être annulée."
+        confirmLabel="Supprimer"
+        isSubmitting={isSubmitting}
+        onConfirm={handleDelete}
+        onCancel={() => setIsConfirmingDelete(false)}
+      />
     </li>
   );
 }
