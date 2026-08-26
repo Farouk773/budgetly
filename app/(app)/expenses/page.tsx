@@ -21,6 +21,8 @@ export default async function ExpensesPage() {
       })
     : [];
 
+  const totalCents = expenses.reduce((sum, expense) => sum + expense.amountCents, 0);
+
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-10">
       <div className="flex items-center justify-between">
@@ -34,6 +36,20 @@ export default async function ExpensesPage() {
           <Plus className="h-4 w-4" />
           Ajouter une dépense
         </Link>
+      </div>
+
+      <div className="card-elevated mt-6 flex items-center justify-between p-5">
+        <div>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Total dépensé, toutes dépenses ponctuelles confondues
+          </p>
+          <p className="text-brand-gradient mt-0.5 font-heading text-3xl font-semibold tracking-tight">
+            {formatCents(totalCents)}
+          </p>
+        </div>
+        <span className="text-xs text-slate-400 dark:text-slate-500">
+          {expenses.length} dépense{expenses.length > 1 ? "s" : ""}
+        </span>
       </div>
 
       <div className="mt-6 grid gap-5 lg:grid-cols-3">

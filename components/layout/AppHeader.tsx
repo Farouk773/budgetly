@@ -3,6 +3,7 @@ import { PiggyBank } from "lucide-react";
 import type { AuthUser } from "@/backend/types";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { DesktopNav } from "@/components/layout/DesktopNav";
+import { TodayDate } from "@/components/layout/TodayDate";
 
 export function AppHeader({ user }: { user: AuthUser }) {
   return (
@@ -19,6 +20,7 @@ export function AppHeader({ user }: { user: AuthUser }) {
         </Link>
 
         <div className="flex items-center gap-3">
+          <TodayDate />
           <Link
             href="/account"
             className="hidden text-sm text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 sm:inline"

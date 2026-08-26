@@ -1,5 +1,6 @@
 import { getCurrentUser } from "@/backend/auth";
 import { formatCents } from "@/backend/money";
+import { toMonthString } from "@/backend/dateUtils";
 import {
   currentMonthValue,
   getMonthlyBudget,
@@ -48,8 +49,17 @@ export default async function DashboardPage({
   const user = await getCurrentUser();
   const { month: monthParam } = await searchParams;
   const currentMonth = currentMonthValue();
-  const month =
+  // Never before the account existed, never past the month we're actually in
+  // — there's no data to show outside that range, only an empty shell.
+  const firstMonth = user ? toMonthString(new Date(user.createdAt)) : currentMonth;
+  const requestedMonth =
     monthParam && /^\d{4}-\d{2}$/.test(monthParam) ? monthParam : currentMonth;
+  const month =
+    requestedMonth < firstMonth
+      ? firstMonth
+      : requestedMonth > currentMonth
+        ? currentMonth
+        : requestedMonth;
   const isCurrentMonth = month === currentMonth;
 
   const [budget, running, spendingByCategory, motivation, alerts, monthIncomes] =
@@ -86,7 +96,12 @@ export default async function DashboardPage({
             Voici où en est ton budget en {MONTH_FORMATTER.format(new Date(`${month}-01T00:00:00.000Z`))}.
           </p>
         </div>
-        <MonthNavigator month={month} isCurrentMonth={isCurrentMonth} />
+        <MonthNavigator
+          month={month}
+          isCurrentMonth={isCurrentMonth}
+          firstMonth={firstMonth}
+          currentMonth={currentMonth}
+        />
       </div>
 
       <div className="card-elevated bg-brand-gradient mt-6 p-7 text-center transition-shadow duration-300 sm:p-8">

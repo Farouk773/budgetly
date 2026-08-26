@@ -24,7 +24,12 @@ export async function POST(request: NextRequest) {
   }
 
   const { rawToken, expiresAt } = await createSession(user.id);
-  const authUser: AuthUser = { id: user.id, email: user.email, name: user.name };
+  const authUser: AuthUser = {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    createdAt: user.createdAt.toISOString(),
+  };
 
   const response = NextResponse.json({ user: authUser }, { status: 200 });
   response.cookies.set(SESSION_COOKIE_NAME, rawToken, {
