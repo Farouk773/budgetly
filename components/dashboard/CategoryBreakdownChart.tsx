@@ -3,6 +3,7 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { formatCents } from "@/backend/money";
 import type { CategoryBreakdownEntry } from "@/backend/queries/spending";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 const COLORS = [
   "#7c3aed",
@@ -20,6 +21,8 @@ export function CategoryBreakdownChart({
 }: {
   entries: CategoryBreakdownEntry[];
 }) {
+  const currency = useCurrency();
+
   if (entries.length === 0) {
     return (
       <div className="card-surface p-5">
@@ -55,7 +58,7 @@ export function CategoryBreakdownChart({
                 <Cell key={entry.categoryId} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip formatter={(value) => formatCents(Number(value))} />
+            <Tooltip formatter={(value) => formatCents(Number(value), currency)} />
           </PieChart>
         </ResponsiveContainer>
       </div>
@@ -73,7 +76,7 @@ export function CategoryBreakdownChart({
               {entry.categoryName}
             </span>
             <span className="text-slate-900 dark:text-slate-100">
-              {formatCents(entry.amountCents)}{" "}
+              {formatCents(entry.amountCents, currency)}{" "}
               <span className="text-slate-400 dark:text-slate-500">
                 ({Math.round((entry.amountCents / total) * 100)}%)
               </span>

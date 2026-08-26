@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { formatCents, parseEurosToCents } from "@/backend/money";
+import { currencySymbol, formatCents, parseEurosToCents } from "@/backend/money";
 import type { ApiError, PurchaseSimulation } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 export function PurchaseSimulator() {
+  const currency = useCurrency();
   const [amount, setAmount] = useState("");
   const [result, setResult] = useState<PurchaseSimulation | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +58,7 @@ export function PurchaseSimulator() {
           inputMode="decimal"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          placeholder="Montant en €"
+          placeholder={`Montant en ${currencySymbol(currency)}`}
           className="flex-1 rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
         />
         <Button type="submit" variant="secondary" disabled={isSubmitting}>
@@ -77,9 +79,10 @@ export function PurchaseSimulator() {
           }`}
         >
           {result.affordable
-            ? `Oui, il te resterait ${formatCents(result.balanceAfterCents)}.`
+            ? `Oui, il te resterait ${formatCents(result.balanceAfterCents, currency)}.`
             : `Non, tu passerais à découvert (${formatCents(
-                result.balanceAfterCents
+                result.balanceAfterCents,
+                currency
               )}).`}
         </p>
       )}

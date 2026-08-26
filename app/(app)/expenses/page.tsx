@@ -44,7 +44,7 @@ export default async function ExpensesPage() {
             Total dépensé, toutes dépenses ponctuelles confondues
           </p>
           <p className="text-brand-gradient mt-0.5 font-heading text-3xl font-semibold tracking-tight">
-            {formatCents(totalCents)}
+            {formatCents(totalCents, user?.currency)}
           </p>
         </div>
         <span className="text-xs text-slate-400 dark:text-slate-500">
@@ -74,7 +74,7 @@ export default async function ExpensesPage() {
                     </p>
                   </div>
                   <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {formatCents(expense.amountCents)}
+                    {formatCents(expense.amountCents, user?.currency)}
                   </p>
                 </li>
               ))}

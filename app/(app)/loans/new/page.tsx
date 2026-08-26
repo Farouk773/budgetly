@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { parseEurosToCents } from "@/backend/money";
+import { currencySymbol, parseEurosToCents } from "@/backend/money";
 import type { ApiError } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 export default function NewLoanPage() {
   const router = useRouter();
+  const currency = useCurrency();
   const [name, setName] = useState("");
   const [remaining, setRemaining] = useState("");
   const [monthlyPayment, setMonthlyPayment] = useState("");
@@ -90,7 +92,7 @@ export default function NewLoanPage() {
             htmlFor="remaining"
             className="text-sm font-medium text-slate-700 dark:text-slate-200"
           >
-            Montant restant dû (€)
+            Montant restant dû ({currencySymbol(currency)})
           </label>
           <input
             id="remaining"
@@ -109,7 +111,7 @@ export default function NewLoanPage() {
             htmlFor="monthlyPayment"
             className="text-sm font-medium text-slate-700 dark:text-slate-200"
           >
-            Mensualité (€)
+            Mensualité ({currencySymbol(currency)})
           </label>
           <input
             id="monthlyPayment"

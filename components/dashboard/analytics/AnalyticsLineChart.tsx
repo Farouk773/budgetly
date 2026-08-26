@@ -12,7 +12,8 @@ import {
 } from "recharts";
 import type { DotItemDotProps } from "recharts";
 import { formatCents } from "@/backend/money";
-import type { AnalyticsGranularity, AnalyticsPoint } from "@/backend/types";
+import type { AnalyticsGranularity, AnalyticsPoint, Currency } from "@/backend/types";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 // Muted, theme-agnostic gray: Recharts renders axis ticks as inline-styled
 // SVG <text>, which Tailwind's dark: media-query classes can't reliably
@@ -54,6 +55,7 @@ function ChartTooltip({
   granularity,
   name,
   color,
+  currency,
 }: {
   active?: boolean;
   payload?: { value: number }[];
@@ -61,6 +63,7 @@ function ChartTooltip({
   granularity: AnalyticsGranularity;
   name: string;
   color: string;
+  currency: Currency;
 }) {
   if (!active || !payload || !payload.length || typeof label !== "string") return null;
   return (
@@ -76,7 +79,7 @@ function ChartTooltip({
         style={{ color: "var(--foreground)" }}
       >
         <span className="inline-block h-2 w-2 shrink-0 rounded-full" style={{ background: color }} />
-        {formatCents(payload[0].value)}
+        {formatCents(payload[0].value, currency)}
         <span className="font-sans text-xs font-normal" style={{ color: AXIS_TICK_COLOR }}>
           {name}
         </span>
@@ -118,6 +121,7 @@ export function AnalyticsLineChart({
 }) {
   const gradientId = `analytics-gradient-${useId().replace(/[:]/g, "")}`;
   const lastIndex = points.length - 1;
+  const currency = useCurrency();
 
   return (
     <div className="h-72 w-full">
@@ -140,14 +144,21 @@ export function AnalyticsLineChart({
             padding={{ left: 8, right: 8 }}
           />
           <YAxis
-            tickFormatter={(value: number) => formatCents(value)}
+            tickFormatter={(value: number) => formatCents(value, currency)}
             tick={{ fontSize: 11, fill: AXIS_TICK_COLOR }}
             axisLine={false}
             tickLine={false}
             width={72}
           />
           <Tooltip
-            content={<ChartTooltip granularity={granularity} name={name} color={color} />}
+            content={
+              <ChartTooltip
+                granularity={granularity}
+                name={name}
+                color={color}
+                currency={currency}
+              />
+            }
             cursor={{ stroke: color, strokeOpacity: 0.25, strokeWidth: 1, strokeDasharray: "4 4" }}
           />
           <Area

@@ -1,9 +1,11 @@
 import ExcelJS from "exceljs";
 import { formatCents } from "@/backend/money";
 import type { MonthlyReportData } from "@/backend/queries/report";
+import type { Currency } from "@/backend/types";
 
 export async function buildMonthlyExcelReport(
-  data: MonthlyReportData
+  data: MonthlyReportData,
+  currency: Currency
 ): Promise<Buffer> {
   const workbook = new ExcelJS.Workbook();
   workbook.created = new Date();
@@ -15,11 +17,11 @@ export async function buildMonthlyExcelReport(
   ];
   summarySheet.addRows([
     { label: "Mois", amount: data.month },
-    { label: "Revenus", amount: formatCents(data.budget.incomeCents) },
-    { label: "Charges fixes actives", amount: formatCents(data.budget.fixedChargesCents) },
-    { label: "Mensualités de prêts", amount: formatCents(data.budget.loanPaymentsCents) },
-    { label: "Dépenses", amount: formatCents(data.budget.expensesCents) },
-    { label: "Disponible", amount: formatCents(data.budget.availableCents) },
+    { label: "Revenus", amount: formatCents(data.budget.incomeCents, currency) },
+    { label: "Charges fixes actives", amount: formatCents(data.budget.fixedChargesCents, currency) },
+    { label: "Mensualités de prêts", amount: formatCents(data.budget.loanPaymentsCents, currency) },
+    { label: "Dépenses", amount: formatCents(data.budget.expensesCents, currency) },
+    { label: "Disponible", amount: formatCents(data.budget.availableCents, currency) },
   ]);
   summarySheet.getRow(1).font = { bold: true };
 
@@ -34,7 +36,7 @@ export async function buildMonthlyExcelReport(
     incomeSheet.addRow({
       type: income.type,
       label: income.label ?? "",
-      amount: formatCents(income.netAmountCents),
+      amount: formatCents(income.netAmountCents, currency),
     });
   }
 
@@ -51,7 +53,7 @@ export async function buildMonthlyExcelReport(
       date: expense.date.toISOString().slice(0, 10),
       category: expense.category.name,
       label: expense.label ?? "",
-      amount: formatCents(expense.amountCents),
+      amount: formatCents(expense.amountCents, currency),
     });
   }
 
@@ -67,7 +69,7 @@ export async function buildMonthlyExcelReport(
     fixedChargeSheet.addRow({
       label: charge.label,
       category: charge.category.name,
-      amount: formatCents(charge.amountCents),
+      amount: formatCents(charge.amountCents, currency),
       day: charge.dayOfMonth,
     });
   }
@@ -82,8 +84,8 @@ export async function buildMonthlyExcelReport(
   for (const loan of data.loans) {
     loanSheet.addRow({
       name: loan.name,
-      remaining: formatCents(loan.remainingCents),
-      payment: formatCents(loan.monthlyPaymentCents),
+      remaining: formatCents(loan.remainingCents, currency),
+      payment: formatCents(loan.monthlyPaymentCents, currency),
     });
   }
 

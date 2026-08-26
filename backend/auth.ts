@@ -57,6 +57,7 @@ export async function validateSessionToken(
     email: session.user.email,
     name: session.user.name,
     createdAt: session.user.createdAt.toISOString(),
+    currency: session.user.currency,
   };
 }
 

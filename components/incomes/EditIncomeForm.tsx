@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatCents, parseEurosToCents } from "@/backend/money";
+import { currencySymbol, formatCents, parseEurosToCents } from "@/backend/money";
 import type { ApiError, Income, IncomeType } from "@/backend/types";
 import { INCOME_TYPE_LABELS } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 export function EditIncomeForm({ income }: { income: Income }) {
   const router = useRouter();
+  const currency = useCurrency();
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [type, setType] = useState<IncomeType>(income.type);
   const [label, setLabel] = useState(income.label ?? "");
@@ -135,7 +137,7 @@ export function EditIncomeForm({ income }: { income: Income }) {
           htmlFor="netAmount"
           className="text-sm font-medium text-slate-700 dark:text-slate-200"
         >
-          Montant net perçu (€)
+          Montant net perçu ({currencySymbol(currency)})
         </label>
         <input
           id="netAmount"
@@ -177,7 +179,7 @@ export function EditIncomeForm({ income }: { income: Income }) {
       )}
 
       <p className="text-xs text-slate-400 dark:text-slate-500">
-        Montant actuellement enregistré : {formatCents(income.netAmountCents)}
+        Montant actuellement enregistré : {formatCents(income.netAmountCents, currency)}
       </p>
 
       {error && (

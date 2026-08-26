@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { parseEurosToCents } from "@/backend/money";
+import { currencySymbol, parseEurosToCents } from "@/backend/money";
 import type { ApiError } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 export default function NewSavingsGoalPage() {
   const router = useRouter();
+  const currency = useCurrency();
   const [name, setName] = useState("");
   const [target, setTarget] = useState("");
   const [targetDate, setTargetDate] = useState("");
@@ -73,7 +75,7 @@ export default function NewSavingsGoalPage() {
 
         <div className="flex flex-col gap-1">
           <label htmlFor="target" className="text-sm font-medium text-slate-700 dark:text-slate-200">
-            Montant à atteindre (€)
+            Montant à atteindre ({currencySymbol(currency)})
           </label>
           <input
             id="target"

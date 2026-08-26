@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Landmark, Wallet } from "lucide-react";
-import { formatCents, parseSignedEurosToCents } from "@/backend/money";
+import { currencySymbol, formatCents, parseSignedEurosToCents } from "@/backend/money";
 import type { ApiError, BalanceSource } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   day: "2-digit",
@@ -36,6 +37,7 @@ export function BalanceCard({
   canEdit: boolean;
 }) {
   const router = useRouter();
+  const currency = useCurrency();
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(
     (displayedCents / 100).toFixed(2).replace(".", ",")
@@ -84,7 +86,7 @@ export function BalanceCard({
         className="card-elevated flex animate-scale-in flex-col gap-2 p-5"
       >
         <label htmlFor="balance" className="text-sm font-medium text-slate-700 dark:text-slate-200">
-          Corriger le solde total (€)
+          Corriger le solde total ({currencySymbol(currency)})
         </label>
         <p className="text-xs text-slate-400 dark:text-slate-500">
           Utile si le montant réel sur tes comptes/cash diffère de
@@ -151,7 +153,7 @@ export function BalanceCard({
           )}
         </div>
         <p className="text-brand-gradient text-lg font-semibold">
-          {formatCents(displayedCents)}
+          {formatCents(displayedCents, currency)}
         </p>
         {!isDeclared && (
           <p className="text-xs text-slate-400 dark:text-slate-500">

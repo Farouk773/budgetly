@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatCents, parseEurosToCents } from "@/backend/money";
+import { currencySymbol, formatCents, parseEurosToCents } from "@/backend/money";
 import type { ApiError, EarlyRepaymentSimulation, Loan } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { notifyAnalyticsChanged } from "@/components/dashboard/analytics/analyticsBus";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   month: "short",
@@ -15,6 +16,7 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
 
 export function LoanCard({ loan }: { loan: Loan }) {
   const router = useRouter();
+  const currency = useCurrency();
   const [paymentAmount, setPaymentAmount] = useState("");
   const [extraAmount, setExtraAmount] = useState("");
   const [simulation, setSimulation] = useState<EarlyRepaymentSimulation | null>(
@@ -121,8 +123,8 @@ export function LoanCard({ loan }: { loan: Loan }) {
       </div>
 
       <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-        Restant dû : <strong>{formatCents(loan.remainingCents)}</strong> ·
-        Mensualité : {formatCents(loan.monthlyPaymentCents)} · Taux :{" "}
+        Restant dû : <strong>{formatCents(loan.remainingCents, currency)}</strong> ·
+        Mensualité : {formatCents(loan.monthlyPaymentCents, currency)} · Taux :{" "}
         {(loan.annualRateBps / 100).toFixed(2)}% · Échéance :{" "}
         {DATE_FORMATTER.format(new Date(loan.endDate))}
       </div>
@@ -135,7 +137,7 @@ export function LoanCard({ loan }: { loan: Loan }) {
               inputMode="decimal"
               value={paymentAmount}
               onChange={(e) => setPaymentAmount(e.target.value)}
-              placeholder="Enregistrer un paiement (€)"
+              placeholder={`Enregistrer un paiement (${currencySymbol(currency)})`}
               className="flex-1 rounded-lg border border-slate-300 bg-transparent px-3 py-1.5 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
             />
             <Button type="submit" size="sm" disabled={isSubmitting}>
@@ -149,7 +151,7 @@ export function LoanCard({ loan }: { loan: Loan }) {
               inputMode="decimal"
               value={extraAmount}
               onChange={(e) => setExtraAmount(e.target.value)}
-              placeholder="Simuler un remboursement anticipé (€)"
+              placeholder={`Simuler un remboursement anticipé (${currencySymbol(currency)})`}
               className="flex-1 rounded-lg border border-slate-300 bg-transparent px-3 py-1.5 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
             />
             <Button type="submit" variant="secondary" size="sm" disabled={isSubmitting}>
@@ -166,7 +168,7 @@ export function LoanCard({ loan }: { loan: Loan }) {
       {simulation && (
         <p className="animate-fade-in mt-2 rounded-lg bg-indigo-50 px-3 py-2 text-sm text-indigo-800 dark:bg-indigo-500/10 dark:text-indigo-300">
           Tu finirais {simulation.monthsSaved} mois plus tôt et économiserais{" "}
-          {formatCents(simulation.interestSavedCents)} d&apos;intérêts.
+          {formatCents(simulation.interestSavedCents, currency)} d&apos;intérêts.
         </p>
       )}
 

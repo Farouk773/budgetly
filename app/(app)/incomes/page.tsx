@@ -62,7 +62,7 @@ export default async function IncomesPage() {
                       </p>
                     </div>
                     <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                      {formatCents(income.netAmountCents)}
+                      {formatCents(income.netAmountCents, user?.currency)}
                     </p>
                   </Link>
                 </li>

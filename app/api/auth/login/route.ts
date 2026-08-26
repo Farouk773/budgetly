@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
     email: user.email,
     name: user.name,
     createdAt: user.createdAt.toISOString(),
+    currency: user.currency,
   };
 
   const response = NextResponse.json({ user: authUser }, { status: 200 });

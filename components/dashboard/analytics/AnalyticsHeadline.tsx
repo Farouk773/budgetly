@@ -1,6 +1,9 @@
+"use client";
+
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { formatCents } from "@/backend/money";
 import type { AnalyticsPoint } from "@/backend/types";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 /** Latest-value headline shown above a chart, with a trend badge versus the
  * previous point when there's enough history — gives the number at a glance
@@ -18,6 +21,7 @@ export function AnalyticsHeadline({
   label: string;
   higherIsBetter?: boolean;
 }) {
+  const currency = useCurrency();
   const latest = points.at(-1);
   const previous = points.length >= 2 ? points.at(-2) : undefined;
   if (!latest) return null;
@@ -35,7 +39,7 @@ export function AnalyticsHeadline({
           className="mt-0.5 font-heading text-3xl font-semibold tracking-tight"
           style={{ color }}
         >
-          {formatCents(latest.valueCents)}
+          {formatCents(latest.valueCents, currency)}
         </p>
       </div>
       {deltaCents !== null && !isFlat && (
@@ -47,7 +51,7 @@ export function AnalyticsHeadline({
           }`}
         >
           {isUp ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-          {formatCents(Math.abs(deltaCents))}
+          {formatCents(Math.abs(deltaCents), currency)}
         </span>
       )}
     </div>

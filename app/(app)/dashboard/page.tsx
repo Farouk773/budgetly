@@ -121,7 +121,7 @@ export default async function DashboardPage({
           {heroLabel(month, currentMonth)}
         </p>
         <p className="relative mt-2 font-heading text-5xl font-bold tracking-tight text-white drop-shadow-sm">
-          {formatCents(projectedCents)}
+          {formatCents(projectedCents, user?.currency)}
         </p>
         {budget && running && (
           <p className="relative mt-4 flex items-center justify-center">
@@ -130,14 +130,14 @@ export default async function DashboardPage({
                 isMonthPositive ? "bg-emerald-500/25" : "bg-amber-500/30"
               }`}
             >
-              {formatCents(running.startingBalanceCents)} au départ
+              {formatCents(running.startingBalanceCents, user?.currency)} au départ
               {isMonthPositive ? (
                 <TrendingUp className="h-3.5 w-3.5" />
               ) : (
                 <TrendingDown className="h-3.5 w-3.5" />
               )}
               {isMonthPositive ? "+" : ""}
-              {formatCents(budget.availableCents)} ce mois-{isCurrentMonth ? "ci" : "là"}
+              {formatCents(budget.availableCents, user?.currency)} ce mois-{isCurrentMonth ? "ci" : "là"}
             </span>
           </p>
         )}
@@ -147,7 +147,7 @@ export default async function DashboardPage({
         <div className="flex flex-col gap-3 lg:col-span-2">
           <SectionLabel>Revenus et dépenses de ce mois-ci</SectionLabel>
 
-          {alerts && <AlertsPanel snapshot={alerts} />}
+          {alerts && <AlertsPanel snapshot={alerts} currency={user?.currency} />}
 
           {motivation && <MotivationCard snapshot={motivation} />}
 
@@ -166,7 +166,7 @@ export default async function DashboardPage({
                 <div className="flex justify-between py-2">
                   <span className="text-slate-500 dark:text-slate-400">Revenus du mois</span>
                   <span className="font-medium text-slate-900 dark:text-slate-100">
-                    {formatCents(budget.incomeCents)}
+                    {formatCents(budget.incomeCents, user?.currency)}
                   </span>
                 </div>
                 <div className="flex justify-between py-2">
@@ -175,7 +175,7 @@ export default async function DashboardPage({
                     <span className="text-xs text-slate-400 dark:text-slate-500">(constant)</span>
                   </span>
                   <span className="font-medium text-slate-900 dark:text-slate-100">
-                    -{formatCents(budget.fixedChargesCents)}
+                    -{formatCents(budget.fixedChargesCents, user?.currency)}
                   </span>
                 </div>
                 <div className="flex justify-between py-2">
@@ -184,13 +184,13 @@ export default async function DashboardPage({
                     <span className="text-xs text-slate-400 dark:text-slate-500">(constant)</span>
                   </span>
                   <span className="font-medium text-slate-900 dark:text-slate-100">
-                    -{formatCents(budget.loanPaymentsCents)}
+                    -{formatCents(budget.loanPaymentsCents, user?.currency)}
                   </span>
                 </div>
                 <div className="flex justify-between py-2">
                   <span className="text-slate-500 dark:text-slate-400">Dépenses déjà faites</span>
                   <span className="font-medium text-slate-900 dark:text-slate-100">
-                    -{formatCents(budget.expensesCents)}
+                    -{formatCents(budget.expensesCents, user?.currency)}
                   </span>
                 </div>
                 <div className="flex justify-between pt-2 text-sm">
@@ -204,7 +204,7 @@ export default async function DashboardPage({
                         : "text-amber-700 dark:text-amber-400"
                     }`}
                   >
-                    {formatCents(budget.availableCents)}
+                    {formatCents(budget.availableCents, user?.currency)}
                   </span>
                 </div>
               </div>
@@ -217,7 +217,7 @@ export default async function DashboardPage({
               className="rounded-xl bg-indigo-50 px-4 py-3 text-sm text-indigo-800 transition-colors hover:bg-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-300 dark:hover:bg-indigo-500/15"
             >
               Tu pourrais mettre{" "}
-              <strong>{formatCents(budget.suggestedSavingsCents)}</strong> de
+              <strong>{formatCents(budget.suggestedSavingsCents, user?.currency)}</strong> de
               côté ce mois-ci →
             </a>
           )}

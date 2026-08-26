@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatCents, parseEurosToCents } from "@/backend/money";
+import { currencySymbol, formatCents, parseEurosToCents } from "@/backend/money";
 import type { ApiError, SavingsGoal } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { notifyAnalyticsChanged } from "@/components/dashboard/analytics/analyticsBus";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   day: "2-digit",
@@ -16,6 +17,7 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
 
 export function SavingsGoalCard({ goal }: { goal: SavingsGoal }) {
   const router = useRouter();
+  const currency = useCurrency();
   const [amount, setAmount] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -94,7 +96,7 @@ export function SavingsGoalCard({ goal }: { goal: SavingsGoal }) {
 
       <div className="mt-1 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
         <span>
-          {formatCents(goal.currentCents)} / {formatCents(goal.targetCents)} (
+          {formatCents(goal.currentCents, currency)} / {formatCents(goal.targetCents, currency)} (
           {progress}%)
         </span>
         {goal.targetDate && (
@@ -108,7 +110,7 @@ export function SavingsGoalCard({ goal }: { goal: SavingsGoal }) {
           inputMode="decimal"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          placeholder="Ajouter un montant (€)"
+          placeholder={`Ajouter un montant (${currencySymbol(currency)})`}
           className="flex-1 rounded-lg border border-slate-300 bg-transparent px-3 py-1.5 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
         />
         <Button type="submit" size="sm" disabled={isSubmitting}>

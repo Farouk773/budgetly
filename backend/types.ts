@@ -1,8 +1,22 @@
+export type Currency = "EUR" | "USD" | "GBP" | "CHF" | "TND" | "MAD";
+
+export const SUPPORTED_CURRENCIES: Currency[] = ["EUR", "USD", "GBP", "CHF", "TND", "MAD"];
+
+export const CURRENCY_LABELS: Record<Currency, string> = {
+  EUR: "Euro (€)",
+  USD: "Dollar américain ($)",
+  GBP: "Livre sterling (£)",
+  CHF: "Franc suisse (CHF)",
+  TND: "Dinar tunisien (DT)",
+  MAD: "Dirham marocain (MAD)",
+};
+
 export type AuthUser = {
   id: string;
   email: string;
   name: string | null;
   createdAt: string;
+  currency: Currency;
 };
 
 export type SignupInput = {

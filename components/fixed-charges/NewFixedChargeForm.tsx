@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { parseEurosToCents } from "@/backend/money";
+import { currencySymbol, parseEurosToCents } from "@/backend/money";
 import type { ApiError, Category } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 export function NewFixedChargeForm({ categories }: { categories: Category[] }) {
   const router = useRouter();
+  const currency = useCurrency();
   const [categoryId, setCategoryId] = useState(categories[0]?.id ?? "");
   const [label, setLabel] = useState("");
   const [dayOfMonth, setDayOfMonth] = useState("1");
@@ -114,7 +116,7 @@ export function NewFixedChargeForm({ categories }: { categories: Category[] }) {
 
       <div className="flex flex-col gap-1">
         <label htmlFor="amount" className="text-sm font-medium text-slate-700 dark:text-slate-200">
-          Montant mensuel (€)
+          Montant mensuel ({currencySymbol(currency)})
         </label>
         <input
           id="amount"

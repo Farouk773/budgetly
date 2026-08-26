@@ -13,13 +13,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Entrée invalide" }, { status: 400 });
   }
 
-  const { email, password, name } = parsed.data;
+  const { email, password, name, currency } = parsed.data;
   const passwordHash = await hashPassword(password);
 
   let user;
   try {
     user = await prisma.user.create({
-      data: { email, passwordHash, name },
+      data: { email, passwordHash, name, currency },
     });
   } catch (err) {
     if (
@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
     email: user.email,
     name: user.name,
     createdAt: user.createdAt.toISOString(),
+    currency: user.currency,
   };
 
   const response = NextResponse.json({ user: authUser }, { status: 201 });

@@ -1,10 +1,31 @@
-const EUR_FORMATTER = new Intl.NumberFormat("fr-FR", {
-  style: "currency",
-  currency: "EUR",
-});
+import { SUPPORTED_CURRENCIES, type Currency } from "./types";
 
-export function formatCents(cents: number): string {
-  return EUR_FORMATTER.format(cents / 100);
+// Intl.NumberFormat applies each currency's native ISO 4217 decimal count
+// (e.g. TND has 3 decimals natively) but amountCents always stores
+// valeur_affichée × 100, never × 1000 — so decimals are forced to 2 for every
+// supported currency to reflect exactly what's stored (see CURRENCY_PLAN.md §4).
+const FORMATTERS: Record<Currency, Intl.NumberFormat> = Object.fromEntries(
+  SUPPORTED_CURRENCIES.map((currency) => [
+    currency,
+    new Intl.NumberFormat("fr-FR", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }),
+  ])
+) as Record<Currency, Intl.NumberFormat>;
+
+export function formatCents(cents: number, currency: Currency = "EUR"): string {
+  return FORMATTERS[currency].format(cents / 100);
+}
+
+/** Symbole/suffixe de devise seul (ex. "€", "$US", "DT"), pour les labels de
+ * formulaire ("Montant (€)") — dérivé du même formateur que formatCents pour
+ * garantir une cohérence parfaite avec les montants affichés. */
+export function currencySymbol(currency: Currency = "EUR"): string {
+  const parts = FORMATTERS[currency].formatToParts(0);
+  return parts.find((p) => p.type === "currency")?.value ?? currency;
 }
 
 /** Parses a user-typed amount ("1234,56" or "1234.56") into integer cents. Returns null if invalid. */

@@ -1,6 +1,6 @@
 import { AlertTriangle, CalendarClock } from "lucide-react";
 import { formatCents } from "@/backend/money";
-import type { AlertsSnapshot } from "@/backend/types";
+import type { AlertsSnapshot, Currency } from "@/backend/types";
 
 const DUE_LABEL: Record<AlertsSnapshot["upcomingDues"][number]["type"], string> = {
   fixedCharge: "Charge fixe",
@@ -13,7 +13,13 @@ function formatDueIn(days: number): string {
   return `dans ${days} jours`;
 }
 
-export function AlertsPanel({ snapshot }: { snapshot: AlertsSnapshot }) {
+export function AlertsPanel({
+  snapshot,
+  currency,
+}: {
+  snapshot: AlertsSnapshot;
+  currency?: Currency;
+}) {
   const hasOverdraftWarning = snapshot.overdraft?.atRisk ?? false;
   const hasUpcomingDues = snapshot.upcomingDues.length > 0;
 
@@ -28,7 +34,7 @@ export function AlertsPanel({ snapshot }: { snapshot: AlertsSnapshot }) {
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <span>
             Risque de découvert : il te manque{" "}
-            <strong>{formatCents(snapshot.overdraft.shortfallCents)}</strong>{" "}
+            <strong>{formatCents(snapshot.overdraft.shortfallCents, currency)}</strong>{" "}
             pour couvrir tes charges fixes et prêts de ce mois-ci.
           </span>
         </p>
@@ -53,7 +59,7 @@ export function AlertsPanel({ snapshot }: { snapshot: AlertsSnapshot }) {
                   </span>
                 </span>
                 <span className="text-slate-900 dark:text-slate-100">
-                  {formatCents(due.amountCents)} · {formatDueIn(due.daysUntilDue)}
+                  {formatCents(due.amountCents, currency)} · {formatDueIn(due.daysUntilDue)}
                 </span>
               </li>
             ))}

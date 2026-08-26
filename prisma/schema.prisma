@@ -17,6 +17,8 @@ model User {
   email        String        @unique
   passwordHash String
   name         String?
+  // display currency, chosen at signup — pure representation choice, no FX conversion (see CURRENCY_PLAN.md)
+  currency     Currency      @default(EUR)
   // manually declared total balance (all accounts/cash) until Open Banking (Phase 12)
   balanceCents  Int?
   balanceAsOf   DateTime?
@@ -37,6 +39,15 @@ enum BalanceSource {
   BANK
   CASH
   MIXED
+}
+
+enum Currency {
+  EUR
+  USD
+  GBP
+  CHF
+  TND
+  MAD
 }
 
 enum PartnerLinkStatus {

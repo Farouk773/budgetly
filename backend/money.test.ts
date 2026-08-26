@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatCents, parseEurosToCents, parseSignedEurosToCents } from "./money";
+import { currencySymbol, formatCents, parseEurosToCents, parseSignedEurosToCents } from "./money";
 
 // Intl.NumberFormat("fr-FR") inserts non-breaking space variants (U+00A0,
 // U+202F) around the currency sign and as a thousands separator; normalize
@@ -19,6 +19,28 @@ describe("formatCents", () => {
 
   it("formats negative amounts (e.g. an overdraft)", () => {
     expect(normalizeSpaces(formatCents(-500))).toBe("-5,00 €");
+  });
+
+  it("forces 2 decimals for TND even though its ISO 4217 native precision is 3", () => {
+    expect(normalizeSpaces(formatCents(150055, "TND"))).toBe("1 500,55 TND");
+  });
+
+  it("formats USD with the requested currency", () => {
+    expect(normalizeSpaces(formatCents(185042, "USD"))).toBe("1 850,42 $US");
+  });
+});
+
+describe("currencySymbol", () => {
+  it("defaults to the euro sign", () => {
+    expect(currencySymbol()).toBe("€");
+  });
+
+  it("returns the suffix for TND", () => {
+    expect(currencySymbol("TND")).toBe("TND");
+  });
+
+  it("returns the suffix for USD", () => {
+    expect(currencySymbol("USD")).toBe("$US");
   });
 });
 

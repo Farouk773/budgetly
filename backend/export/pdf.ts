@@ -1,6 +1,7 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import { formatCents } from "@/backend/money";
 import type { MonthlyReportData } from "@/backend/queries/report";
+import type { Currency } from "@/backend/types";
 
 const PAGE_WIDTH = 595.28; // A4 in points
 const PAGE_HEIGHT = 841.89;
@@ -85,25 +86,26 @@ class PdfWriter {
 }
 
 export async function buildMonthlyPdfReport(
-  data: MonthlyReportData
+  data: MonthlyReportData,
+  currency: Currency
 ): Promise<Buffer> {
   const writer = await PdfWriter.create();
 
   writer.title(`Bilan mensuel — ${data.month}`);
 
   writer.heading("Résumé");
-  writer.line(`Revenus : ${formatCents(data.budget.incomeCents)}`);
-  writer.line(`Charges fixes actives : -${formatCents(data.budget.fixedChargesCents)}`);
-  writer.line(`Mensualités de prêts : -${formatCents(data.budget.loanPaymentsCents)}`);
-  writer.line(`Dépenses : -${formatCents(data.budget.expensesCents)}`);
-  writer.line(`Disponible : ${formatCents(data.budget.availableCents)}`);
+  writer.line(`Revenus : ${formatCents(data.budget.incomeCents, currency)}`);
+  writer.line(`Charges fixes actives : -${formatCents(data.budget.fixedChargesCents, currency)}`);
+  writer.line(`Mensualités de prêts : -${formatCents(data.budget.loanPaymentsCents, currency)}`);
+  writer.line(`Dépenses : -${formatCents(data.budget.expensesCents, currency)}`);
+  writer.line(`Disponible : ${formatCents(data.budget.availableCents, currency)}`);
 
   writer.heading("Revenus");
   if (data.incomes.length === 0) {
     writer.line("Aucun revenu enregistré ce mois-ci.");
   }
   for (const income of data.incomes) {
-    writer.line(`${income.label ?? income.type} — ${formatCents(income.netAmountCents)}`);
+    writer.line(`${income.label ?? income.type} — ${formatCents(income.netAmountCents, currency)}`);
   }
 
   writer.heading("Dépenses");
@@ -113,7 +115,7 @@ export async function buildMonthlyPdfReport(
   for (const expense of data.expenses) {
     const date = expense.date.toISOString().slice(0, 10);
     writer.line(
-      `${date} — ${expense.category.name} — ${expense.label ?? ""} — ${formatCents(expense.amountCents)}`
+      `${date} — ${expense.category.name} — ${expense.label ?? ""} — ${formatCents(expense.amountCents, currency)}`
     );
   }
 
@@ -123,7 +125,7 @@ export async function buildMonthlyPdfReport(
   }
   for (const charge of data.fixedCharges) {
     writer.line(
-      `${charge.label} (${charge.category.name}) — ${formatCents(charge.amountCents)} le ${charge.dayOfMonth} du mois`
+      `${charge.label} (${charge.category.name}) — ${formatCents(charge.amountCents, currency)} le ${charge.dayOfMonth} du mois`
     );
   }
 
@@ -133,7 +135,7 @@ export async function buildMonthlyPdfReport(
   }
   for (const loan of data.loans) {
     writer.line(
-      `${loan.name} — restant dû ${formatCents(loan.remainingCents)}, mensualité ${formatCents(loan.monthlyPaymentCents)}`
+      `${loan.name} — restant dû ${formatCents(loan.remainingCents, currency)}, mensualité ${formatCents(loan.monthlyPaymentCents, currency)}`
     );
   }
 

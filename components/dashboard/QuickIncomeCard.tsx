@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Wallet } from "lucide-react";
-import { formatCents, parseEurosToCents } from "@/backend/money";
+import { currencySymbol, formatCents, parseEurosToCents } from "@/backend/money";
 import type { ApiError, Income, IncomeType } from "@/backend/types";
 import { INCOME_TYPE_LABELS } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 export function QuickIncomeCard({
   month,
@@ -16,6 +17,7 @@ export function QuickIncomeCard({
   incomes: Income[];
 }) {
   const router = useRouter();
+  const currency = useCurrency();
   const [type, setType] = useState<IncomeType>("SALARY");
   const [amount, setAmount] = useState("");
   const [label, setLabel] = useState("");
@@ -85,7 +87,7 @@ export function QuickIncomeCard({
                 {income.label || INCOME_TYPE_LABELS[income.type]}
               </span>
               <span className="font-medium text-slate-900 dark:text-slate-100">
-                {formatCents(income.netAmountCents)}
+                {formatCents(income.netAmountCents, currency)}
               </span>
             </li>
           ))}
@@ -110,7 +112,7 @@ export function QuickIncomeCard({
             inputMode="decimal"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            placeholder="Montant (€)"
+            placeholder={`Montant (${currencySymbol(currency)})`}
             className="flex-1 rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
           />
         </div>

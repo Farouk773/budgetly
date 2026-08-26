@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { parseEurosToCents } from "@/backend/money";
+import { currencySymbol, parseEurosToCents } from "@/backend/money";
 import type { ApiError, Category } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 function todayValue(): string {
   return new Date().toISOString().slice(0, 10);
@@ -12,6 +13,7 @@ function todayValue(): string {
 
 export function NewExpenseForm({ categories }: { categories: Category[] }) {
   const router = useRouter();
+  const currency = useCurrency();
   const [categoryId, setCategoryId] = useState(categories[0]?.id ?? "");
   const [label, setLabel] = useState("");
   const [date, setDate] = useState(todayValue());
@@ -107,7 +109,7 @@ export function NewExpenseForm({ categories }: { categories: Category[] }) {
 
       <div className="flex flex-col gap-1">
         <label htmlFor="amount" className="text-sm font-medium text-slate-700 dark:text-slate-200">
-          Montant (€)
+          Montant ({currencySymbol(currency)})
         </label>
         <input
           id="amount"

@@ -45,7 +45,7 @@ export default async function FixedChargesPage() {
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 Total mensuel des charges actives :{" "}
                 <span className="font-semibold text-slate-900 dark:text-slate-100">
-                  {formatCents(monthlyTotalCents)}
+                  {formatCents(monthlyTotalCents, user?.currency)}
                 </span>
               </p>
               <ul className="mt-4 flex flex-col gap-3">
@@ -69,7 +69,7 @@ export default async function FixedChargesPage() {
                       </p>
                     </div>
                     <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                      {formatCents(charge.amountCents)}
+                      {formatCents(charge.amountCents, user?.currency)}
                     </p>
                   </li>
                 ))}

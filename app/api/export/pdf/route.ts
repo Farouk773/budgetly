@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       : currentMonthValue();
 
   const data = await getMonthlyReportData(user.id, month);
-  const buffer = await buildMonthlyPdfReport(data);
+  const buffer = await buildMonthlyPdfReport(data, user.currency);
 
   return new NextResponse(new Uint8Array(buffer), {
     headers: {

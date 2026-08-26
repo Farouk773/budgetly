@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { parseEurosToCents } from "@/backend/money";
+import { currencySymbol, parseEurosToCents } from "@/backend/money";
 import type { ApiError, IncomeType } from "@/backend/types";
 import { INCOME_TYPE_LABELS } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 function currentMonthValue(): string {
   const now = new Date();
@@ -14,6 +15,7 @@ function currentMonthValue(): string {
 
 export default function NewIncomePage() {
   const router = useRouter();
+  const currency = useCurrency();
   const [type, setType] = useState<IncomeType>("SALARY");
   const [label, setLabel] = useState("");
   const [month, setMonth] = useState(currentMonthValue());
@@ -130,7 +132,7 @@ export default function NewIncomePage() {
             htmlFor="netAmount"
             className="text-sm font-medium text-slate-700 dark:text-slate-200"
           >
-            Montant net perçu (€)
+            Montant net perçu ({currencySymbol(currency)})
           </label>
           <input
             id="netAmount"

@@ -50,7 +50,7 @@ export default async function SavingsPage() {
                   Argent disponible au total, tout compris
                 </p>
                 <p className="text-brand-gradient text-xl font-semibold">
-                  {formatCents(running.startingBalanceCents)}
+                  {formatCents(running.startingBalanceCents, user?.currency)}
                 </p>
                 <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">
                   Tu peux épargner plus que la suggestion ci-dessous si ce total
@@ -63,7 +63,7 @@ export default async function SavingsPage() {
           {budget && budget.suggestedSavingsCents > 0 && (
             <p className="mt-3 rounded-lg bg-indigo-50 px-3 py-2 text-sm text-indigo-800 dark:bg-indigo-500/10 dark:text-indigo-300">
               Vu ce qu&apos;il te reste ce mois-ci, tu pourrais mettre de côté
-              environ <strong>{formatCents(budget.suggestedSavingsCents)}</strong>.
+              environ <strong>{formatCents(budget.suggestedSavingsCents, user?.currency)}</strong>.
             </p>
           )}
 

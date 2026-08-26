@@ -1,6 +1,7 @@
 "use client";
 
 import { formatCents } from "@/backend/money";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { useAnalyticsData } from "@/components/dashboard/analytics/useAnalyticsData";
 import { AnalyticsLineChart } from "@/components/dashboard/analytics/AnalyticsLineChart";
 import { AnalyticsHeadline } from "@/components/dashboard/analytics/AnalyticsHeadline";
@@ -14,6 +15,7 @@ import type { EpargneAnalyticsResponse } from "@/backend/types";
 const COLOR = "#0891b2";
 
 export function EpargneAnalyticsChart() {
+  const currency = useCurrency();
   const { data, isLoading, error } = useAnalyticsData<EpargneAnalyticsResponse>(
     "/api/analytics/epargne?granularite=mois"
   );
@@ -29,7 +31,7 @@ export function EpargneAnalyticsChart() {
           Épargne cumulée à ce jour
         </p>
         <p className="mt-0.5 font-heading text-2xl font-semibold text-emerald-800 dark:text-emerald-200">
-          {formatCents(data.totalSavedCents)}
+          {formatCents(data.totalSavedCents, currency)}
         </p>
       </div>
 
