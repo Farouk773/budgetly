@@ -131,7 +131,16 @@ export function LoanCard({ loan }: { loan: Loan }) {
 
       {loan.active && (
         <>
-          <form onSubmit={handlePayment} className="mt-3 flex gap-2">
+          <p className="mt-3 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500 dark:bg-white/5 dark:text-slate-400">
+            « Payer » met à jour uniquement le capital restant dû ci-dessus. Ta
+            mensualité est déjà comptée chaque mois dans ton solde global du
+            tableau de bord, que tu enregistres un paiement ici ou non — pas
+            besoin de le refaire. Si le montant réel sur ton compte a changé
+            (remboursement anticipé, par exemple), corrige-le depuis la carte
+            « Solde » du tableau de bord.
+          </p>
+
+          <form onSubmit={handlePayment} className="mt-2 flex gap-2">
             <input
               type="text"
               inputMode="decimal"

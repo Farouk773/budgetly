@@ -104,7 +104,13 @@ export function SavingsGoalCard({ goal }: { goal: SavingsGoal }) {
         )}
       </div>
 
-      <form onSubmit={handleContribute} className="mt-3 flex gap-2">
+      <p className="mt-3 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500 dark:bg-white/5 dark:text-slate-400">
+        Cet ajout suit ta progression vers l&apos;objectif. Ton solde global ne
+        change pas : cet argent fait toujours partie de ton total, juste mis
+        de côté plutôt que dépensé.
+      </p>
+
+      <form onSubmit={handleContribute} className="mt-2 flex gap-2">
         <input
           type="text"
           inputMode="decimal"
