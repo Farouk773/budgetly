@@ -159,8 +159,9 @@ export default async function DashboardPage({
                 Détail du mois
               </p>
               <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
-                Les charges fixes et mensualités de prêts restent constantes
-                d&apos;un mois à l&apos;autre ; revenus et dépenses varient.
+                Les charges fixes restent constantes d&apos;un mois à
+                l&apos;autre ; revenus, dépenses et paiements de prêts varient
+                selon ce que tu enregistres.
               </p>
               <div className="mt-3 flex flex-col divide-y divide-slate-100 text-sm dark:divide-white/10">
                 <div className="flex justify-between py-2">
@@ -180,8 +181,7 @@ export default async function DashboardPage({
                 </div>
                 <div className="flex justify-between py-2">
                   <span className="text-slate-500 dark:text-slate-400">
-                    Mensualités de prêts{" "}
-                    <span className="text-xs text-slate-400 dark:text-slate-500">(constant)</span>
+                    Paiements de prêts enregistrés
                   </span>
                   <span className="font-medium text-slate-900 dark:text-slate-100">
                     -{formatCents(budget.loanPaymentsCents, user?.currency)}

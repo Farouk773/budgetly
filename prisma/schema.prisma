@@ -31,6 +31,7 @@ model User {
   expenses     Expense[]
   savingsGoals SavingsGoal[]
   loans        Loan[]
+  loanPayments LoanPayment[]
   sentLinks     PartnerLink[] @relation("RequestedLinks")
   receivedLinks PartnerLink[] @relation("PartnerLinks")
 }
@@ -76,21 +77,43 @@ model PartnerLink {
 }
 
 model Loan {
-  id                  String   @id @default(cuid())
+  id                  String        @id @default(cuid())
   userId              String
-  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   name                String
   remainingCents      Int
   monthlyPaymentCents Int
   // annual interest rate in basis points (350 = 3.50%), for the early-repayment simulator
-  annualRateBps       Int      @default(0)
-  dueDayOfMonth       Int      @default(1)
+  annualRateBps       Int           @default(0)
+  dueDayOfMonth       Int           @default(1)
   endDate             DateTime
-  active              Boolean  @default(true)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  active              Boolean       @default(true)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  payments            LoanPayment[]
 
   @@index([userId])
+}
+
+// One row per real, dated loan repayment, recorded when the user clicks
+// "Payer" — this is what makes a loan payment affect the global balance the
+// same way a dated Expense does, instead of Loan.monthlyPaymentCents being
+// deducted automatically every month regardless of user action. Kept
+// separate from the decrement already applied to Loan.remainingCents: that
+// field still represents "principal left to pay off", this table represents
+// "money that actually left the budget, and when".
+model LoanPayment {
+  id          String   @id @default(cuid())
+  loanId      String
+  loan        Loan     @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amountCents Int
+  date        DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([date])
 }
 
 model SavingsGoal {

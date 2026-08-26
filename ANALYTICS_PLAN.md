@@ -239,6 +239,8 @@ Si `loanId` est fourni, vérifier `loan.userId === user.id` (sinon 404) avant de
 
 Pas d'agrégat DB ici : la série est calculée par une fonction pure (voir section 5) à partir des 4 champs déjà chargés du prêt sélectionné (`remainingCents`, `monthlyPaymentCents`, `annualRateBps`, `createdAt`). `meta.estimated = true` systématiquement.
 
+**Amélioration future (hors scope, ne pas faire maintenant)** : depuis `LOAN_PAYMENTS_PLAN.md`, un modèle `LoanPayment` (paiement réel, daté) existe désormais et alimente `loanPaymentsCents` dans `getMonthlyBudget`. Une fois plusieurs mois de `LoanPayment` accumulés pour un prêt, on pourra construire une courbe hybride — remplacer les points des mois où un `LoanPayment` existe par un `remainingCents` recalculé à partir de la somme des paiements réels depuis la création du prêt, et ne garder `reconstructLoanBalanceHistory` que pour les mois antérieurs à l'introduction de cette fonctionnalité. Nécessite d'abord de stocker `Loan.initialCents` (capital initial) pour ancrer le calcul — actuellement absent du schéma. Pas d'action requise dans ce chantier ; le contrat actuel de `PretAnalyticsResponse` ne change pas.
+
 ### 4.5 Charges fixes (`type=charges`)
 
 `granularite=jour` non supporté → 400.

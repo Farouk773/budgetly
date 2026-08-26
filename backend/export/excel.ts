@@ -19,7 +19,7 @@ export async function buildMonthlyExcelReport(
     { label: "Mois", amount: data.month },
     { label: "Revenus", amount: formatCents(data.budget.incomeCents, currency) },
     { label: "Charges fixes actives", amount: formatCents(data.budget.fixedChargesCents, currency) },
-    { label: "Mensualités de prêts", amount: formatCents(data.budget.loanPaymentsCents, currency) },
+    { label: "Paiements de prêts enregistrés", amount: formatCents(data.budget.loanPaymentsCents, currency) },
     { label: "Dépenses", amount: formatCents(data.budget.expensesCents, currency) },
     { label: "Disponible", amount: formatCents(data.budget.availableCents, currency) },
   ]);

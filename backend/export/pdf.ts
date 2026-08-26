@@ -96,7 +96,7 @@ export async function buildMonthlyPdfReport(
   writer.heading("Résumé");
   writer.line(`Revenus : ${formatCents(data.budget.incomeCents, currency)}`);
   writer.line(`Charges fixes actives : -${formatCents(data.budget.fixedChargesCents, currency)}`);
-  writer.line(`Mensualités de prêts : -${formatCents(data.budget.loanPaymentsCents, currency)}`);
+  writer.line(`Paiements de prêts enregistrés : -${formatCents(data.budget.loanPaymentsCents, currency)}`);
   writer.line(`Dépenses : -${formatCents(data.budget.expensesCents, currency)}`);
   writer.line(`Disponible : ${formatCents(data.budget.availableCents, currency)}`);
 

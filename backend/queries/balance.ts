@@ -21,7 +21,7 @@ export function currentMonthValue(): string {
 export async function getMonthlyBudget(userId: string, month: string) {
   const range = monthRange(month);
 
-  const [incomeAgg, expenseAgg, activeFixedCharges, activeLoans] = await Promise.all([
+  const [incomeAgg, expenseAgg, activeFixedCharges, loanPaymentAgg] = await Promise.all([
     prisma.income.aggregate({
       where: { userId, periodMonth: range },
       _sum: { netAmountCents: true },
@@ -34,16 +34,21 @@ export async function getMonthlyBudget(userId: string, month: string) {
       where: { userId, active: true },
       _sum: { amountCents: true },
     }),
-    prisma.loan.aggregate({
-      where: { userId, active: true },
-      _sum: { monthlyPaymentCents: true },
+    // Real, dated payments recorded via the "Payer" button — NOT the
+    // theoretical monthly installment of active loans. Deliberately not
+    // filtered on Loan.active: a payment made this month must still count
+    // even if it just brought the loan's remaining balance to zero (the
+    // loan was active at the moment of the click, inactive right after).
+    prisma.loanPayment.aggregate({
+      where: { userId, date: range },
+      _sum: { amountCents: true },
     }),
   ]);
 
   const incomeCents = incomeAgg._sum.netAmountCents ?? 0;
   const expensesCents = expenseAgg._sum.amountCents ?? 0;
   const fixedChargesCents = activeFixedCharges._sum.amountCents ?? 0;
-  const loanPaymentsCents = activeLoans._sum.monthlyPaymentCents ?? 0;
+  const loanPaymentsCents = loanPaymentAgg._sum.amountCents ?? 0;
 
   const availableCents = computeMonthlyAvailableCents({
     incomeCents,

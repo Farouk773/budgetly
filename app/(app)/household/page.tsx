@@ -66,7 +66,7 @@ export default async function HouseholdPage() {
               </span>
             </div>
             <div className="flex justify-between py-1 text-sm">
-              <span className="text-slate-500 dark:text-slate-400">Mensualités de prêts cumulées</span>
+              <span className="text-slate-500 dark:text-slate-400">Paiements de prêts cumulés</span>
               <span className="font-medium text-slate-900 dark:text-slate-100">
                 -{formatCents(summary.combined.loanPaymentsCents, user.currency)}
               </span>
