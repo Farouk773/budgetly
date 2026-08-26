@@ -17,6 +17,16 @@ export function NewFixedChargeForm({ categories }: { categories: Category[] }) {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const hasDraft = label.trim() !== "" || amount.trim() !== "";
+
+  function resetForm() {
+    setCategoryId(categories[0]?.id ?? "");
+    setLabel("");
+    setDayOfMonth("1");
+    setAmount("");
+    setError(null);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -136,9 +146,16 @@ export function NewFixedChargeForm({ categories }: { categories: Category[] }) {
         </p>
       )}
 
-      <Button type="submit" disabled={isSubmitting} className="mt-2">
-        {isSubmitting ? "Ajout..." : "Ajouter"}
-      </Button>
+      <div className="mt-2 flex gap-2">
+        <Button type="submit" disabled={isSubmitting} className="flex-1">
+          {isSubmitting ? "Ajout..." : "Ajouter"}
+        </Button>
+        {hasDraft && (
+          <Button type="button" variant="secondary" onClick={resetForm}>
+            Annuler
+          </Button>
+        )}
+      </div>
     </form>
   );
 }

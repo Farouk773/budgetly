@@ -19,6 +19,23 @@ export default function NewLoanPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const hasDraft =
+    name.trim() !== "" ||
+    remaining.trim() !== "" ||
+    monthlyPayment.trim() !== "" ||
+    rate.trim() !== "" ||
+    endDate.trim() !== "";
+
+  function resetForm() {
+    setName("");
+    setRemaining("");
+    setMonthlyPayment("");
+    setRate("");
+    setDueDayOfMonth("1");
+    setEndDate("");
+    setError(null);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -182,9 +199,16 @@ export default function NewLoanPage() {
           </p>
         )}
 
-        <Button type="submit" disabled={isSubmitting} className="mt-2">
-          {isSubmitting ? "Ajout..." : "Ajouter"}
-        </Button>
+        <div className="mt-2 flex gap-2">
+          <Button type="submit" disabled={isSubmitting} className="flex-1">
+            {isSubmitting ? "Ajout..." : "Ajouter"}
+          </Button>
+          {hasDraft && (
+            <Button type="button" variant="secondary" onClick={resetForm}>
+              Annuler
+            </Button>
+          )}
+        </div>
       </form>
     </div>
   );

@@ -194,6 +194,14 @@ export function EditIncomeForm({ income }: { income: Income }) {
         </Button>
         <Button
           type="button"
+          variant="secondary"
+          onClick={() => router.push("/incomes")}
+          disabled={isSubmitting}
+        >
+          Annuler
+        </Button>
+        <Button
+          type="button"
           variant="ghost"
           onClick={() => setIsConfirmingDelete(true)}
           disabled={isSubmitting}

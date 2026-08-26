@@ -16,6 +16,16 @@ export default function NewSavingsGoalPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const hasDraft =
+    name.trim() !== "" || target.trim() !== "" || targetDate.trim() !== "";
+
+  function resetForm() {
+    setName("");
+    setTarget("");
+    setTargetDate("");
+    setError(null);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -111,9 +121,16 @@ export default function NewSavingsGoalPage() {
           </p>
         )}
 
-        <Button type="submit" disabled={isSubmitting} className="mt-2">
-          {isSubmitting ? "Création..." : "Créer l'objectif"}
-        </Button>
+        <div className="mt-2 flex gap-2">
+          <Button type="submit" disabled={isSubmitting} className="flex-1">
+            {isSubmitting ? "Création..." : "Créer l'objectif"}
+          </Button>
+          {hasDraft && (
+            <Button type="button" variant="secondary" onClick={resetForm}>
+              Annuler
+            </Button>
+          )}
+        </div>
       </form>
     </div>
   );

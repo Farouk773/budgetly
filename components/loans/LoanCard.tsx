@@ -143,6 +143,16 @@ export function LoanCard({ loan }: { loan: Loan }) {
             <Button type="submit" size="sm" disabled={isSubmitting}>
               Payer
             </Button>
+            {paymentAmount.trim() !== "" && (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => setPaymentAmount("")}
+              >
+                Annuler
+              </Button>
+            )}
           </form>
 
           <form onSubmit={handleSimulate} className="mt-2 flex gap-2">
@@ -157,6 +167,16 @@ export function LoanCard({ loan }: { loan: Loan }) {
             <Button type="submit" variant="secondary" size="sm" disabled={isSubmitting}>
               Simuler
             </Button>
+            {extraAmount.trim() !== "" && (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => setExtraAmount("")}
+              >
+                Annuler
+              </Button>
+            )}
           </form>
         </>
       )}

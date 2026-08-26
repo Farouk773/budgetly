@@ -116,6 +116,16 @@ export function SavingsGoalCard({ goal }: { goal: SavingsGoal }) {
         <Button type="submit" size="sm" disabled={isSubmitting}>
           Ajouter
         </Button>
+        {amount.trim() !== "" && (
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => setAmount("")}
+          >
+            Annuler
+          </Button>
+        )}
       </form>
       {error && (
         <p className="animate-fade-in mt-1 text-xs text-amber-800 dark:text-amber-400">{error}</p>

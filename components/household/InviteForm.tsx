@@ -51,6 +51,15 @@ export function InviteForm() {
         <Button type="submit" disabled={isSubmitting}>
           Inviter
         </Button>
+        {email.trim() !== "" && (
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => setEmail("")}
+          >
+            Annuler
+          </Button>
+        )}
       </div>
       {error && (
         <p className="animate-fade-in mt-2 text-sm text-amber-800 dark:text-amber-400">{error}</p>
