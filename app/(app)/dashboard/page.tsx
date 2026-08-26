@@ -20,7 +20,6 @@ import { MotivationCard } from "@/components/dashboard/MotivationCard";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { MonthNavigator } from "@/components/dashboard/MonthNavigator";
 import { QuickIncomeCard } from "@/components/dashboard/QuickIncomeCard";
-import { AnalyticsSection } from "@/components/dashboard/analytics/AnalyticsSection";
 
 const MONTH_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   month: "long",
@@ -76,8 +75,6 @@ export default async function DashboardPage({
           monthlyAvailableCents: budget.availableCents,
         })
       : 0;
-  const isProjectedPositive = projectedCents >= 0;
-
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:py-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -254,11 +251,6 @@ export default async function DashboardPage({
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="mt-6 flex flex-col gap-3">
-        <SectionLabel>Analyses</SectionLabel>
-        <AnalyticsSection />
       </div>
     </div>
   );

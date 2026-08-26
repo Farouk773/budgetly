@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 import { getCurrentUser } from "@/backend/auth";
 import { prisma } from "@/backend/prisma";
 import { formatCents } from "@/backend/money";
+import { ChargesAnalyticsChart } from "@/components/dashboard/analytics/ChargesAnalyticsChart";
 
 export default async function FixedChargesPage() {
   const user = await getCurrentUser();
@@ -33,8 +34,17 @@ export default async function FixedChargesPage() {
         </Link>
       </div>
 
+      <div className="card-surface mt-6 p-5">
+        <p className="font-heading text-sm font-semibold text-slate-700 dark:text-slate-200">
+          Évolution
+        </p>
+        <div className="mt-4">
+          <ChargesAnalyticsChart />
+        </div>
+      </div>
+
       {fixedCharges.length === 0 ? (
-        <p className="mt-8 text-sm text-slate-500 dark:text-slate-400">
+        <p className="mt-6 text-sm text-slate-500 dark:text-slate-400">
           Aucune charge fixe enregistrée pour le moment.
         </p>
       ) : (

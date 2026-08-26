@@ -5,6 +5,7 @@ import { prisma } from "@/backend/prisma";
 import { formatCents } from "@/backend/money";
 import { toLoanDto } from "@/backend/serializers/loan";
 import { LoanCard } from "@/components/loans/LoanCard";
+import { PretAnalyticsChart } from "@/components/dashboard/analytics/PretAnalyticsChart";
 
 export default async function LoansPage() {
   const user = await getCurrentUser();
@@ -34,11 +35,16 @@ export default async function LoansPage() {
         </Link>
       </div>
 
-      {loans.length === 0 ? (
-        <p className="mt-8 text-sm text-slate-500 dark:text-slate-400">
-          Aucun prêt enregistré pour le moment.
+      <div className="card-surface mt-6 p-5">
+        <p className="font-heading text-sm font-semibold text-slate-700 dark:text-slate-200">
+          Évolution
         </p>
-      ) : (
+        <div className="mt-4">
+          <PretAnalyticsChart />
+        </div>
+      </div>
+
+      {loans.length > 0 && (
         <>
           <p className="mt-6 text-sm text-slate-500 dark:text-slate-400">
             Impact mensuel des prêts actifs sur ton budget :{" "}

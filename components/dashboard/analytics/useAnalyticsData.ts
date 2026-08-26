@@ -3,20 +3,21 @@
 import { useEffect, useState } from "react";
 import type { AnalyticsResponse, ApiError } from "@/backend/types";
 
+type FetchState<T> = { path: string; data: T | null; error: string | null };
+
 /** Generic fetch-on-mount(-and-on-path-change) hook shared by every analytics
- * chart component (same fetch + useState pattern as PurchaseSimulator/LoanCard,
- * generalized so each chart doesn't repeat the loading/error boilerplate). */
+ * chart component. `isLoading` is derived at render time by comparing the
+ * requested `path` to the path the last completed request resolved for —
+ * this avoids resetting state synchronously inside the effect body (which
+ * only setState calls made from an async callback, e.g. .then/.catch,
+ * are meant for). */
 export function useAnalyticsData<T extends AnalyticsResponse>(
   path: string
 ): { data: T | null; isLoading: boolean; error: string | null } {
-  const [data, setData] = useState<T | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<FetchState<T>>({ path: "", data: null, error: null });
 
   useEffect(() => {
     let cancelled = false;
-    setIsLoading(true);
-    setError(null);
 
     fetch(path)
       .then(async (res) => {
@@ -27,16 +28,12 @@ export function useAnalyticsData<T extends AnalyticsResponse>(
         return body as T;
       })
       .then((body) => {
-        if (!cancelled) setData(body);
+        if (!cancelled) setState({ path, data: body, error: null });
       })
       .catch(() => {
         if (!cancelled) {
-          setData(null);
-          setError("Impossible de charger ces données pour le moment.");
+          setState({ path, data: null, error: "Impossible de charger ces données pour le moment." });
         }
-      })
-      .finally(() => {
-        if (!cancelled) setIsLoading(false);
       });
 
     return () => {
@@ -44,5 +41,10 @@ export function useAnalyticsData<T extends AnalyticsResponse>(
     };
   }, [path]);
 
-  return { data, isLoading, error };
+  const isLoading = state.path !== path;
+  return {
+    data: isLoading ? null : state.data,
+    error: isLoading ? null : state.error,
+    isLoading,
+  };
 }

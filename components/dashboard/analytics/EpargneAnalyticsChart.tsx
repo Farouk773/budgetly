@@ -3,12 +3,15 @@
 import { formatCents } from "@/backend/money";
 import { useAnalyticsData } from "@/components/dashboard/analytics/useAnalyticsData";
 import { AnalyticsLineChart } from "@/components/dashboard/analytics/AnalyticsLineChart";
+import { AnalyticsHeadline } from "@/components/dashboard/analytics/AnalyticsHeadline";
 import {
   AnalyticsErrorMessage,
   AnalyticsLoading,
   EstimatedCaveat,
 } from "@/components/dashboard/analytics/AnalyticsStates";
 import type { EpargneAnalyticsResponse } from "@/backend/types";
+
+const COLOR = "#0891b2";
 
 export function EpargneAnalyticsChart() {
   const { data, isLoading, error } = useAnalyticsData<EpargneAnalyticsResponse>(
@@ -34,13 +37,19 @@ export function EpargneAnalyticsChart() {
         <EstimatedCaveat caveat={data.meta.caveat} />
       )}
 
-      <p className="mb-2 text-xs text-slate-500 dark:text-slate-400">
-        Montant versé chaque mois
-      </p>
+      <div className="mb-4">
+        <AnalyticsHeadline
+          points={data.points}
+          color={COLOR}
+          label="Versé ce mois-ci"
+          higherIsBetter
+        />
+      </div>
+
       <AnalyticsLineChart
         points={data.points}
         granularity={data.meta.granularity}
-        color="#0891b2"
+        color={COLOR}
         name="Épargne versée"
       />
     </div>

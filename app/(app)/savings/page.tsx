@@ -6,6 +6,7 @@ import { formatCents } from "@/backend/money";
 import { currentMonthValue, getMonthlyBudget, getRunningBalance } from "@/backend/queries/balance";
 import { toSavingsGoalDto } from "@/backend/serializers/savingsGoal";
 import { SavingsGoalCard } from "@/components/savings/SavingsGoalCard";
+import { EpargneAnalyticsChart } from "@/components/dashboard/analytics/EpargneAnalyticsChart";
 
 export default async function SavingsPage() {
   const user = await getCurrentUser();
@@ -64,8 +65,17 @@ export default async function SavingsPage() {
         </p>
       )}
 
+      <div className="card-surface mt-4 p-5">
+        <p className="font-heading text-sm font-semibold text-slate-700 dark:text-slate-200">
+          Évolution
+        </p>
+        <div className="mt-4">
+          <EpargneAnalyticsChart />
+        </div>
+      </div>
+
       {goals.length === 0 ? (
-        <p className="mt-8 text-sm text-slate-500 dark:text-slate-400">
+        <p className="mt-6 text-sm text-slate-500 dark:text-slate-400">
           Aucun objectif d&apos;épargne pour le moment.
         </p>
       ) : (

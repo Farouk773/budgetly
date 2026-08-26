@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAnalyticsData } from "@/components/dashboard/analytics/useAnalyticsData";
 import { AnalyticsTabs } from "@/components/dashboard/analytics/AnalyticsTabs";
 import { AnalyticsLineChart } from "@/components/dashboard/analytics/AnalyticsLineChart";
+import { AnalyticsHeadline } from "@/components/dashboard/analytics/AnalyticsHeadline";
 import {
   AnalyticsEmptyState,
   AnalyticsErrorMessage,
@@ -11,6 +12,8 @@ import {
   EstimatedCaveat,
 } from "@/components/dashboard/analytics/AnalyticsStates";
 import type { PretAnalyticsResponse } from "@/backend/types";
+
+const COLOR = "#7c3aed";
 
 export function PretAnalyticsChart() {
   // undefined = "let the backend pick the default loan" (first fetch has no
@@ -53,10 +56,19 @@ export function PretAnalyticsChart() {
         <EstimatedCaveat caveat={data.meta.caveat} />
       )}
 
+      <div className="mb-4">
+        <AnalyticsHeadline
+          points={data.points}
+          color={COLOR}
+          label="Restant dû"
+          higherIsBetter={false}
+        />
+      </div>
+
       <AnalyticsLineChart
         points={data.points}
         granularity={data.meta.granularity}
-        color="#7c3aed"
+        color={COLOR}
         name="Restant dû"
       />
     </div>
