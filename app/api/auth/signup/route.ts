@@ -3,6 +3,7 @@ import { Prisma } from "@/backend/generated/prisma/client";
 import { prisma } from "@/backend/prisma";
 import { createSession, hashPassword, SESSION_COOKIE_NAME } from "@/backend/auth";
 import { signupSchema } from "@/backend/validations/auth";
+import { getClientIp, isRateLimited, recordAttempt } from "@/backend/rate-limit";
 import type { AuthUser } from "@/backend/types";
 
 export async function POST(request: NextRequest) {
@@ -14,6 +15,15 @@ export async function POST(request: NextRequest) {
   }
 
   const { email, password, name, currency } = parsed.data;
+  const ip = getClientIp(request);
+
+  if (await isRateLimited("SIGNUP", email, ip)) {
+    return NextResponse.json(
+      { error: "Trop de tentatives, réessayez plus tard" },
+      { status: 429 }
+    );
+  }
+
   const passwordHash = await hashPassword(password);
 
   let user;
@@ -26,6 +36,7 @@ export async function POST(request: NextRequest) {
       err instanceof Prisma.PrismaClientKnownRequestError &&
       err.code === "P2002"
     ) {
+      await recordAttempt("SIGNUP", email, ip, false);
       return NextResponse.json(
         { error: "Cet email est déjà utilisé" },
         { status: 409 }
@@ -33,6 +44,8 @@ export async function POST(request: NextRequest) {
     }
     throw err;
   }
+
+  await recordAttempt("SIGNUP", email, ip, true);
 
   const { rawToken, expiresAt } = await createSession(user.id);
   const authUser: AuthUser = {

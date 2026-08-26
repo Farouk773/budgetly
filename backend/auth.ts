@@ -3,9 +3,17 @@ import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 import type { AuthUser } from "./types";
+import { SESSION_COOKIE_NAME } from "./session-cookie";
 
-export const SESSION_COOKIE_NAME = "session";
+export { SESSION_COOKIE_NAME };
 const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+// Precomputed bcrypt hash (cost 12) of an arbitrary constant string, never
+// matched by any real password. Used to run `bcrypt.compare` even when the
+// looked-up user doesn't exist, so "unknown email" and "wrong password" take
+// the same amount of time and can't be told apart via response timing.
+export const DUMMY_PASSWORD_HASH =
+  "$2b$12$yIeWV/zfkYFMbAuLIkTKAu97zAK5.ASgTWqcmW3qUtwKUH7WAWjG.";
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 12);

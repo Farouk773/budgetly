@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/backend/prisma";
-import { createSession, verifyPassword, SESSION_COOKIE_NAME } from "@/backend/auth";
+import {
+  createSession,
+  verifyPassword,
+  SESSION_COOKIE_NAME,
+  DUMMY_PASSWORD_HASH,
+} from "@/backend/auth";
 import { loginSchema } from "@/backend/validations/auth";
+import { getClientIp, isRateLimited, recordAttempt } from "@/backend/rate-limit";
 import type { AuthUser } from "@/backend/types";
 
 export async function POST(request: NextRequest) {
@@ -13,10 +19,28 @@ export async function POST(request: NextRequest) {
   }
 
   const { email, password } = parsed.data;
+  const ip = getClientIp(request);
+
+  if (await isRateLimited("LOGIN", email, ip)) {
+    return NextResponse.json(
+      { error: "Trop de tentatives, réessayez plus tard" },
+      { status: 429 }
+    );
+  }
+
   const user = await prisma.user.findUnique({ where: { email } });
 
-  const isValid = user ? await verifyPassword(password, user.passwordHash) : false;
+  // Always run bcrypt.compare, even when the user doesn't exist, so
+  // "unknown email" and "wrong password" take the same amount of time and
+  // can't be distinguished via response timing (see SECURITY_AUDIT_PLAN.md
+  // section 6, point 6).
+  const isValid = await verifyPassword(
+    password,
+    user?.passwordHash ?? DUMMY_PASSWORD_HASH
+  );
+
   if (!user || !isValid) {
+    await recordAttempt("LOGIN", email, ip, false);
     return NextResponse.json(
       { error: "Email ou mot de passe incorrect" },
       { status: 401 }

@@ -226,3 +226,26 @@ model Session {
 
   @@index([userId])
 }
+
+enum LoginAttemptAction {
+  LOGIN
+  SIGNUP
+}
+
+// Sliding-window rate limiting for /api/auth/login and /api/auth/signup.
+// Backed by the DB (not process memory) because a Vercel serverless
+// invocation is not guaranteed to reuse the same instance — see
+// `backend/rate-limit.ts` for the actual window/threshold logic. Rows older
+// than the window are purged opportunistically on every check, so this
+// table never grows unbounded.
+model LoginAttempt {
+  id        String             @id @default(cuid())
+  action    LoginAttemptAction
+  email     String
+  ip        String
+  success   Boolean            @default(false)
+  createdAt DateTime           @default(now())
+
+  @@index([action, email, createdAt])
+  @@index([action, ip, createdAt])
+}
