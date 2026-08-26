@@ -21,7 +21,7 @@ export default async function LoansPage() {
     .reduce((sum, l) => sum + l.monthlyPaymentCents, 0);
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-10">
+    <div className="mx-auto w-full max-w-5xl px-4 py-10">
       <div className="flex items-center justify-between">
         <h1 className="font-heading text-xl font-semibold text-slate-900 dark:text-slate-100">
           Dettes et prêts
@@ -35,30 +35,40 @@ export default async function LoansPage() {
         </Link>
       </div>
 
-      <div className="card-surface mt-6 p-5">
-        <p className="font-heading text-sm font-semibold text-slate-700 dark:text-slate-200">
-          Évolution
-        </p>
-        <div className="mt-4">
-          <PretAnalyticsChart />
+      <div className="mt-6 grid gap-5 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          {loans.length === 0 ? (
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Ton premier prêt apparaîtra ici une fois ajouté.
+            </p>
+          ) : (
+            <>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Impact mensuel des prêts actifs sur ton budget :{" "}
+                <span className="font-semibold text-slate-900 dark:text-slate-100">
+                  -{formatCents(monthlyTotalCents)}
+                </span>
+              </p>
+              <ul className="mt-4 flex flex-col gap-3">
+                {loans.map((loan) => (
+                  <LoanCard key={loan.id} loan={toLoanDto(loan)} />
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+
+        <div className="lg:col-span-1">
+          <div className="card-surface p-5 lg:sticky lg:top-24">
+            <p className="font-heading text-sm font-semibold text-slate-700 dark:text-slate-200">
+              Évolution
+            </p>
+            <div className="mt-4">
+              <PretAnalyticsChart />
+            </div>
+          </div>
         </div>
       </div>
-
-      {loans.length > 0 && (
-        <>
-          <p className="mt-6 text-sm text-slate-500 dark:text-slate-400">
-            Impact mensuel des prêts actifs sur ton budget :{" "}
-            <span className="font-semibold text-slate-900 dark:text-slate-100">
-              -{formatCents(monthlyTotalCents)}
-            </span>
-          </p>
-          <ul className="mt-4 flex flex-col gap-3">
-            {loans.map((loan) => (
-              <LoanCard key={loan.id} loan={toLoanDto(loan)} />
-            ))}
-          </ul>
-        </>
-      )}
     </div>
   );
 }

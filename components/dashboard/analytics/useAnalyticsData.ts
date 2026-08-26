@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { AnalyticsResponse, ApiError } from "@/backend/types";
+import { subscribeAnalyticsChanged } from "@/components/dashboard/analytics/analyticsBus";
 
 type FetchState<T> = { path: string; data: T | null; error: string | null };
 
@@ -10,11 +11,16 @@ type FetchState<T> = { path: string; data: T | null; error: string | null };
  * requested `path` to the path the last completed request resolved for —
  * this avoids resetting state synchronously inside the effect body (which
  * only setState calls made from an async callback, e.g. .then/.catch,
- * are meant for). */
+ * are meant for). Also refetches whenever notifyAnalyticsChanged() fires
+ * elsewhere on the page (a payment, a contribution, a deletion...), so the
+ * curve reflects a new entry immediately instead of only on next page load. */
 export function useAnalyticsData<T extends AnalyticsResponse>(
   path: string
 ): { data: T | null; isLoading: boolean; error: string | null } {
   const [state, setState] = useState<FetchState<T>>({ path: "", data: null, error: null });
+  const [refreshNonce, setRefreshNonce] = useState(0);
+
+  useEffect(() => subscribeAnalyticsChanged(() => setRefreshNonce((n) => n + 1)), []);
 
   useEffect(() => {
     let cancelled = false;
@@ -39,7 +45,7 @@ export function useAnalyticsData<T extends AnalyticsResponse>(
     return () => {
       cancelled = true;
     };
-  }, [path]);
+  }, [path, refreshNonce]);
 
   const isLoading = state.path !== path;
   return {

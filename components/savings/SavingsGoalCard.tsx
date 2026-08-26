@@ -6,6 +6,7 @@ import { formatCents, parseEurosToCents } from "@/backend/money";
 import type { ApiError, SavingsGoal } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { notifyAnalyticsChanged } from "@/components/dashboard/analytics/analyticsBus";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   day: "2-digit",
@@ -51,6 +52,7 @@ export function SavingsGoalCard({ goal }: { goal: SavingsGoal }) {
 
       setAmount("");
       router.refresh();
+      notifyAnalyticsChanged();
     } catch {
       setError("Impossible de contacter le serveur");
     } finally {
@@ -63,6 +65,7 @@ export function SavingsGoalCard({ goal }: { goal: SavingsGoal }) {
     try {
       await fetch(`/api/savings-goals/${goal.id}`, { method: "DELETE" });
       router.refresh();
+      notifyAnalyticsChanged();
     } finally {
       setIsSubmitting(false);
     }

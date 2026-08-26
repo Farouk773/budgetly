@@ -6,6 +6,7 @@ import { formatCents, parseEurosToCents } from "@/backend/money";
 import type { ApiError, EarlyRepaymentSimulation, Loan } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { notifyAnalyticsChanged } from "@/components/dashboard/analytics/analyticsBus";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   month: "short",
@@ -46,6 +47,7 @@ export function LoanCard({ loan }: { loan: Loan }) {
       }
       setPaymentAmount("");
       router.refresh();
+      notifyAnalyticsChanged();
     } catch {
       setError("Impossible de contacter le serveur");
     } finally {
@@ -91,6 +93,7 @@ export function LoanCard({ loan }: { loan: Loan }) {
     try {
       await fetch(`/api/loans/${loan.id}`, { method: "DELETE" });
       router.refresh();
+      notifyAnalyticsChanged();
     } finally {
       setIsSubmitting(false);
     }
