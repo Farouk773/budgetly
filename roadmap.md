@@ -36,6 +36,7 @@ Chaque étape correspond à un ou plusieurs points de la spec initiale (indiqué
 ## Phase 5 — Dashboard basique (point 7, version simple)
 - [x] Vue d'ensemble du mois en cours
 - [x] Répartition des dépenses (graphique simple)
+- [x] Section "Analyses" : courbes historiques (dépenses jour/mois, revenu, épargne + cumul, prêt au choix, charges fixes) via `GET /api/analytics/[type]`, agrégation 100% côté DB. Dépenses/revenu/flux d'épargne sont des historiques réels ; charges fixes et solde restant dû de prêt sont des reconstructions estimées (`meta.estimated`), faute d'historisation de leurs changements en base — assumé explicitement plutôt que de prétendre une précision inexistante (voir `ANALYTICS_PLAN.md`).
 
 ## Phase 6 — Épargne (point 4)
 - [x] Objectifs d'épargne

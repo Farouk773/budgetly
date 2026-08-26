@@ -20,6 +20,7 @@ import { MotivationCard } from "@/components/dashboard/MotivationCard";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { MonthNavigator } from "@/components/dashboard/MonthNavigator";
 import { QuickIncomeCard } from "@/components/dashboard/QuickIncomeCard";
+import { AnalyticsSection } from "@/components/dashboard/analytics/AnalyticsSection";
 
 const MONTH_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   month: "long",
@@ -253,6 +254,11 @@ export default async function DashboardPage({
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="mt-6 flex flex-col gap-3">
+        <SectionLabel>Analyses</SectionLabel>
+        <AnalyticsSection />
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import { shiftMonth } from "./dateUtils";
+
 export function computeMonthlyAvailableCents(params: {
   incomeCents: number;
   fixedChargesCents: number;
@@ -132,4 +134,76 @@ export function simulateEarlyRepayment(params: {
     monthsSaved: monthsBefore - monthsAfter,
     interestSavedCents: Math.round(interestSavedCents),
   };
+}
+
+/** Reconstructs a month-by-month estimate of a loan's remaining principal,
+ * anchored on the true current value of remainingCents and walking backward
+ * in time by inverting the amortization formula, assuming monthlyPaymentCents
+ * and annualRateBps have been constant since the loan was created. This is a
+ * reconstruction, not a recorded history: it cannot detect a past early
+ * repayment nor a past change to the payment/rate. The last point (current
+ * month) is the only exact (non-estimated) value in the series. */
+export function reconstructLoanBalanceHistory(params: {
+  currentRemainingCents: number;
+  monthlyPaymentCents: number;
+  annualRateBps: number;
+  loanCreatedMonth: string; // "YYYY-MM"
+  currentMonth: string; // "YYYY-MM"
+}): { month: string; remainingCents: number }[] {
+  const { currentRemainingCents, monthlyPaymentCents, annualRateBps, currentMonth } = params;
+  const monthlyRate = annualRateBps / 10_000 / 12;
+
+  // Guard against a loan somehow "created" after the current month (should
+  // not happen in practice): fall back to a single, exact point.
+  const startMonth =
+    params.loanCreatedMonth <= currentMonth ? params.loanCreatedMonth : currentMonth;
+
+  const months: string[] = [];
+  for (let m = startMonth; m <= currentMonth; m = shiftMonth(m, 1)) {
+    months.push(m);
+  }
+
+  const remainingByIndex = new Array<number>(months.length);
+  remainingByIndex[months.length - 1] = Math.max(0, currentRemainingCents);
+
+  for (let i = months.length - 1; i > 0; i--) {
+    const balance = remainingByIndex[i];
+    const prevBalance =
+      monthlyRate === 0
+        ? balance + monthlyPaymentCents
+        : Math.round((balance + monthlyPaymentCents) / (1 + monthlyRate));
+    remainingByIndex[i - 1] = Math.max(0, prevBalance);
+  }
+
+  return months.map((month, i) => ({ month, remainingCents: remainingByIndex[i] }));
+}
+
+/** Sums already-DB-aggregated monthly flows (no re-summing of raw rows) into
+ * a running cumulative total, then reconciles the last point with the total
+ * actually shown elsewhere in the app (SavingsGoal.currentCents): any gap
+ * (an untimestamped manual adjustment, or a currentCents set when a goal was
+ * created) is imputed to the first month of the series rather than spread
+ * arbitrarily across several months. */
+export function reconcileSavingsCumulative(params: {
+  monthlyFlowsCents: { month: string; amountCents: number }[]; // triés chronologiquement
+  authoritativeTotalCents: number;
+}): { cumulativePoints: { month: string; valueCents: number }[]; estimated: boolean } {
+  const { monthlyFlowsCents, authoritativeTotalCents } = params;
+
+  if (monthlyFlowsCents.length === 0) {
+    return { cumulativePoints: [], estimated: false };
+  }
+
+  const rawTotalCents = monthlyFlowsCents.reduce((sum, flow) => sum + flow.amountCents, 0);
+  const discrepancyCents = authoritativeTotalCents - rawTotalCents;
+
+  const cumulativePoints: { month: string; valueCents: number }[] = [];
+  let runningCents = 0;
+  monthlyFlowsCents.forEach((flow, index) => {
+    const adjustmentCents = index === 0 ? discrepancyCents : 0;
+    runningCents += flow.amountCents + adjustmentCents;
+    cumulativePoints.push({ month: flow.month, valueCents: runningCents });
+  });
+
+  return { cumulativePoints, estimated: discrepancyCents !== 0 };
 }

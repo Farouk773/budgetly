@@ -172,3 +172,72 @@ export type HouseholdSummary = {
     availableCents: number;
   };
 };
+
+export type AnalyticsType = "depenses" | "revenu" | "epargne" | "pret" | "charges";
+export type AnalyticsGranularity = "jour" | "mois";
+
+export type AnalyticsPoint = {
+  /** "YYYY-MM-DD" en granularité jour, "YYYY-MM" en granularité mois. */
+  date: string;
+  valueCents: number;
+};
+
+export type AnalyticsMeta = {
+  granularity: AnalyticsGranularity;
+  /** Mois d'ancrage utilisé comme premier point de la série (voir règle en section 4). */
+  firstDataMonth: string;
+  /** true si la série est une reconstruction best-effort et non un historique
+   * réellement enregistré (voir section 5) — le front DOIT afficher `caveat`
+   * de façon visible (bandeau/tooltip) quand cette valeur est true. */
+  estimated: boolean;
+  /** Texte explicatif en français, présent seulement quand estimated=true. */
+  caveat?: string;
+};
+
+export type DepensesAnalyticsResponse = {
+  type: "depenses";
+  meta: AnalyticsMeta;
+  points: AnalyticsPoint[];
+};
+
+export type RevenuAnalyticsResponse = {
+  type: "revenu";
+  meta: AnalyticsMeta;
+  points: AnalyticsPoint[];
+};
+
+export type EpargneAnalyticsResponse = {
+  type: "epargne";
+  meta: AnalyticsMeta;
+  /** Flux mensuel : montant versé ce mois-là. */
+  points: AnalyticsPoint[];
+  /** Cumul à date, même axe X que points (voir reconciliation en section 5). */
+  cumulativePoints: AnalyticsPoint[];
+  /** Cumul total actuel, toujours égal à la somme des SavingsGoal.currentCents
+   * de l'utilisateur (source de vérité utilisée partout ailleurs dans l'app) —
+   * et donc toujours égal au dernier point de cumulativePoints. */
+  totalSavedCents: number;
+};
+
+export type LoanOption = { id: string; name: string };
+
+export type PretAnalyticsResponse = {
+  type: "pret";
+  meta: AnalyticsMeta; // estimated toujours true pour ce type
+  loans: LoanOption[];
+  selectedLoanId: string | null; // null seulement si l'utilisateur n'a aucun prêt
+  points: AnalyticsPoint[]; // remainingCents par mois pour selectedLoanId
+};
+
+export type ChargesAnalyticsResponse = {
+  type: "charges";
+  meta: AnalyticsMeta; // estimated toujours true pour ce type
+  points: AnalyticsPoint[];
+};
+
+export type AnalyticsResponse =
+  | DepensesAnalyticsResponse
+  | RevenuAnalyticsResponse
+  | EpargneAnalyticsResponse
+  | PretAnalyticsResponse
+  | ChargesAnalyticsResponse;
