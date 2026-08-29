@@ -6,6 +6,7 @@ import { Landmark, Wallet } from "lucide-react";
 import { currencySymbol, formatCents, parseSignedEurosToCents } from "@/backend/money";
 import type { ApiError, BalanceSource } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Select";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
@@ -113,16 +114,17 @@ export function BalanceCard({
         <label htmlFor="source" className="mt-1 text-sm font-medium text-slate-700 dark:text-slate-200">
           Ce montant, c&apos;est...
         </label>
-        <select
+        <Select
           id="source"
           value={source}
-          onChange={(e) => setSource(e.target.value as BalanceSource)}
-          className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:bg-[#131a2e] dark:focus:ring-indigo-500/20"
-        >
-          <option value="BANK">Un compte bancaire</option>
-          <option value="CASH">Du cash</option>
-          <option value="MIXED">Les deux combinés</option>
-        </select>
+          onChange={(value) => setSource(value as BalanceSource)}
+          options={[
+            { value: "BANK", label: "Un compte bancaire" },
+            { value: "CASH", label: "Du cash" },
+            { value: "MIXED", label: "Les deux combinés" },
+          ]}
+          solidDarkBackground
+        />
 
         {error && (
           <p className="animate-fade-in text-sm text-amber-800 dark:text-amber-400">{error}</p>

@@ -7,6 +7,7 @@ import { currencySymbol, formatCents, parseEurosToCents } from "@/backend/money"
 import type { ApiError, Income, IncomeType } from "@/backend/types";
 import { INCOME_TYPE_LABELS } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Select";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 const MONTH_LABEL_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
@@ -121,17 +122,16 @@ export function QuickIncomeCard({
 
       <form onSubmit={handleSubmit} className="mt-3 flex flex-col gap-2">
         <div className="flex gap-2">
-          <select
+          <Select
             value={type}
-            onChange={(e) => setType(e.target.value as IncomeType)}
-            className="rounded-lg border border-slate-300 bg-transparent px-2 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:bg-[#131a2e] dark:focus:ring-indigo-500/20"
-          >
-            {Object.entries(INCOME_TYPE_LABELS).map(([value, text]) => (
-              <option key={value} value={value}>
-                {text}
-              </option>
-            ))}
-          </select>
+            onChange={(value) => setType(value as IncomeType)}
+            options={Object.entries(INCOME_TYPE_LABELS).map(([value, text]) => ({
+              value,
+              label: text,
+            }))}
+            solidDarkBackground
+            className="max-w-[9.5rem] shrink-0"
+          />
           <input
             type="text"
             inputMode="decimal"

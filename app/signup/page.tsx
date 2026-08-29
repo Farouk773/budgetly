@@ -7,6 +7,7 @@ import { PiggyBank, ShieldCheck, Sparkles } from "lucide-react";
 import type { ApiError, Currency } from "@/backend/types";
 import { SUPPORTED_CURRENCIES, CURRENCY_LABELS } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Select";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -144,18 +145,16 @@ export default function SignupPage() {
               <label htmlFor="currency" className="text-sm font-medium text-slate-700 dark:text-slate-200">
                 Devise d&apos;affichage
               </label>
-              <select
+              <Select
                 id="currency"
                 value={currency}
-                onChange={(e) => setCurrency(e.target.value as Currency)}
-                className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:bg-[#131a2e] dark:focus:ring-indigo-500/20"
-              >
-                {SUPPORTED_CURRENCIES.map((code) => (
-                  <option key={code} value={code}>
-                    {CURRENCY_LABELS[code]}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => setCurrency(value as Currency)}
+                options={SUPPORTED_CURRENCIES.map((code) => ({
+                  value: code,
+                  label: CURRENCY_LABELS[code],
+                }))}
+                solidDarkBackground
+              />
             </div>
 
             {error && (

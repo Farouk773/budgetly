@@ -6,6 +6,7 @@ import { currencySymbol, parseEurosToCents } from "@/backend/money";
 import type { ApiError, IncomeType } from "@/backend/types";
 import { INCOME_TYPE_LABELS } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Select";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 function currentMonthValue(): string {
@@ -100,18 +101,15 @@ export default function NewIncomePage() {
           <label htmlFor="type" className="text-sm font-medium text-slate-700 dark:text-slate-200">
             Type
           </label>
-          <select
+          <Select
             id="type"
             value={type}
-            onChange={(e) => setType(e.target.value as IncomeType)}
-            className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
-          >
-            {Object.entries(INCOME_TYPE_LABELS).map(([value, text]) => (
-              <option key={value} value={value}>
-                {text}
-              </option>
-            ))}
-          </select>
+            onChange={(value) => setType(value as IncomeType)}
+            options={Object.entries(INCOME_TYPE_LABELS).map(([value, text]) => ({
+              value,
+              label: text,
+            }))}
+          />
         </div>
 
         <div className="flex flex-col gap-1">
