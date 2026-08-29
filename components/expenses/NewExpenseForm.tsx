@@ -21,16 +21,6 @@ export function NewExpenseForm({ categories }: { categories: Category[] }) {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const hasDraft = amount.trim() !== "" || label.trim() !== "";
-
-  function resetForm() {
-    setCategoryId(categories[0]?.id ?? "");
-    setLabel("");
-    setDate(todayValue());
-    setAmount("");
-    setError(null);
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -143,11 +133,9 @@ export function NewExpenseForm({ categories }: { categories: Category[] }) {
         <Button type="submit" disabled={isSubmitting} className="flex-1">
           {isSubmitting ? "Ajout..." : "Ajouter"}
         </Button>
-        {hasDraft && (
-          <Button type="button" variant="secondary" onClick={resetForm}>
-            Annuler
-          </Button>
-        )}
+        <Button type="button" variant="secondary" onClick={() => router.push("/expenses")}>
+          Annuler
+        </Button>
       </div>
     </form>
   );

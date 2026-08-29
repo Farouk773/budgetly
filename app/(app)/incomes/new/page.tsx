@@ -25,22 +25,6 @@ export default function NewIncomePage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const hasDraft =
-    label.trim() !== "" ||
-    netAmount.trim() !== "" ||
-    grossAmount.trim() !== "" ||
-    payslip !== null;
-
-  function resetForm() {
-    setType("SALARY");
-    setLabel("");
-    setMonth(currentMonthValue());
-    setNetAmount("");
-    setGrossAmount("");
-    setPayslip(null);
-    setError(null);
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -211,11 +195,9 @@ export default function NewIncomePage() {
           <Button type="submit" disabled={isSubmitting} className="flex-1">
             {isSubmitting ? "Ajout..." : "Ajouter"}
           </Button>
-          {hasDraft && (
-            <Button type="button" variant="secondary" onClick={resetForm}>
-              Annuler
-            </Button>
-          )}
+          <Button type="button" variant="secondary" onClick={() => router.push("/incomes")}>
+            Annuler
+          </Button>
         </div>
       </form>
     </div>
