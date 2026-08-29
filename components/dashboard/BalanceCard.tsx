@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Landmark, Wallet } from "lucide-react";
 import { currencySymbol, formatCents, parseSignedEurosToCents } from "@/backend/money";
 import type { ApiError, BalanceSource } from "@/backend/types";
@@ -38,7 +38,12 @@ export function BalanceCard({
 }) {
   const router = useRouter();
   const currency = useCurrency();
-  const [isEditing, setIsEditing] = useState(false);
+  const searchParams = useSearchParams();
+  // Opens straight into edit mode when arriving via the "Corriger mon solde"
+  // link from FirstMonthCheckIn (?correct=1) — one click instead of two.
+  const [isEditing, setIsEditing] = useState(
+    () => canEdit && searchParams.get("correct") === "1"
+  );
   const [value, setValue] = useState(
     (displayedCents / 100).toFixed(2).replace(".", ",")
   );
@@ -82,6 +87,7 @@ export function BalanceCard({
   if (isEditing) {
     return (
       <form
+        id="balance-card"
         onSubmit={handleSubmit}
         className="card-elevated flex animate-scale-in flex-col gap-2 p-5"
       >
@@ -141,7 +147,7 @@ export function BalanceCard({
   const sourceInfo = balanceSource ? SOURCE_LABELS[balanceSource] : null;
 
   return (
-    <div className="card-elevated flex items-center justify-between p-5">
+    <div id="balance-card" className="card-elevated flex items-center justify-between p-5">
       <div>
         <div className="flex items-center gap-1.5">
           <p className="text-sm text-slate-500 dark:text-slate-400">Solde de départ</p>

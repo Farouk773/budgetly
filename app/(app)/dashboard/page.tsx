@@ -21,6 +21,7 @@ import { MotivationCard } from "@/components/dashboard/MotivationCard";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { MonthNavigator } from "@/components/dashboard/MonthNavigator";
 import { QuickIncomeCard } from "@/components/dashboard/QuickIncomeCard";
+import { FirstMonthCheckIn } from "@/components/dashboard/FirstMonthCheckIn";
 
 const MONTH_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
   month: "long",
@@ -146,6 +147,14 @@ export default async function DashboardPage({
       <div className="mt-6 grid gap-5 lg:grid-cols-3">
         <div className="flex flex-col gap-3 lg:col-span-2">
           <SectionLabel>Revenus et dépenses de ce mois-ci</SectionLabel>
+
+          {isCurrentMonth && running && !running.isDeclared && currentMonth > firstMonth && (
+            <FirstMonthCheckIn
+              monthLabel={MONTH_FORMATTER.format(new Date(`${firstMonth}-01T00:00:00.000Z`))}
+              balanceCents={running.startingBalanceCents}
+              currency={user?.currency}
+            />
+          )}
 
           {alerts && <AlertsPanel snapshot={alerts} currency={user?.currency} />}
 
