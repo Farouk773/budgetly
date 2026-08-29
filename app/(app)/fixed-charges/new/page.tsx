@@ -1,8 +1,8 @@
-import { prisma } from "@/backend/prisma";
+import { getCategoriesForDropdown } from "@/backend/queries/categories";
 import { NewFixedChargeForm } from "@/components/fixed-charges/NewFixedChargeForm";
 
 export default async function NewFixedChargePage() {
-  const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
+  const categories = await getCategoriesForDropdown();
 
   return (
     <div className="mx-auto w-full max-w-md px-4 py-10">

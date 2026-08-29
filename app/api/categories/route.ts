@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/backend/auth";
-import { prisma } from "@/backend/prisma";
+import { getCategoriesForDropdown } from "@/backend/queries/categories";
 
 export async function GET() {
   const user = await getCurrentUser();
@@ -8,6 +8,6 @@ export async function GET() {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
 
-  const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
+  const categories = await getCategoriesForDropdown();
   return NextResponse.json({ categories });
 }
