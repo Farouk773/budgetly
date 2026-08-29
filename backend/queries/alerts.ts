@@ -48,24 +48,44 @@ export async function getAlertsSnapshot(userId: string) {
     .filter((d) => d.daysUntilDue <= UPCOMING_DUE_WINDOW_DAYS)
     .sort((a, b) => a.daysUntilDue - b.daysUntilDue);
 
-  // Deliberately NOT budget.loanPaymentsCents here: since that field now
-  // means "loan payments actually recorded this month" (real LoanPayment
-  // rows) rather than "theoretical monthly installments of active loans",
-  // using it would silently under-count the overdraft risk before the user
-  // has clicked "Payer" — the reminder would always arrive too late (after
-  // the fact) instead of anticipating what's still due. The overdraft check
-  // must anticipate every installment still owed this month, so it uses the
-  // theoretical commitment of currently active loans instead.
-  // fixedChargesCents is unaffected: it always reflects the sum of active
-  // charges regardless of any dated record, so its semantics didn't change.
+  // Theoretical monthly commitment of currently active loans — deliberately
+  // NOT budget.loanPaymentsCents on its own, since that field means "loan
+  // payments actually recorded this month" (real LoanPayment rows). Using
+  // only that would silently under-count the risk before the user has
+  // clicked "Payer": the reminder would arrive too late instead of
+  // anticipating what's still due.
   const theoreticalLoanCommitmentCents = loans.reduce(
     (sum, l) => sum + l.monthlyPaymentCents,
     0
   );
 
+  // Cash actually on hand right now: starting balance plus everything that
+  // has already moved this month (income received, expenses made, loan
+  // payments already clicked). Fixed charges are deliberately excluded here
+  // — this app has no "mark this charge as paid" action, so they always
+  // count as still-owed below rather than as money already spent. Without
+  // this, the alert compared the *start-of-month* balance alone against the
+  // full monthly commitment, ignoring income already received this month —
+  // it could warn "you're short 852" even right after a 1900 salary was
+  // logged, which is exactly backwards.
+  const currentCashOnHandCents =
+    running.startingBalanceCents +
+    budget.incomeCents -
+    budget.expensesCents -
+    budget.loanPaymentsCents;
+
+  // What's still owed: fixed charges (always, no paid/unpaid tracking) plus
+  // whatever part of this month's theoretical loan commitment hasn't already
+  // been paid. Netting out budget.loanPaymentsCents here too avoids counting
+  // an already-recorded payment both as cash spent above AND as still due.
+  const remainingLoanCommitmentCents = Math.max(
+    0,
+    theoreticalLoanCommitmentCents - budget.loanPaymentsCents
+  );
+
   const overdraft = computeOverdraftRisk({
-    balanceCents: running.startingBalanceCents,
-    upcomingCommittedCents: budget.fixedChargesCents + theoreticalLoanCommitmentCents,
+    balanceCents: currentCashOnHandCents,
+    upcomingCommittedCents: budget.fixedChargesCents + remainingLoanCommitmentCents,
   });
 
   return { overdraft, upcomingDues };
