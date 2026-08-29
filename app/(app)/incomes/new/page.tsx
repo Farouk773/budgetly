@@ -34,6 +34,7 @@ export default function NewIncomePage() {
   const [grossAmount, setGrossAmount] = useState("");
   const [payslip, setPayslip] = useState<File | null>(null);
   const [isRecurring, setIsRecurring] = useState(false);
+  const [payDay, setPayDay] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -65,6 +66,7 @@ export default function NewIncomePage() {
       }
       formData.set("periodMonth", `${month}-01`);
       formData.set("isRecurring", String(isRecurring));
+      if (payDay.trim() !== "") formData.set("payDay", payDay);
       if (payslip) formData.set("payslip", payslip);
 
       const res = await fetch("/api/incomes", {
@@ -212,6 +214,27 @@ export default function NewIncomePage() {
             Compté automatiquement chaque mois à partir de{" "}
             {formatMonthLabel(month)}, jusqu&apos;à ce que tu le modifies ou
             décoches cette case.
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label htmlFor="payDay" className="text-sm font-medium text-slate-700 dark:text-slate-200">
+            Jour de versement habituel (optionnel)
+          </label>
+          <input
+            id="payDay"
+            type="number"
+            min={1}
+            max={31}
+            value={payDay}
+            onChange={(e) => setPayDay(e.target.value)}
+            placeholder="Ex : 28"
+            className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
+          />
+          <span className="text-xs text-slate-400 dark:text-slate-500">
+            Sert à repérer si tes charges ou prêts sont prélevés avant que ce revenu
+            n&apos;arrive dans le mois. Laisse vide si tu ne le sais pas encore — on
+            part du principe prudent qu&apos;il arrive en fin de mois.
           </span>
         </div>
 

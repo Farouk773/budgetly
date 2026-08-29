@@ -10,6 +10,23 @@ export const isRecurringField = z
   .optional()
   .transform((v) => v === "true");
 
+// Jour habituel de versement (1-31), optionnel — même style à deux étages que
+// `optionalCentsField` (`backend/validations/money.ts`) mais avec les bornes
+// [1, 31] plutôt que des centimes. Absent/vide -> undefined -> Income.payDay
+// = null en base (comportement "je ne sais pas encore").
+export const optionalDayField = z
+  .string()
+  .optional()
+  .transform((v) => (v === undefined || v === "" ? undefined : v))
+  .pipe(
+    z
+      .string()
+      .regex(/^\d{1,2}$/)
+      .transform((v) => parseInt(v, 10))
+      .refine((v) => v >= 1 && v <= 31, "Jour invalide")
+      .optional()
+  );
+
 export const incomeFormSchema = z.object({
   type: z.enum(["SALARY", "FREELANCE", "OTHER"]),
   label: z
@@ -25,6 +42,7 @@ export const incomeFormSchema = z.object({
   overtimeCents: optionalCentsField,
   periodMonth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   isRecurring: isRecurringField,
+  payDay: optionalDayField,
 });
 
 export const ALLOWED_PAYSLIP_MIME_TYPES = [

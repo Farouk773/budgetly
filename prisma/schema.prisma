@@ -212,6 +212,16 @@ model Income {
   // (shared with FixedCharge): editing amount/periodMonth/isRecurring later
   // recomputes past months too, it does not preserve point-in-time history.
   isRecurring         Boolean    @default(false)
+  // Jour habituel de versement (1-31), optionnel — utilisé uniquement par le
+  // calcul de risque de trésorerie temporaire (backend/alerts.ts) pour situer
+  // CE revenu dans le mois plutôt que de supposer qu'il est disponible dès le
+  // 1er. Nullable : un revenu ponctuel peut être ajouté sans qu'on connaisse
+  // encore son jour exact, et un revenu déjà passé n'a pas besoin d'en avoir
+  // un. Pas de contrainte @@check en base (Prisma ne le permet pas nativement
+  // ici sans SQL brut) — la borne [1, 31] est validée côté zod
+  // (`backend/validations/income.ts`), comme le reste des champs numériques
+  // de ce formulaire.
+  payDay              Int?
   payslipOriginalName String?
   // random-generated on-disk filename; never derived from user input, to rule out path traversal
   payslipStoredName   String?

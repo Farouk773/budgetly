@@ -1,10 +1,19 @@
 import { prisma } from "@/backend/prisma";
 import {
+  computeCashFlowTimingRisk,
   computeOverdraftRisk,
   daysUntilDue,
+  DatedInflow,
+  DatedOutflow,
   UPCOMING_DUE_WINDOW_DAYS,
 } from "@/backend/alerts";
-import { getMonthlyBudget, getRunningBalance, currentMonthValue } from "@/backend/queries/balance";
+import { daysInMonth } from "@/backend/dateUtils";
+import {
+  currentMonthValue,
+  getMonthlyBudget,
+  getRunningBalance,
+  monthRange,
+} from "@/backend/queries/balance";
 
 export type UpcomingDue = {
   label: string;
@@ -16,13 +25,41 @@ export type UpcomingDue = {
 export async function getAlertsSnapshot(userId: string) {
   const today = new Date();
   const month = currentMonthValue();
+  const monthRangeValue = monthRange(month);
 
-  const [running, fixedCharges, loans, budget] = await Promise.all([
-    getRunningBalance(userId, month),
-    prisma.fixedCharge.findMany({ where: { userId, active: true } }),
-    prisma.loan.findMany({ where: { userId, active: true } }),
-    getMonthlyBudget(userId, month),
-  ]);
+  const [running, fixedCharges, loans, budget, monthIncomes, loanPaymentsByLoan] =
+    await Promise.all([
+      getRunningBalance(userId, month),
+      prisma.fixedCharge.findMany({ where: { userId, active: true } }),
+      prisma.loan.findMany({ where: { userId, active: true } }),
+      getMonthlyBudget(userId, month),
+      // Même filtre `OR` que celui utilisé pour composer budget.incomeCents
+      // (voir RECURRING_INCOME_PLAN.md section 3.1 / getMonthlyBudget) —
+      // nécessaire ici pour dater chaque revenu (payDay) plutôt que de
+      // n'avoir que leur total.
+      prisma.income.findMany({
+        where: {
+          userId,
+          OR: [
+            { isRecurring: false, periodMonth: monthRangeValue },
+            { isRecurring: true, periodMonth: { lt: monthRangeValue.lt } },
+          ],
+        },
+        select: { label: true, type: true, netAmountCents: true, payDay: true },
+      }),
+      // Part déjà payée de chaque prêt ce mois-ci, par prêt — nécessaire pour
+      // dater correctement l'échéance restante de CHAQUE prêt individuellement,
+      // pas seulement le total déjà utilisé par remainingLoanCommitmentCents.
+      prisma.loanPayment.groupBy({
+        by: ["loanId"],
+        where: { userId, date: monthRangeValue },
+        _sum: { amountCents: true },
+      }),
+    ]);
+
+  const paidByLoanId = new Map(
+    loanPaymentsByLoan.map((r) => [r.loanId, r._sum.amountCents ?? 0])
+  );
 
   const upcomingDues: UpcomingDue[] = [
     ...fixedCharges.map((c) => ({
@@ -88,5 +125,42 @@ export async function getAlertsSnapshot(userId: string) {
     upcomingCommittedCents: budget.fixedChargesCents + remainingLoanCommitmentCents,
   });
 
-  return { overdraft, upcomingDues };
+  const outflows: DatedOutflow[] = [
+    ...fixedCharges.map((c) => ({
+      label: c.label,
+      dayOfMonth: c.dayOfMonth,
+      amountCents: c.amountCents,
+    })),
+    ...loans
+      .map((l) => {
+        const paid = paidByLoanId.get(l.id) ?? 0;
+        const remaining = Math.max(0, l.monthlyPaymentCents - paid);
+        return remaining > 0
+          ? { label: l.name, dayOfMonth: l.dueDayOfMonth, amountCents: remaining }
+          : null;
+      })
+      .filter((o): o is DatedOutflow => o !== null),
+  ];
+
+  const inflows: DatedInflow[] = monthIncomes.map((i) => ({
+    label: i.label ?? "Revenu",
+    payDay: i.payDay,
+    amountCents: i.netAmountCents,
+  }));
+
+  // Ne calculer le risque de timing QUE si le mois n'est pas déjà en
+  // découverte totale (voir CASHFLOW_TIMING_PLAN.md section 2.4) — sinon
+  // c'est le même problème que `overdraft`, pas un problème de timing
+  // distinct ; les deux alertes ne se déclenchent donc jamais ensemble.
+  const cashFlowRisk = overdraft.atRisk
+    ? { atRisk: false, worstDayOfMonth: null, shortfallCents: 0, recoversOnDay: null }
+    : computeCashFlowTimingRisk({
+        currentCashOnHandCents,
+        todayDayOfMonth: today.getUTCDate(),
+        daysInMonthCount: daysInMonth(month),
+        outflows,
+        inflows,
+      });
+
+  return { overdraft, cashFlowRisk, upcomingDues };
 }

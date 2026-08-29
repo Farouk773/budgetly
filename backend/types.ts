@@ -53,6 +53,7 @@ export type Income = {
   overtimeCents: number | null;
   periodMonth: string;
   isRecurring: boolean;
+  payDay: number | null;
   payslipOriginalName: string | null;
   createdAt: string;
 };
@@ -151,8 +152,16 @@ export type UpcomingDue = {
   daysUntilDue: number;
 };
 
+export type CashFlowTimingRisk = {
+  atRisk: boolean;
+  worstDayOfMonth: number | null;
+  shortfallCents: number;
+  recoversOnDay: number | null;
+};
+
 export type AlertsSnapshot = {
   overdraft: { atRisk: boolean; shortfallCents: number };
+  cashFlowRisk: CashFlowTimingRisk;
   upcomingDues: UpcomingDue[];
 };
 

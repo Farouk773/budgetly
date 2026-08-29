@@ -1,4 +1,4 @@
-import { AlertTriangle, CalendarClock } from "lucide-react";
+import { AlertTriangle, CalendarClock, Clock } from "lucide-react";
 import { formatCents } from "@/backend/money";
 import type { AlertsSnapshot, Currency } from "@/backend/types";
 
@@ -21,9 +21,10 @@ export function AlertsPanel({
   currency?: Currency;
 }) {
   const hasOverdraftWarning = snapshot.overdraft?.atRisk ?? false;
+  const hasCashFlowWarning = snapshot.cashFlowRisk.atRisk;
   const hasUpcomingDues = snapshot.upcomingDues.length > 0;
 
-  if (!hasOverdraftWarning && !hasUpcomingDues) {
+  if (!hasOverdraftWarning && !hasCashFlowWarning && !hasUpcomingDues) {
     return null;
   }
 
@@ -36,6 +37,20 @@ export function AlertsPanel({
             Risque de découvert : il te manque{" "}
             <strong>{formatCents(snapshot.overdraft.shortfallCents, currency)}</strong>{" "}
             pour couvrir tes charges fixes et prêts de ce mois-ci.
+          </span>
+        </p>
+      )}
+
+      {snapshot.cashFlowRisk.atRisk && (
+        <p className="animate-fade-in flex items-start gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
+          <Clock className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>
+            Petit creux de trésorerie en vue : ton solde pourrait passer sous zéro
+            autour du {snapshot.cashFlowRisk.worstDayOfMonth} du mois (jusqu&apos;à{" "}
+            <strong>{formatCents(snapshot.cashFlowRisk.shortfallCents, currency)}</strong>{" "}
+            manquant), le temps que ton revenu du{" "}
+            {snapshot.cashFlowRisk.recoversOnDay} arrive. Le mois s&apos;équilibre
+            bien au global — c&apos;est une question de timing, pas de budget.
           </span>
         </p>
       )}

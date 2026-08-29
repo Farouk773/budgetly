@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { incomeFormSchema } from "./income";
+import { incomeFormSchema, optionalDayField } from "./income";
 
 const base = {
   type: "SALARY" as const,
@@ -74,5 +74,37 @@ describe("incomeFormSchema", () => {
   it("rejects an arbitrary isRecurring value", () => {
     const result = incomeFormSchema.safeParse({ ...base, isRecurring: "oui" });
     expect(result.success).toBe(false);
+  });
+});
+
+describe("optionalDayField", () => {
+  it("treats an absent value as undefined", () => {
+    const result = optionalDayField.safeParse(undefined);
+    expect(result.success && result.data).toBeUndefined();
+  });
+
+  it("parses \"28\" as 28", () => {
+    const result = optionalDayField.safeParse("28");
+    expect(result.success && result.data).toBe(28);
+  });
+
+  it("rejects \"0\"", () => {
+    const result = optionalDayField.safeParse("0");
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects \"32\"", () => {
+    const result = optionalDayField.safeParse("32");
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects \"abc\"", () => {
+    const result = optionalDayField.safeParse("abc");
+    expect(result.success).toBe(false);
+  });
+
+  it("treats an empty string as undefined", () => {
+    const result = optionalDayField.safeParse("");
+    expect(result.success && result.data).toBeUndefined();
   });
 });
