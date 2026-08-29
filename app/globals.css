@@ -50,6 +50,14 @@ h4 {
   font-family: var(--font-heading), var(--font-sans), sans-serif;
 }
 
+/* Sans ça, le menu déroulant natif d'un <select> s'affiche toujours en
+   blanc/clair (rendu par l'OS, hors de portée du CSS applicatif), même en
+   thème sombre — cette propriété indique au navigateur d'utiliser sa
+   palette native sombre pour ce popup quand le thème sombre est actif. */
+select {
+  color-scheme: light dark;
+}
+
 /* ---------------------------------------------------------------------- */
 /* Design system: brand gradient, surfaces, buttons, motion               */
 /* See DESIGN_SYSTEM.md at the project root for usage guidelines.         */
