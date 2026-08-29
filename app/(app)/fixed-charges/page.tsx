@@ -4,6 +4,8 @@ import { getCurrentUser } from "@/backend/auth";
 import { prisma } from "@/backend/prisma";
 import { formatCents } from "@/backend/money";
 import { ChargesAnalyticsChart } from "@/components/dashboard/analytics/ChargesAnalyticsChart";
+import { FixedChargesList } from "@/components/fixed-charges/FixedChargesList";
+import { DeleteAllButton } from "@/components/ui/DeleteAllButton";
 
 export default async function FixedChargesPage() {
   const user = await getCurrentUser();
@@ -25,57 +27,48 @@ export default async function FixedChargesPage() {
         <h1 className="font-heading text-xl font-semibold text-slate-900 dark:text-slate-100">
           Charges fixes récurrentes
         </h1>
-        <Link
-          href="/fixed-charges/new"
-          className="btn-base bg-brand-gradient flex items-center gap-1.5 px-3 py-2 text-sm text-white shadow-md shadow-indigo-900/15 hover:brightness-110"
-        >
-          <Plus className="h-4 w-4" />
-          Ajouter une charge
-        </Link>
+        <div className="flex items-center gap-2">
+          <DeleteAllButton
+            endpoint="/api/fixed-charges"
+            count={fixedCharges.length}
+            confirmTitle="Supprimer TOUTES les charges fixes ?"
+            confirmDescription={`Cette action est définitive et supprimera les ${fixedCharges.length} charge${
+              fixedCharges.length > 1 ? "s" : ""
+            } fixe${fixedCharges.length > 1 ? "s" : ""} enregistrée${
+              fixedCharges.length > 1 ? "s" : ""
+            }. Elle ne peut pas être annulée.`}
+          />
+          <Link
+            href="/fixed-charges/new"
+            className="btn-base bg-brand-gradient flex items-center gap-1.5 px-3 py-2 text-sm text-white shadow-md shadow-indigo-900/15 hover:brightness-110"
+          >
+            <Plus className="h-4 w-4" />
+            Ajouter une charge
+          </Link>
+        </div>
       </div>
 
       <div className="mt-6 grid gap-5 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          {fixedCharges.length === 0 ? (
+          {fixedCharges.length > 0 && (
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Aucune charge fixe enregistrée pour le moment.
+              Total mensuel des charges actives :{" "}
+              <span className="font-semibold text-slate-900 dark:text-slate-100">
+                {formatCents(monthlyTotalCents, user?.currency)}
+              </span>
             </p>
-          ) : (
-            <>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Total mensuel des charges actives :{" "}
-                <span className="font-semibold text-slate-900 dark:text-slate-100">
-                  {formatCents(monthlyTotalCents, user?.currency)}
-                </span>
-              </p>
-              <ul className="mt-4 flex flex-col gap-3">
-                {fixedCharges.map((charge) => (
-                  <li
-                    key={charge.id}
-                    className={`card-surface flex items-center justify-between p-5 ${
-                      charge.active ? "" : "opacity-50"
-                    }`}
-                  >
-                    <div>
-                      <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                        {charge.label}
-                        <span className="ml-2 text-xs font-normal text-slate-400 dark:text-slate-500">
-                          {charge.category.name}
-                        </span>
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Prélevé le {charge.dayOfMonth} du mois
-                        {charge.active ? "" : " · inactive"}
-                      </p>
-                    </div>
-                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                      {formatCents(charge.amountCents, user?.currency)}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </>
           )}
+          <FixedChargesList
+            fixedCharges={fixedCharges.map((charge) => ({
+              id: charge.id,
+              label: charge.label,
+              categoryName: charge.category.name,
+              amountCents: charge.amountCents,
+              dayOfMonth: charge.dayOfMonth,
+              active: charge.active,
+            }))}
+            currency={user?.currency}
+          />
         </div>
 
         <div className="lg:col-span-1">

@@ -61,3 +61,14 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({ expense: toExpenseDto(expense) }, { status: 201 });
 }
+
+export async function DELETE() {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  }
+
+  const result = await prisma.expense.deleteMany({ where: { userId: user.id } });
+
+  return NextResponse.json({ count: result.count });
+}

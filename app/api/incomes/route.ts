@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/backend/auth";
 import { prisma } from "@/backend/prisma";
 import { toIncomeDto } from "@/backend/serializers/income";
-import { generateStoredName, savePayslipFile } from "@/backend/storage";
+import {
+  deleteAllPayslipFilesForUser,
+  generateStoredName,
+  savePayslipFile,
+} from "@/backend/storage";
 import {
   ALLOWED_PAYSLIP_MIME_TYPES,
   incomeFormSchema,
@@ -112,4 +116,16 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json({ income: toIncomeDto(income) }, { status: 201 });
+}
+
+export async function DELETE() {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  }
+
+  const result = await prisma.income.deleteMany({ where: { userId: user.id } });
+  await deleteAllPayslipFilesForUser(user.id);
+
+  return NextResponse.json({ count: result.count });
 }
