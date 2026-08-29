@@ -21,31 +21,43 @@ export function currentMonthValue(): string {
 export async function getMonthlyBudget(userId: string, month: string) {
   const range = monthRange(month);
 
-  const [incomeAgg, expenseAgg, activeFixedCharges, loanPaymentAgg] = await Promise.all([
-    prisma.income.aggregate({
-      where: { userId, periodMonth: range },
-      _sum: { netAmountCents: true },
-    }),
-    prisma.expense.aggregate({
-      where: { userId, date: range },
-      _sum: { amountCents: true },
-    }),
-    prisma.fixedCharge.aggregate({
-      where: { userId, active: true },
-      _sum: { amountCents: true },
-    }),
-    // Real, dated payments recorded via the "Payer" button — NOT the
-    // theoretical monthly installment of active loans. Deliberately not
-    // filtered on Loan.active: a payment made this month must still count
-    // even if it just brought the loan's remaining balance to zero (the
-    // loan was active at the moment of the click, inactive right after).
-    prisma.loanPayment.aggregate({
-      where: { userId, date: range },
-      _sum: { amountCents: true },
-    }),
-  ]);
+  const [nonRecurringIncomeAgg, recurringIncomeAgg, expenseAgg, activeFixedCharges, loanPaymentAgg] =
+    await Promise.all([
+      // One-off incomes: only the exact month they were declared for.
+      prisma.income.aggregate({
+        where: { userId, isRecurring: false, periodMonth: range },
+        _sum: { netAmountCents: true },
+      }),
+      // Recurring incomes: counted every month from their start month
+      // (periodMonth) onward — `periodMonth < range.lt` covers "started this
+      // month or any earlier month", exactly the FixedCharge.active model but
+      // anchored to a start date instead of being unconditionally always-on.
+      prisma.income.aggregate({
+        where: { userId, isRecurring: true, periodMonth: { lt: range.lt } },
+        _sum: { netAmountCents: true },
+      }),
+      prisma.expense.aggregate({
+        where: { userId, date: range },
+        _sum: { amountCents: true },
+      }),
+      prisma.fixedCharge.aggregate({
+        where: { userId, active: true },
+        _sum: { amountCents: true },
+      }),
+      // Real, dated payments recorded via the "Payer" button — NOT the
+      // theoretical monthly installment of active loans. Deliberately not
+      // filtered on Loan.active: a payment made this month must still count
+      // even if it just brought the loan's remaining balance to zero (the
+      // loan was active at the moment of the click, inactive right after).
+      prisma.loanPayment.aggregate({
+        where: { userId, date: range },
+        _sum: { amountCents: true },
+      }),
+    ]);
 
-  const incomeCents = incomeAgg._sum.netAmountCents ?? 0;
+  const incomeCents =
+    (nonRecurringIncomeAgg._sum.netAmountCents ?? 0) +
+    (recurringIncomeAgg._sum.netAmountCents ?? 0);
   const expensesCents = expenseAgg._sum.amountCents ?? 0;
   const fixedChargesCents = activeFixedCharges._sum.amountCents ?? 0;
   const loanPaymentsCents = loanPaymentAgg._sum.amountCents ?? 0;

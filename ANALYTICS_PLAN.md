@@ -10,7 +10,7 @@ Aucune modification de schéma Prisma n'est nécessaire pour ce plan (voir secti
 | Modèle | Champ de date exploitable | Historisé fidèlement ? | Conclusion |
 |---|---|---|---|
 | `Expense` | `date` (jour exact saisi par l'utilisateur, stocké minuit UTC sans composante horaire) | Oui | Chaque ligne porte sa vraie date. Agrégation jour/mois directe et fiable. |
-| `Income` | `periodMonth` (jour exact saisi, pas forcément le 1er du mois) | Oui | Chaque ligne porte sa vraie période. Agrégation mensuelle fiable après troncature au mois. |
+| `Income` | `periodMonth` (jour exact saisi, pas forcément le 1er du mois) + `isRecurring` (voir `RECURRING_INCOME_PLAN.md`) | Oui | Chaque ligne porte sa vraie période de départ. Agrégation mensuelle fiable après troncature au mois — un revenu récurrent (`isRecurring = true`) compte aussi pour chaque mois suivant son `periodMonth`, calculé en direct (double agrégation, voir section 4.2). |
 | `SavingsContribution` | `createdAt` (horodatage serveur, immuable) | Oui pour les flux loggés | Fiable pour le flux mensuel réel. **Mais** `SavingsGoal.currentCents` est modifiable directement via `PATCH /api/savings-goals/[id]` (voir `updateSavingsGoalSchema`) et un `currentCents` initial peut être fixé à la création — sans création de `SavingsContribution` correspondante. Le cumul reconstitué depuis les contributions peut donc diverger du vrai total actuel (`SavingsGoal.currentCents`). Décision au point 5. |
 | `FixedCharge` | `createdAt` (fiable, immuable), `updatedAt` + `active` (indice, pas une preuve) | **Non, best-effort seulement** | Pas de log des changements de montant, pas de log des activations/désactivations successives, et une suppression physique (hard delete) efface toute trace. `createdAt` prouve une borne basse fiable ("n'existait pas avant"). `active`/`updatedAt` ne donnent qu'un indice de fin. |
 | `Loan` | `createdAt` (fiable), mais **aucun log de paiement** | **Non, best-effort seulement** | `remainingCents`, `monthlyPaymentCents`, `annualRateBps`, `endDate` sont tous modifiables directement via `PATCH /api/loans/[id]` sans log, et `POST /api/loans/[id]/payment` mute `remainingCents` instantanément sans enregistrer de ligne de paiement datée. Seule la valeur **actuelle** de `remainingCents` est certaine. |
@@ -182,16 +182,34 @@ Promise.all(months.map((m) =>
 
 `firstDataMonth` : `MIN(compte, MIN(periodMonth) via prisma.income.aggregate({ where:{userId}, _min:{ periodMonth:true } }))`.
 
+**Mise à jour (voir `RECURRING_INCOME_PLAN.md`)** : depuis l'introduction de
+`Income.isRecurring`, le calcul par mois n'est plus une agrégation unique par
+`periodMonth` exact — un revenu récurrent (`isRecurring = true`) compte pour
+son mois de départ (`periodMonth`) **et tous les mois suivants**, calculé "en
+direct" comme `FixedCharge.active`. D'où une double agrégation par mois,
+exactement le même correctif appliqué à `getMonthlyBudget`
+(`backend/queries/balance.ts`) et `getMonthlyReportData`
+(`backend/queries/report.ts`) pour rester cohérent avec le total du budget :
+
 ```ts
-Promise.all(months.map((m) =>
-  prisma.income.aggregate({
-    where: { userId, periodMonth: monthRange(m) },
-    _sum: { netAmountCents: true },
-  })
-));
+Promise.all(months.map((m) => {
+  const range = monthRange(m);
+  return Promise.all([
+    prisma.income.aggregate({
+      where: { userId, isRecurring: false, periodMonth: range },
+      _sum: { netAmountCents: true },
+    }),
+    prisma.income.aggregate({
+      where: { userId, isRecurring: true, periodMonth: { lt: range.lt } },
+      _sum: { netAmountCents: true },
+    }),
+  ]);
+}));
 ```
 
-`meta.estimated = false`.
+`meta.estimated = false` reste inchangé : ce n'est pas une estimation, c'est
+un calcul exact, juste avec une règle de comptage différente de "somme brute
+par `periodMonth`".
 
 ### 4.3 Épargne (`type=epargne`)
 

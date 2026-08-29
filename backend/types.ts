@@ -52,6 +52,7 @@ export type Income = {
   bonusCents: number | null;
   overtimeCents: number | null;
   periodMonth: string;
+  isRecurring: boolean;
   payslipOriginalName: string | null;
   createdAt: string;
 };

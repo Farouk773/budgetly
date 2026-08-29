@@ -205,6 +205,13 @@ model Income {
   bonusCents          Int?
   overtimeCents       Int?
   periodMonth         DateTime
+  // When true, this income is counted every month from `periodMonth`
+  // (inclusive) onward, not just for that one month — same "computed live,
+  // no per-month row generated" model as FixedCharge.active. `periodMonth`
+  // becomes the recurrence's start month in that case. Known limitation
+  // (shared with FixedCharge): editing amount/periodMonth/isRecurring later
+  // recomputes past months too, it does not preserve point-in-time history.
+  isRecurring         Boolean    @default(false)
   payslipOriginalName String?
   // random-generated on-disk filename; never derived from user input, to rule out path traversal
   payslipStoredName   String?

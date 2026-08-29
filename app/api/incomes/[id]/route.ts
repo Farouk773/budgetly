@@ -59,6 +59,7 @@ export async function PATCH(
     bonusCents,
     overtimeCents,
     periodMonth,
+    isRecurring,
   } = parsed.data;
 
   const income = await prisma.income.update({
@@ -72,6 +73,7 @@ export async function PATCH(
       bonusCents,
       overtimeCents,
       periodMonth: new Date(periodMonth),
+      isRecurring,
     },
   });
 

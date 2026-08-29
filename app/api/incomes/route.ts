@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
     bonusCents: form.get("bonusCents") ?? undefined,
     overtimeCents: form.get("overtimeCents") ?? undefined,
     periodMonth: form.get("periodMonth"),
+    isRecurring: form.get("isRecurring") ?? undefined,
   });
 
   if (!parsed.success) {
@@ -86,6 +87,7 @@ export async function POST(request: NextRequest) {
     bonusCents,
     overtimeCents,
     periodMonth,
+    isRecurring,
   } = parsed.data;
 
   const income = await prisma.income.create({
@@ -99,6 +101,7 @@ export async function POST(request: NextRequest) {
       bonusCents,
       overtimeCents,
       periodMonth: new Date(periodMonth),
+      isRecurring,
       payslipOriginalName,
       payslipStoredName,
       payslipMimeType,

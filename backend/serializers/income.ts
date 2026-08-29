@@ -12,6 +12,7 @@ export function toIncomeDto(income: PrismaIncome): Income {
     bonusCents: income.bonusCents,
     overtimeCents: income.overtimeCents,
     periodMonth: income.periodMonth.toISOString(),
+    isRecurring: income.isRecurring,
     payslipOriginalName: income.payslipOriginalName,
     createdAt: income.createdAt.toISOString(),
   };

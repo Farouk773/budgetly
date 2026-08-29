@@ -55,4 +55,24 @@ describe("incomeFormSchema", () => {
     const result = incomeFormSchema.safeParse({ ...base, periodMonth: "2026-08" });
     expect(result.success).toBe(false);
   });
+
+  it("defaults isRecurring to false when absent", () => {
+    const result = incomeFormSchema.safeParse(base);
+    expect(result.success && result.data.isRecurring).toBe(false);
+  });
+
+  it("parses isRecurring \"true\" as true", () => {
+    const result = incomeFormSchema.safeParse({ ...base, isRecurring: "true" });
+    expect(result.success && result.data.isRecurring).toBe(true);
+  });
+
+  it("parses isRecurring \"false\" as false", () => {
+    const result = incomeFormSchema.safeParse({ ...base, isRecurring: "false" });
+    expect(result.success && result.data.isRecurring).toBe(false);
+  });
+
+  it("rejects an arbitrary isRecurring value", () => {
+    const result = incomeFormSchema.safeParse({ ...base, isRecurring: "oui" });
+    expect(result.success).toBe(false);
+  });
 });

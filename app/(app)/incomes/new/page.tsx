@@ -13,6 +13,17 @@ function currentMonthValue(): string {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
 
+const MONTH_LABEL_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
+  month: "long",
+  year: "numeric",
+});
+
+function formatMonthLabel(month: string): string {
+  const [year, monthIndex] = month.split("-").map(Number);
+  if (!year || !monthIndex) return month;
+  return MONTH_LABEL_FORMATTER.format(new Date(year, monthIndex - 1, 1));
+}
+
 export default function NewIncomePage() {
   const router = useRouter();
   const currency = useCurrency();
@@ -22,6 +33,7 @@ export default function NewIncomePage() {
   const [netAmount, setNetAmount] = useState("");
   const [grossAmount, setGrossAmount] = useState("");
   const [payslip, setPayslip] = useState<File | null>(null);
+  const [isRecurring, setIsRecurring] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -52,6 +64,7 @@ export default function NewIncomePage() {
         formData.set("grossAmountCents", String(grossAmountCents));
       }
       formData.set("periodMonth", `${month}-01`);
+      formData.set("isRecurring", String(isRecurring));
       if (payslip) formData.set("payslip", payslip);
 
       const res = await fetch("/api/incomes", {
@@ -182,6 +195,23 @@ export default function NewIncomePage() {
             PDF ou image, 10 Mo maximum. L&apos;extraction automatique arrive
             dans une prochaine phase — renseigne les montants toi-même pour
             l&apos;instant.
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+            <input
+              type="checkbox"
+              checked={isRecurring}
+              onChange={(e) => setIsRecurring(e.target.checked)}
+              className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:bg-transparent dark:focus:ring-indigo-500/20"
+            />
+            Revenu récurrent (même montant chaque mois)
+          </label>
+          <span className="text-xs text-slate-400 dark:text-slate-500">
+            Compté automatiquement chaque mois à partir de{" "}
+            {formatMonthLabel(month)}, jusqu&apos;à ce que tu le modifies ou
+            décoches cette case.
           </span>
         </div>
 

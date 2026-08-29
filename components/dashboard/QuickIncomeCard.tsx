@@ -9,6 +9,17 @@ import { INCOME_TYPE_LABELS } from "@/backend/types";
 import { Button } from "@/components/ui/Button";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 
+const MONTH_LABEL_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
+  month: "long",
+  year: "numeric",
+});
+
+function formatMonthLabel(month: string): string {
+  const [year, monthIndex] = month.split("-").map(Number);
+  if (!year || !monthIndex) return month;
+  return MONTH_LABEL_FORMATTER.format(new Date(year, monthIndex - 1, 1));
+}
+
 export function QuickIncomeCard({
   month,
   incomes,
@@ -21,6 +32,7 @@ export function QuickIncomeCard({
   const [type, setType] = useState<IncomeType>("SALARY");
   const [amount, setAmount] = useState("");
   const [label, setLabel] = useState("");
+  const [isRecurring, setIsRecurring] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -41,6 +53,7 @@ export function QuickIncomeCard({
       if (label.trim()) formData.set("label", label.trim());
       formData.set("netAmountCents", String(netAmountCents));
       formData.set("periodMonth", `${month}-01`);
+      formData.set("isRecurring", String(isRecurring));
 
       const res = await fetch("/api/incomes", { method: "POST", body: formData });
 
@@ -52,6 +65,7 @@ export function QuickIncomeCard({
 
       setAmount("");
       setLabel("");
+      setIsRecurring(false);
       router.refresh();
     } catch {
       setError("Impossible de contacter le serveur");
@@ -60,11 +74,12 @@ export function QuickIncomeCard({
     }
   }
 
-  const hasDraft = amount.trim() !== "" || label.trim() !== "";
+  const hasDraft = amount.trim() !== "" || label.trim() !== "" || isRecurring;
 
   function resetForm() {
     setAmount("");
     setLabel("");
+    setIsRecurring(false);
     setError(null);
   }
 
@@ -85,6 +100,11 @@ export function QuickIncomeCard({
             <li key={income.id} className="flex justify-between py-1.5">
               <span className="text-slate-600 dark:text-slate-400">
                 {income.label || INCOME_TYPE_LABELS[income.type]}
+                {income.isRecurring && (
+                  <span className="ml-2 rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-medium text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
+                    Récurrent
+                  </span>
+                )}
               </span>
               <span className="font-medium text-slate-900 dark:text-slate-100">
                 {formatCents(income.netAmountCents, currency)}
@@ -123,6 +143,22 @@ export function QuickIncomeCard({
           placeholder="Libellé (optionnel)"
           className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
         />
+        <label className="flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-200">
+          <input
+            type="checkbox"
+            checked={isRecurring}
+            onChange={(e) => setIsRecurring(e.target.checked)}
+            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:bg-transparent dark:focus:ring-indigo-500/20"
+          />
+          Revenu récurrent (même montant chaque mois)
+        </label>
+        {isRecurring && (
+          <span className="text-xs text-slate-400 dark:text-slate-500">
+            Compté automatiquement chaque mois à partir de{" "}
+            {formatMonthLabel(month)}, jusqu&apos;à ce que tu le modifies ou
+            décoches cette case.
+          </span>
+        )}
         {error && (
           <p className="animate-fade-in text-xs text-amber-800 dark:text-amber-400">{error}</p>
         )}

@@ -30,6 +30,7 @@ export async function buildMonthlyExcelReport(
     { header: "Type", key: "type", width: 15 },
     { header: "Libellé", key: "label", width: 25 },
     { header: "Montant net", key: "amount", width: 15 },
+    { header: "Récurrent", key: "recurring", width: 12 },
   ];
   incomeSheet.getRow(1).font = { bold: true };
   for (const income of data.incomes) {
@@ -37,6 +38,7 @@ export async function buildMonthlyExcelReport(
       type: income.type,
       label: income.label ?? "",
       amount: formatCents(income.netAmountCents, currency),
+      recurring: income.isRecurring ? "Oui" : "",
     });
   }
 

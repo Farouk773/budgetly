@@ -9,6 +9,17 @@ import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 
+const MONTH_LABEL_FORMATTER = new Intl.DateTimeFormat("fr-FR", {
+  month: "long",
+  year: "numeric",
+});
+
+function formatMonthLabel(month: string): string {
+  const [year, monthIndex] = month.split("-").map(Number);
+  if (!year || !monthIndex) return month;
+  return MONTH_LABEL_FORMATTER.format(new Date(year, monthIndex - 1, 1));
+}
+
 export function EditIncomeForm({ income }: { income: Income }) {
   const router = useRouter();
   const currency = useCurrency();
@@ -24,6 +35,7 @@ export function EditIncomeForm({ income }: { income: Income }) {
       ? (income.grossAmountCents / 100).toFixed(2).replace(".", ",")
       : ""
   );
+  const [isRecurring, setIsRecurring] = useState(income.isRecurring);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -56,6 +68,7 @@ export function EditIncomeForm({ income }: { income: Income }) {
           grossAmountCents:
             grossAmountCents !== null ? String(grossAmountCents) : undefined,
           periodMonth: `${month}-01`,
+          isRecurring: String(isRecurring),
         }),
       });
 
@@ -165,6 +178,23 @@ export function EditIncomeForm({ income }: { income: Income }) {
           onChange={(e) => setGrossAmount(e.target.value)}
           className="rounded-lg border border-slate-300 bg-transparent px-3 py-2 text-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:focus:ring-indigo-500/20"
         />
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+          <input
+            type="checkbox"
+            checked={isRecurring}
+            onChange={(e) => setIsRecurring(e.target.checked)}
+            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-2 focus:ring-indigo-100 dark:border-white/15 dark:bg-transparent dark:focus:ring-indigo-500/20"
+          />
+          Revenu récurrent (même montant chaque mois)
+        </label>
+        <span className="text-xs text-slate-400 dark:text-slate-500">
+          Compté automatiquement chaque mois à partir de{" "}
+          {formatMonthLabel(month)}, jusqu&apos;à ce que tu le modifies ou
+          décoches cette case.
+        </span>
       </div>
 
       {income.payslipOriginalName && (

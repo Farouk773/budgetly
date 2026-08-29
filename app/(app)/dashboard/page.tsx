@@ -71,8 +71,19 @@ export default async function DashboardPage({
           getSpendingByCategory(user.id, month),
           isCurrentMonth ? getMotivationSnapshot(user.id) : Promise.resolve(null),
           isCurrentMonth ? getAlertsSnapshot(user.id) : Promise.resolve(null),
+          // Same rule as getMonthlyBudget/getMonthlyReportData: one-off
+          // incomes for this month, plus recurring incomes still active at
+          // this date (see RECURRING_INCOME_PLAN.md section 3.1) — otherwise
+          // the total shown just above (budget.incomeCents) would move
+          // without any matching line in this list.
           prisma.income.findMany({
-            where: { userId: user.id, periodMonth: monthRange(month) },
+            where: {
+              userId: user.id,
+              OR: [
+                { isRecurring: false, periodMonth: monthRange(month) },
+                { isRecurring: true, periodMonth: { lt: monthRange(month).lt } },
+              ],
+            },
             orderBy: { createdAt: "asc" },
           }),
         ])

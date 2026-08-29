@@ -105,7 +105,10 @@ export async function buildMonthlyPdfReport(
     writer.line("Aucun revenu enregistré ce mois-ci.");
   }
   for (const income of data.incomes) {
-    writer.line(`${income.label ?? income.type} — ${formatCents(income.netAmountCents, currency)}`);
+    const recurringSuffix = income.isRecurring ? " (récurrent)" : "";
+    writer.line(
+      `${income.label ?? income.type} — ${formatCents(income.netAmountCents, currency)}${recurringSuffix}`
+    );
   }
 
   writer.heading("Dépenses");

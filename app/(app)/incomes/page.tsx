@@ -55,6 +55,11 @@ export default async function IncomesPage() {
                         <span className="ml-2 text-xs font-normal text-slate-400 dark:text-slate-500">
                           {INCOME_TYPE_LABELS[income.type]}
                         </span>
+                        {income.isRecurring && (
+                          <span className="ml-2 rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-medium text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
+                            Récurrent
+                          </span>
+                        )}
                       </p>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
                         {MONTH_FORMATTER.format(income.periodMonth)}

@@ -136,18 +136,31 @@ export async function getRevenuAnalytics(userId: string): Promise<RevenuAnalytic
   const currentMonth = currentMonthValue();
   const months = monthsBetween(anchorMonth, currentMonth);
 
+  // Double aggregation per month, same rule as getMonthlyBudget
+  // (backend/queries/balance.ts): one-off incomes count only for their exact
+  // periodMonth, recurring incomes count for every month from their
+  // periodMonth (start) onward — otherwise this curve would desync from
+  // getMonthlyBudget's total from the 2nd month of a recurring income on.
   const aggregates = await Promise.all(
-    months.map((m) =>
-      prisma.income.aggregate({
-        where: { userId, periodMonth: monthRange(m) },
-        _sum: { netAmountCents: true },
-      })
-    )
+    months.map((m) => {
+      const range = monthRange(m);
+      return Promise.all([
+        prisma.income.aggregate({
+          where: { userId, isRecurring: false, periodMonth: range },
+          _sum: { netAmountCents: true },
+        }),
+        prisma.income.aggregate({
+          where: { userId, isRecurring: true, periodMonth: { lt: range.lt } },
+          _sum: { netAmountCents: true },
+        }),
+      ]);
+    })
   );
 
   const points: AnalyticsPoint[] = months.map((m, i) => ({
     date: m,
-    valueCents: aggregates[i]._sum.netAmountCents ?? 0,
+    valueCents:
+      (aggregates[i][0]._sum.netAmountCents ?? 0) + (aggregates[i][1]._sum.netAmountCents ?? 0),
   }));
 
   return {
